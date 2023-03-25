@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="textSize_secondTitle">20sp</dimen>
+    <dimen name="textSize_thirdTitle">16sp</dimen>
+    <dimen name="cardView_radius">10dp</dimen>
+    <dimen name="cardView_elevation">2dp</dimen>
+</resources>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativeLayout2"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="50dp">
+
+    <ImageView
+        android:id="@+id/chatRoom_imageView_senderAvatar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/circle_user_avatar" />
+
+    <RelativeLayout
+        android:id="@+id/layoutForReceiverMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:background="@color/universe_blue_transparent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@drawable/circle_user_avatar"
+        app:layout_constraintTop_toTopOf="@+id/chatRoom_imageView_senderAvatar">
+
+        <TextView
+            android:id="@+id/chatRoom_textView_messageContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="7dp"
+            android:paddingTop="7dp"
+            android:paddingRight="40dp"
+            android:paddingBottom="7dp"
+            android:text="Sender Message Displays Here"
+            android:textSize="18sp"></TextView>
+
+        <TextView
+            android:id="@+id/chatRoom_textView_timeOfMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/chatRoom_textView_messageContent"
+            android:layout_marginLeft="-40dp"
+            android:layout_toRightOf="@+id/chatRoom_textView_messageContent"
+            android:padding="7dp"
+            android:text="20:09"
+            android:textSize="10sp"></TextView>
+
+
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
