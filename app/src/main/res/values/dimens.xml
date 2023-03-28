@@ -4,4 +4,8 @@
     <dimen name="textSize_thirdTitle">16sp</dimen>
     <dimen name="cardView_radius">10dp</dimen>
     <dimen name="cardView_elevation">2dp</dimen>
+    <dimen name="TopAppBarHeight">88dp</dimen>
+    <dimen name="textsize_toolBar">18sp</dimen>
+    <dimen name="BottomAppBarHegiht">72dp</dimen>
+    <dimen name="Icon_Size">48dp</dimen>
 </resources>
