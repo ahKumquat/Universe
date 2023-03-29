@@ -79,7 +79,7 @@
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toTopOf="@+id/frameLayout6"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName6" />
+        app:layout_constraintTop_toBottomOf="@+id/homePage_editText_search" />
 
     <FrameLayout
         android:id="@+id/frameLayout6"
@@ -95,7 +95,7 @@
             android:layout_height="match_parent">
 
             <ImageButton
-                android:id="@+id/eventPage_imageButton_share"
+                android:id="@+id/homePage_imageButton_home"
                 android:layout_width="@dimen/Icon_Size"
                 android:layout_height="@dimen/Icon_Size"
                 android:layout_marginStart="16dp"
@@ -107,7 +107,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
-                android:id="@+id/eventPage_imageButton_message"
+                android:id="@+id/homePage_imageButton_user"
                 android:layout_width="@dimen/Icon_Size"
                 android:layout_height="@dimen/Icon_Size"
                 android:layout_marginEnd="16dp"
@@ -127,8 +127,8 @@
                 android:scaleType="fitCenter"
                 android:src="@drawable/plus_icon"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/eventPage_imageButton_message"
-                app:layout_constraintStart_toEndOf="@+id/eventPage_imageButton_share"
+                app:layout_constraintEnd_toStartOf="@+id/homePage_imageButton_user"
+                app:layout_constraintStart_toEndOf="@+id/homePage_imageButton_home"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -136,28 +136,30 @@
     </FrameLayout>
 
     <EditText
-        android:id="@+id/editTextTextPersonName6"
+        android:id="@+id/homePage_editText_search"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:ems="10"
         android:hint="Search"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageButton2"
-        tools:layout_editor_absoluteY="96dp" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/homePage_imageButton_search"
+        app:layout_constraintTop_toBottomOf="@+id/homePage_topAppBar" />
 
     <ImageButton
-        android:id="@+id/imageButton2"
+        android:id="@+id/homePage_imageButton_search"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginStart="16dp"
         android:background="@color/universe_transparent"
         android:scaleType="centerCrop"
         android:src="@android:drawable/ic_menu_search"
-        app:layout_constraintBottom_toBottomOf="@+id/editTextTextPersonName6"
+        app:layout_constraintBottom_toBottomOf="@+id/homePage_editText_search"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/editTextTextPersonName6" />
+        app:layout_constraintTop_toTopOf="@+id/homePage_editText_search" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -22,7 +22,7 @@
             android:orientation="vertical">
 
             <ImageView
-                android:id="@+id/imageView5"
+                android:id="@+id/eventPage_imageView_event"
                 android:layout_width="match_parent"
                 android:layout_height="240dp"
                 android:scaleType="fitStart"
@@ -58,7 +58,7 @@
                     app:layout_constraintTop_toTopOf="@+id/eventPage_imageView_hostAvatar" />
 
                 <TextView
-                    android:id="@+id/textView13"
+                    android:id="@+id/eventPage_textView_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/horizontal_padding"
@@ -69,18 +69,18 @@
                     app:layout_constraintTop_toBottomOf="@+id/eventPage_imageView_hostAvatar" />
 
                 <TextView
-                    android:id="@+id/textView17"
+                    android:id="@+id/eventPage_textView_location"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/vertical_padding"
                     android:text="Location"
                     android:textColor="@color/black"
                     android:textSize="@dimen/textSize_thirdTitle"
-                    app:layout_constraintStart_toStartOf="@+id/textView13"
-                    app:layout_constraintTop_toBottomOf="@+id/textView13" />
+                    app:layout_constraintStart_toStartOf="@+id/eventPage_textView_date"
+                    app:layout_constraintTop_toBottomOf="@+id/eventPage_textView_date" />
 
                 <TextView
-                    android:id="@+id/textView18"
+                    android:id="@+id/eventPage_textView_description"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/vertical_padding"
@@ -89,35 +89,35 @@
                     android:textColor="@color/black"
                     android:textSize="@dimen/textSize_thirdTitle"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/textView17"
-                    app:layout_constraintTop_toBottomOf="@+id/textView17" />
+                    app:layout_constraintStart_toStartOf="@+id/eventPage_textView_location"
+                    app:layout_constraintTop_toBottomOf="@+id/eventPage_textView_location" />
 
                 <TextView
-                    android:id="@+id/textView14"
+                    android:id="@+id/eventPage_textView_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Time"
                     android:textColor="@color/black"
                     android:textSize="@dimen/textSize_thirdTitle"
-                    app:layout_constraintBottom_toBottomOf="@+id/textView13"
-                    app:layout_constraintEnd_toStartOf="@+id/textView15"
-                    app:layout_constraintStart_toEndOf="@+id/textView13"
-                    app:layout_constraintTop_toTopOf="@+id/textView13" />
+                    app:layout_constraintBottom_toBottomOf="@+id/eventPage_textView_date"
+                    app:layout_constraintEnd_toStartOf="@+id/eventPage_textView_duration"
+                    app:layout_constraintStart_toEndOf="@+id/eventPage_textView_date"
+                    app:layout_constraintTop_toTopOf="@+id/eventPage_textView_date" />
 
                 <TextView
-                    android:id="@+id/textView15"
+                    android:id="@+id/eventPage_textView_duration"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
                     android:text="Duration"
                     android:textColor="@color/black"
                     android:textSize="@dimen/textSize_thirdTitle"
-                    app:layout_constraintBottom_toBottomOf="@+id/textView14"
+                    app:layout_constraintBottom_toBottomOf="@+id/eventPage_textView_time"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/textView14" />
+                    app:layout_constraintTop_toTopOf="@+id/eventPage_textView_time" />
 
                 <ImageView
-                    android:id="@+id/imageView8"
+                    android:id="@+id/eventPage_imageView_location"
                     android:layout_width="0dp"
                     android:layout_height="120dp"
                     android:layout_marginStart="@dimen/horizontal_padding"
@@ -126,21 +126,21 @@
                     android:src="@drawable/image_not_found"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView18" />
+                    app:layout_constraintTop_toBottomOf="@+id/eventPage_textView_description" />
 
                 <TextView
-                    android:id="@+id/textView19"
+                    android:id="@+id/eventPage_textView_going"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/vertical_padding"
                     android:text="Going"
                     android:textColor="@color/black"
                     android:textSize="@dimen/textSize_thirdTitle"
-                    app:layout_constraintStart_toStartOf="@+id/imageView8"
-                    app:layout_constraintTop_toBottomOf="@+id/imageView8" />
+                    app:layout_constraintStart_toStartOf="@+id/eventPage_imageView_location"
+                    app:layout_constraintTop_toBottomOf="@+id/eventPage_imageView_location" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerView"
+                    android:id="@+id/eventPage_recyclerView_participants"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/horizontal_padding"
@@ -148,7 +148,7 @@
                     android:layout_marginEnd="@dimen/horizontal_padding"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView19" />
+                    app:layout_constraintTop_toBottomOf="@+id/eventPage_textView_going" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -194,7 +194,7 @@
                 app:layout_constraintVertical_bias="0.625" />
 
             <ImageButton
-                android:id="@+id/eventPage_imageButton_message"
+                android:id="@+id/eventPage_imageButton_post"
                 android:layout_width="@dimen/Icon_Size"
                 android:layout_height="@dimen/Icon_Size"
                 android:layout_marginEnd="16dp"
@@ -213,7 +213,7 @@
                 android:scaleType="centerCrop"
                 android:src="@android:drawable/btn_star_big_off"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/eventPage_imageButton_message"
+                app:layout_constraintEnd_toStartOf="@+id/eventPage_imageButton_post"
                 app:layout_constraintStart_toEndOf="@+id/eventPage_imageButton_signUp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.541" />
