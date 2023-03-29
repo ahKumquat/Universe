@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout4"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".EventFragment" >
+
+    <ScrollView
+        android:id="@+id/eventPage_scrolllView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/frameLayout5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imageView5"
+                android:layout_width="match_parent"
+                android:layout_height="240dp"
+                android:scaleType="fitStart"
+                android:src="@drawable/image_not_found" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout"
+                android:layout_width="match_parent"
+                android:layout_height="400dp">
+
+                <ImageView
+                    android:id="@+id/eventPage_imageView_hostAvatar"
+                    android:layout_width="@dimen/avatar_size_large"
+                    android:layout_height="@dimen/avatar_size_large"
+                    android:layout_marginStart="@dimen/horizontal_padding"
+                    android:layout_marginTop="@dimen/vertical_padding"
+                    android:cropToPadding="false"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:srcCompat="@drawable/circle_user_avatar" />
+
+                <TextView
+                    android:id="@+id/eventPage_textView_hostName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:text="HostName"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textSize_secondTitle"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/eventPage_imageView_hostAvatar"
+                    app:layout_constraintStart_toEndOf="@+id/eventPage_imageView_hostAvatar"
+                    app:layout_constraintTop_toTopOf="@+id/eventPage_imageView_hostAvatar" />
+
+                <TextView
+                    android:id="@+id/textView13"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/horizontal_padding"
+                    android:text="Date"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textSize_thirdTitle"
+                    app:layout_constraintStart_toStartOf="@+id/eventPage_imageView_hostAvatar"
+                    app:layout_constraintTop_toBottomOf="@+id/eventPage_imageView_hostAvatar" />
+
+                <TextView
+                    android:id="@+id/textView17"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/vertical_padding"
+                    android:text="Location"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textSize_thirdTitle"
+                    app:layout_constraintStart_toStartOf="@+id/textView13"
+                    app:layout_constraintTop_toBottomOf="@+id/textView13" />
+
+                <TextView
+                    android:id="@+id/textView18"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/vertical_padding"
+                    android:layout_marginEnd="@dimen/vertical_padding"
+                    android:text="Description"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textSize_thirdTitle"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/textView17"
+                    app:layout_constraintTop_toBottomOf="@+id/textView17" />
+
+                <TextView
+                    android:id="@+id/textView14"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Time"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textSize_thirdTitle"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView13"
+                    app:layout_constraintEnd_toStartOf="@+id/textView15"
+                    app:layout_constraintStart_toEndOf="@+id/textView13"
+                    app:layout_constraintTop_toTopOf="@+id/textView13" />
+
+                <TextView
+                    android:id="@+id/textView15"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:text="Duration"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textSize_thirdTitle"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView14"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/textView14" />
+
+                <ImageView
+                    android:id="@+id/imageView8"
+                    android:layout_width="0dp"
+                    android:layout_height="120dp"
+                    android:layout_marginStart="@dimen/horizontal_padding"
+                    android:layout_marginTop="@dimen/vertical_padding"
+                    android:layout_marginEnd="@dimen/horizontal_padding"
+                    android:src="@drawable/image_not_found"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView18" />
+
+                <TextView
+                    android:id="@+id/textView19"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/vertical_padding"
+                    android:text="Going"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textSize_thirdTitle"
+                    app:layout_constraintStart_toStartOf="@+id/imageView8"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView8" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/horizontal_padding"
+                    android:layout_marginTop="@dimen/vertical_padding"
+                    android:layout_marginEnd="@dimen/horizontal_padding"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView19" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <FrameLayout
+        android:id="@+id/frameLayout5"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/BottomAppBarHegiht"
+        android:background="@color/universe_yellow"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageButton
+                android:id="@+id/eventPage_imageButton_share"
+                android:layout_width="@dimen/Icon_Size"
+                android:layout_height="@dimen/Icon_Size"
+                android:layout_marginStart="16dp"
+                android:backgroundTint="@color/universe_yellow"
+                android:scaleType="centerCrop"
+                android:src="@android:drawable/ic_menu_share"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/eventPage_imageButton_signUp"
+                android:layout_width="@dimen/Icon_Size"
+                android:layout_height="@dimen/Icon_Size"
+                android:backgroundTint="@color/universe_orange"
+                android:scaleType="centerCrop"
+                android:src="?android:attr/textCheckMark"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/eventPage_imageButton_favourite"
+                app:layout_constraintStart_toEndOf="@+id/eventPage_imageButton_share"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.625" />
+
+            <ImageButton
+                android:id="@+id/eventPage_imageButton_message"
+                android:layout_width="@dimen/Icon_Size"
+                android:layout_height="@dimen/Icon_Size"
+                android:layout_marginEnd="16dp"
+                android:backgroundTint="@color/universe_yellow"
+                android:scaleType="centerCrop"
+                android:src="@android:drawable/ic_menu_send"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/eventPage_imageButton_favourite"
+                android:layout_width="@dimen/Icon_Size"
+                android:layout_height="@dimen/Icon_Size"
+                android:backgroundTint="@color/universe_yellow"
+                android:scaleType="centerCrop"
+                android:src="@android:drawable/btn_star_big_off"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/eventPage_imageButton_message"
+                app:layout_constraintStart_toEndOf="@+id/eventPage_imageButton_signUp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.541" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

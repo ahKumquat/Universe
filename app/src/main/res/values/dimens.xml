@@ -7,5 +7,12 @@
     <dimen name="TopAppBarHeight">88dp</dimen>
     <dimen name="textsize_toolBar">18sp</dimen>
     <dimen name="BottomAppBarHegiht">72dp</dimen>
-    <dimen name="Icon_Size">48dp</dimen>
+    <dimen name="Icon_Size">64dp</dimen>
+    <dimen name="home_event_size">200dp</dimen>
+    <dimen name="avatar_size_large">80dp</dimen>
+    <dimen name="horizontal_padding">16dp</dimen>
+    <dimen name="vertical_padding">12dp</dimen>
+    <dimen name="avatar_size_small">40dp</dimen>
+    <dimen name="textSize_body">14sp</dimen>
+    <dimen name="post_vertical_margin">20dp</dimen>
 </resources>

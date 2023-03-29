@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/postPage_constraintLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PostFragment">
+
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/frameLayout7"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            tools:layout_conversion_absoluteHeight="0dp"
+            tools:layout_conversion_absoluteWidth="411dp"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/postPage_textView_date2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/post_vertical_margin"
+                    android:text="@string/postPage_textView_time"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textSize_secondTitle"
+                    app:layout_constraintStart_toStartOf="@+id/postPage_textView_date"
+                    app:layout_constraintTop_toBottomOf="@+id/postPage_textView_date" />
+
+                <TextView
+                    android:id="@+id/postPage_textView_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/post_vertical_margin"
+                    android:text="@string/postPage_textView_location"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textSize_secondTitle"
+                    app:layout_constraintStart_toStartOf="@+id/postPage_textView_duration"
+                    app:layout_constraintTop_toBottomOf="@+id/postPage_textView_duration" />
+
+                <TextView
+                    android:id="@+id/postPage_textView_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/post_vertical_margin"
+                    android:text="@string/postPage_textView_date"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textSize_secondTitle"
+                    app:layout_constraintStart_toStartOf="@+id/postPage_textView_title"
+                    app:layout_constraintTop_toBottomOf="@+id/postPage_textView_title" />
+
+                <EditText
+                    android:id="@+id/editTextTextMultiLine"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:ems="10"
+                    android:gravity="start|top"
+                    android:hint="Describe your event..."
+                    android:inputType="textMultiLine"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/postPage_textView_Description"
+                    app:layout_constraintTop_toBottomOf="@+id/postPage_textView_Description" />
+
+                <EditText
+                    android:id="@+id/editTextTime2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="xx.x"
+                    android:inputType="time"
+                    app:layout_constraintBottom_toBottomOf="@+id/postPage_textView_duration"
+                    app:layout_constraintEnd_toEndOf="@+id/spinner2"
+                    app:layout_constraintStart_toStartOf="@+id/editTextTextPersonName8"
+                    app:layout_constraintTop_toTopOf="@+id/postPage_textView_duration" />
+
+                <ImageButton
+                    android:id="@+id/imageButton"
+                    android:layout_width="0dp"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="16dp"
+                    android:scaleType="center"
+                    android:src="@android:drawable/ic_menu_gallery"
+                    app:layout_constraintEnd_toEndOf="@+id/editTextTextMultiLine"
+                    app:layout_constraintStart_toStartOf="@+id/editTextTextMultiLine"
+                    app:layout_constraintTop_toBottomOf="@+id/postPage_textView_photo" />
+
+                <TextView
+                    android:id="@+id/postPage_textView_duration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/post_vertical_margin"
+                    android:text="@string/postPage_textView_duration"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textSize_secondTitle"
+                    app:layout_constraintStart_toStartOf="@+id/postPage_textView_date2"
+                    app:layout_constraintTop_toBottomOf="@+id/postPage_textView_date2" />
+
+                <Spinner
+                    android:id="@+id/spinner2"
+                    android:layout_width="64dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="@+id/postPage_textView_date2"
+                    app:layout_constraintEnd_toStartOf="@+id/spinner3"
+                    app:layout_constraintStart_toEndOf="@+id/spinner"
+                    app:layout_constraintTop_toTopOf="@+id/postPage_textView_date2"
+                    app:layout_constraintVertical_bias="1.0" />
+
+                <EditText
+                    android:id="@+id/editTextDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="YY/MM/DD"
+                    android:inputType="date"
+                    app:layout_constraintBottom_toBottomOf="@+id/postPage_textView_date"
+                    app:layout_constraintStart_toStartOf="@+id/spinner"
+                    app:layout_constraintTop_toTopOf="@+id/postPage_textView_date" />
+
+                <EditText
+                    android:id="@+id/editTextTextPersonName5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="Title"
+                    android:inputType="textPersonName"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/postPage_textView_title"
+                    app:layout_constraintStart_toStartOf="@+id/editTextDate"
+                    app:layout_constraintTop_toTopOf="@+id/postPage_textView_title" />
+
+                <TextView
+                    android:id="@+id/postPage_textView_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="@dimen/post_vertical_margin"
+                    android:text="@string/postPage_textView_title"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textSize_secondTitle"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Spinner
+                    android:id="@+id/spinner"
+                    android:layout_width="64dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="@+id/postPage_textView_date2"
+                    app:layout_constraintStart_toStartOf="@+id/editTextTextPersonName8"
+                    app:layout_constraintTop_toTopOf="@+id/postPage_textView_date2" />
+
+                <TextView
+                    android:id="@+id/postPage_textView_photo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/postPage_textView_photo"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textSize_secondTitle"
+                    app:layout_constraintStart_toStartOf="@+id/editTextTextMultiLine"
+                    app:layout_constraintTop_toBottomOf="@+id/editTextTextMultiLine" />
+
+                <TextView
+                    android:id="@+id/postPage_textView_Description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/post_vertical_margin"
+                    android:text="@string/postPage_textView_Description"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textSize_secondTitle"
+                    app:layout_constraintStart_toStartOf="@+id/postPage_textView_location"
+                    app:layout_constraintTop_toBottomOf="@+id/postPage_textView_location" />
+
+                <Spinner
+                    android:id="@+id/spinner3"
+                    android:layout_width="64dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="@+id/postPage_textView_date2"
+                    app:layout_constraintEnd_toEndOf="@+id/editTextTextPersonName8"
+                    app:layout_constraintTop_toTopOf="@+id/postPage_textView_date2" />
+
+                <Spinner
+                    android:id="@+id/spinner4"
+                    android:layout_width="64dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="@+id/postPage_textView_duration"
+                    app:layout_constraintEnd_toEndOf="@+id/editTextTextPersonName8"
+                    app:layout_constraintStart_toStartOf="@+id/spinner3"
+                    app:layout_constraintTop_toTopOf="@+id/postPage_textView_duration" />
+
+                <EditText
+                    android:id="@+id/editTextTextPersonName8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:ems="10"
+                    android:hint="Address"
+                    android:inputType="textPersonName"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/postPage_textView_location"
+                    app:layout_constraintStart_toEndOf="@+id/postPage_textView_location"
+                    app:layout_constraintTop_toTopOf="@+id/postPage_textView_location" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <FrameLayout
+        android:id="@+id/frameLayout7"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/BottomAppBarHegiht"
+        android:background="@color/universe_yellow"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/postPage_button_postNow"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:backgroundTint="@color/universe_orange"
+                android:text="@string/postPage_button_postNow"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/postPage_button_save"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:backgroundTint="@color/universe_blue_transparent"
+                android:text="@string/postPage_button_save"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.541" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

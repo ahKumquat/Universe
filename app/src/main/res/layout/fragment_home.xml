@@ -60,11 +60,29 @@
                 app:layout_constraintBottom_toBottomOf="@+id/homePage_textView_follow"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/homePage_textView_follow" />
+
+            <ImageView
+                android:id="@+id/chatManager_imageView_dotForNewMessage2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-2dp"
+                android:layout_marginEnd="-4dp"
+                app:layout_constraintEnd_toEndOf="@+id/homePage_imageButton_chat"
+                app:layout_constraintTop_toTopOf="@+id/homePage_imageButton_chat"
+                app:srcCompat="@drawable/orangecircle_newmessage" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </FrameLayout>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/frameLayout6"
+        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName6" />
+
     <FrameLayout
+        android:id="@+id/frameLayout6"
         android:layout_width="0dp"
         android:layout_height="@dimen/BottomAppBarHegiht"
         android:background="@color/universe_yellow"
@@ -77,7 +95,7 @@
             android:layout_height="match_parent">
 
             <ImageButton
-                android:id="@+id/homePage_imageButton_home"
+                android:id="@+id/eventPage_imageButton_share"
                 android:layout_width="@dimen/Icon_Size"
                 android:layout_height="@dimen/Icon_Size"
                 android:layout_marginStart="16dp"
@@ -89,7 +107,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
-                android:id="@+id/homePage_imageButton_user"
+                android:id="@+id/eventPage_imageButton_message"
                 android:layout_width="@dimen/Icon_Size"
                 android:layout_height="@dimen/Icon_Size"
                 android:layout_marginEnd="16dp"
@@ -101,7 +119,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
-                android:id="@+id/imageButton4"
+                android:id="@+id/homePage_imageButton_post"
                 android:layout_width="@dimen/BottomAppBarHegiht"
                 android:layout_height="@dimen/BottomAppBarHegiht"
                 android:background="@color/universe_blue"
@@ -109,12 +127,37 @@
                 android:scaleType="fitCenter"
                 android:src="@drawable/plus_icon"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/homePage_imageButton_user"
-                app:layout_constraintStart_toEndOf="@+id/homePage_imageButton_home"
+                app:layout_constraintEnd_toStartOf="@+id/eventPage_imageButton_message"
+                app:layout_constraintStart_toEndOf="@+id/eventPage_imageButton_share"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </FrameLayout>
+
+    <EditText
+        android:id="@+id/editTextTextPersonName6"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:ems="10"
+        android:hint="Search"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imageButton2"
+        tools:layout_editor_absoluteY="96dp" />
+
+    <ImageButton
+        android:id="@+id/imageButton2"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:background="@color/universe_transparent"
+        android:scaleType="centerCrop"
+        android:src="@android:drawable/ic_menu_search"
+        app:layout_constraintBottom_toBottomOf="@+id/editTextTextPersonName6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/editTextTextPersonName6" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

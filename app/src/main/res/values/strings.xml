@@ -6,4 +6,13 @@
     <string name="chatRoom_button_send">Send</string>
     <string name="homePage_textView_nearby"><u>Nearby</u></string>
     <string name="homePage_textView_follow"><u>Follow</u></string>
+    <string name="postPage_textView_title">Title</string>
+    <string name="postPage_textView_date">Date:</string>
+    <string name="postPage_textView_time">Time:</string>
+    <string name="postPage_textView_duration">Duration:</string>
+    <string name="postPage_textView_location">Location:</string>
+    <string name="postPage_textView_Description">Description:</string>
+    <string name="postPage_textView_photo">Photo:</string>
+    <string name="postPage_button_postNow">Post Now!</string>
+    <string name="postPage_button_save">Save</string>
 </resources>

@@ -23,7 +23,7 @@
         tools:layout_editor_absoluteY="130dp" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/postPage_button_postNow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/universe_blue"
