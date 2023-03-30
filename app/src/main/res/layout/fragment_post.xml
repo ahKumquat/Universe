@@ -63,7 +63,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/postPage_textView_title" />
 
                 <EditText
-                    android:id="@+id/editTextTextMultiLine"
+                    android:id="@+id/postPage_editText_description"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
@@ -77,14 +77,14 @@
                     app:layout_constraintTop_toBottomOf="@+id/postPage_textView_Description" />
 
                 <EditText
-                    android:id="@+id/editTextTime2"
+                    android:id="@+id/postPage_editText_duration"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:hint="xx.x"
                     android:inputType="time"
                     app:layout_constraintBottom_toBottomOf="@+id/postPage_textView_duration"
-                    app:layout_constraintEnd_toEndOf="@+id/spinner2"
+                    app:layout_constraintEnd_toEndOf="@+id/postPage_spinner_timeMinute"
                     app:layout_constraintStart_toStartOf="@+id/editTextTextPersonName8"
                     app:layout_constraintTop_toTopOf="@+id/postPage_textView_duration" />
 
@@ -95,8 +95,8 @@
                     android:layout_marginTop="16dp"
                     android:scaleType="center"
                     android:src="@android:drawable/ic_menu_gallery"
-                    app:layout_constraintEnd_toEndOf="@+id/editTextTextMultiLine"
-                    app:layout_constraintStart_toStartOf="@+id/editTextTextMultiLine"
+                    app:layout_constraintEnd_toEndOf="@+id/postPage_editText_description"
+                    app:layout_constraintStart_toStartOf="@+id/postPage_editText_description"
                     app:layout_constraintTop_toBottomOf="@+id/postPage_textView_photo" />
 
                 <TextView
@@ -111,7 +111,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/postPage_textView_date2" />
 
                 <Spinner
-                    android:id="@+id/spinner2"
+                    android:id="@+id/postPage_spinner_timeMinute"
                     android:layout_width="64dp"
                     android:layout_height="wrap_content"
                     app:layout_constraintBottom_toBottomOf="@+id/postPage_textView_date2"
@@ -121,7 +121,7 @@
                     app:layout_constraintVertical_bias="1.0" />
 
                 <EditText
-                    android:id="@+id/editTextDate"
+                    android:id="@+id/postPage_editText_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ems="10"
@@ -132,7 +132,7 @@
                     app:layout_constraintTop_toTopOf="@+id/postPage_textView_date" />
 
                 <EditText
-                    android:id="@+id/editTextTextPersonName5"
+                    android:id="@+id/postPage_editText_Title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ems="10"
@@ -140,7 +140,7 @@
                     android:inputType="textPersonName"
                     android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="@+id/postPage_textView_title"
-                    app:layout_constraintStart_toStartOf="@+id/editTextDate"
+                    app:layout_constraintStart_toStartOf="@+id/postPage_editText_date"
                     app:layout_constraintTop_toTopOf="@+id/postPage_textView_title" />
 
                 <TextView
@@ -171,8 +171,8 @@
                     android:text="@string/postPage_textView_photo"
                     android:textColor="@color/black"
                     android:textSize="@dimen/textSize_secondTitle"
-                    app:layout_constraintStart_toStartOf="@+id/editTextTextMultiLine"
-                    app:layout_constraintTop_toBottomOf="@+id/editTextTextMultiLine" />
+                    app:layout_constraintStart_toStartOf="@+id/postPage_editText_description"
+                    app:layout_constraintTop_toBottomOf="@+id/postPage_editText_description" />
 
                 <TextView
                     android:id="@+id/postPage_textView_Description"

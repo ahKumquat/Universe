@@ -75,11 +75,12 @@
     </FrameLayout>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/homePage_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toTopOf="@+id/frameLayout6"
-        app:layout_constraintTop_toBottomOf="@+id/homePage_editText_search" />
+        app:layout_constraintTop_toBottomOf="@+id/homePage_searchView" />
 
     <FrameLayout
         android:id="@+id/frameLayout6"
@@ -135,31 +136,15 @@
 
     </FrameLayout>
 
-    <EditText
-        android:id="@+id/homePage_editText_search"
+    <SearchView
+        android:id="@+id/homePage_searchView"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:ems="10"
-        android:hint="Search"
-        android:inputType="textPersonName"
+        android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/homePage_imageButton_search"
-        app:layout_constraintTop_toBottomOf="@+id/homePage_topAppBar" />
-
-    <ImageButton
-        android:id="@+id/homePage_imageButton_search"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="16dp"
-        android:background="@color/universe_transparent"
-        android:scaleType="centerCrop"
-        android:src="@android:drawable/ic_menu_search"
-        app:layout_constraintBottom_toBottomOf="@+id/homePage_editText_search"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/homePage_editText_search" />
+        app:layout_constraintTop_toBottomOf="@+id/homePage_topAppBar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
