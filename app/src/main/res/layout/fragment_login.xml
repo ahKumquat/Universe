@@ -29,7 +29,7 @@
         android:layout_marginStart="39dp"
         android:layout_marginTop="87dp"
         android:singleLine="true"
-        android:text="User Name"
+        android:text="@string/login_textview_user_name"
         android:textColor="@color/universe_yellow"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -70,7 +70,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView2"
         app:layout_constraintTop_toBottomOf="@+id/login_edittext_username"
-        tools:ignore="SpeakableTextPresentCheck" />
+        tools:ignore="Deprecated,SpeakableTextPresentCheck" />
 
     <TextView
         android:id="@+id/textView2"
@@ -79,7 +79,7 @@
         android:layout_marginStart="39dp"
         android:layout_marginTop="34dp"
         android:singleLine="true"
-        android:text="Password"
+        android:text="@string/login_textview_password"
         android:textColor="@color/universe_yellow"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -94,7 +94,7 @@
         android:layout_marginEnd="96dp"
         android:backgroundTint="@color/universe_yellow"
         android:singleLine="true"
-        android:text="Log Me In!"
+        android:text="@string/login_button_log_me_in"
         android:textAllCaps="false"
         android:textColor="@color/black"
         android:textSize="18sp"
@@ -112,7 +112,7 @@
         android:layout_marginEnd="96dp"
         android:backgroundTint="@color/universe_blue"
         android:singleLine="true"
-        android:text="Login With Google!"
+        android:text="@string/login_button_login_with_google"
         android:textAllCaps="false"
         android:textColor="@color/black"
         android:textSize="18sp"
@@ -127,7 +127,7 @@
         android:layout_marginStart="61dp"
         android:layout_marginTop="24dp"
         android:singleLine="true"
-        android:text="Do not have an account yet?"
+        android:text="@string/login_textview_do_not_have_an_account_yet"
         android:textColor="@color/universe_yellow"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login_button_login_google" />
@@ -140,7 +140,7 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="39dp"
         android:singleLine="true"
-        android:text="Register Now!"
+        android:text="@string/login_textview_register_now"
         android:textColor="@color/universe_yellow"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView4"

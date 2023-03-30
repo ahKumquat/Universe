@@ -25,7 +25,8 @@
             android:layout_height="35dp"
             android:src="@drawable/baseline_arrow_back_ios_new_24"
             tools:layout_editor_absoluteX="16dp"
-            tools:layout_editor_absoluteY="16dp" />
+            tools:layout_editor_absoluteY="16dp"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/setting_textview_title"
@@ -33,7 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:singleLine="true"
-            android:text="Setting"
+            android:text="@string/setting_textview_setting_title"
             android:textColor="@color/black"
             android:textSize="24sp"
             android:textStyle="bold"
@@ -51,7 +52,8 @@
         android:src="@drawable/circle_user_profile"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/setting_toolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/setting_toolbar"
+        tools:ignore="ContentDescription" />
 
     <ImageView
         android:id="@+id/imageView7"
@@ -61,7 +63,8 @@
         android:layout_marginEnd="172dp"
         android:src="@drawable/baseline_edit_24"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/setting_toolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/setting_toolbar"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/textView9"
@@ -71,7 +74,7 @@
         android:layout_marginTop="202dp"
         android:layout_marginEnd="315dp"
         android:singleLine="true"
-        android:text="Name:"
+        android:text="@string/setting_textview_name"
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -93,7 +96,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView10"
-        tools:ignore="SpeakableTextPresentCheck" />
+        tools:ignore="LabelFor,SpeakableTextPresentCheck"
+        android:importantForAutofill="no" />
 
     <TextView
         android:id="@+id/textView10"
@@ -103,7 +107,7 @@
         android:layout_marginTop="26dp"
         android:layout_marginEnd="319dp"
         android:singleLine="true"
-        android:text="Email:"
+        android:text="@string/setting_textview_email"
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -126,7 +130,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView11"
-        tools:ignore="SpeakableTextPresentCheck" />
+        tools:ignore="Autofill,Deprecated,LabelFor,SpeakableTextPresentCheck" />
 
     <TextView
         android:id="@+id/textView11"
@@ -136,7 +140,7 @@
         android:layout_marginTop="23dp"
         android:layout_marginEnd="279dp"
         android:singleLine="true"
-        android:text="Password:"
+        android:text="@string/setting_textview_password"
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -158,7 +162,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView9"
-        tools:ignore="SpeakableTextPresentCheck" />
+        tools:ignore="Autofill,LabelFor,SpeakableTextPresentCheck" />
 
     <TextView
         android:id="@+id/textView12"
@@ -168,7 +172,7 @@
         android:layout_marginTop="22dp"
         android:layout_marginEnd="313dp"
         android:singleLine="true"
-        android:text="About:"
+        android:text="@string/setting_textview_about"
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -191,7 +195,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView12"
-        tools:ignore="SpeakableTextPresentCheck" />
+        tools:ignore="Autofill,Deprecated,LabelFor,SpeakableTextPresentCheck,VisualLintBounds" />
 
     <Button
         android:id="@+id/button7"
@@ -201,14 +205,15 @@
         android:layout_marginTop="54dp"
         android:layout_marginEnd="131dp"
         android:backgroundTint="@color/universe_blue"
-        android:text="Save Changes"
+        android:text="@string/setting_button_save_changes"
         android:textAllCaps="false"
         android:textColor="@color/black"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName4" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName4"
+        tools:ignore="VisualLintBounds" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
