@@ -1,95 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/frameLayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".HomeFragment" >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
 
-    <FrameLayout
-        android:id="@+id/homePage_topAppBar"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/TopAppBarHeight"
-        android:layout_gravity="bottom"
-        android:background="@color/universe_yellow"
-        app:backgroundTint="@color/universe_yellow"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/universe_yellow">
+
+        <androidx.appcompat.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_scrollFlags="scroll|enterAlways">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:layout_editor_absoluteX="1dp">
+
+                <ImageButton
+                    android:id="@+id/homePage_imageButton_chat"
+                    android:layout_width="@dimen/avatar_size_small"
+                    android:layout_height="@dimen/avatar_size_small"
+                    android:layout_marginEnd="32dp"
+                    android:background="@color/universe_yellow"
+                    android:scaleType="fitCenter"
+                    android:src="@android:drawable/stat_notify_chat"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/homePage_textView_nearby"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/homePage_textView_nearby"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textsize_toolBar"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/homePage_imageButton_chat"
+                    app:layout_constraintStart_toEndOf="@+id/homePage_textView_follow"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/homePage_textView_follow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="36dp"
+                    android:text="@string/homePage_textView_follow"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textsize_toolBar"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/homePage_textView_nearby"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/chatManager_imageView_dotForNewMessage2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="@+id/homePage_imageButton_chat"
+                    app:layout_constraintTop_toTopOf="@+id/homePage_imageButton_chat"
+                    app:srcCompat="@drawable/orangecircle_newmessage" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
+        android:layout_width="match_parent"
+
+        android:layout_height="602dp"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:layout_editor_absoluteX="16dp"
-            tools:layout_editor_absoluteY="6dp">
+            android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/homePage_textView_nearby"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="120dp"
-                android:text="@string/homePage_textView_nearby"
-                android:textColor="@color/black"
-                android:textSize="@dimen/textsize_toolBar"
-                app:layout_constraintBottom_toBottomOf="parent"
+            <SearchView
+                android:id="@+id/homePage_searchView"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/homePage_textView_follow"
-                android:layout_width="wrap_content"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/homePage_recyclerView"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="120dp"
-                android:text="@string/homePage_textView_follow"
-                android:textColor="@color/black"
-                android:textSize="@dimen/textsize_toolBar"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/homePage_searchView" />
 
-            <ImageButton
-                android:id="@+id/homePage_imageButton_chat"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginEnd="32dp"
-                android:background="@color/universe_yellow"
-                android:scaleType="fitCenter"
-                android:src="@android:drawable/stat_notify_chat"
-                app:layout_constraintBottom_toBottomOf="@+id/homePage_textView_follow"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/homePage_textView_follow" />
-
-            <ImageView
-                android:id="@+id/chatManager_imageView_dotForNewMessage2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="-2dp"
-                android:layout_marginEnd="-4dp"
-                app:layout_constraintEnd_toEndOf="@+id/homePage_imageButton_chat"
-                app:layout_constraintTop_toTopOf="@+id/homePage_imageButton_chat"
-                app:srcCompat="@drawable/orangecircle_newmessage" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 
-    </FrameLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/homePage_recyclerView"
+    <com.google.android.material.bottomappbar.BottomAppBar
+        android:id="@+id/bottomAppBar"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/frameLayout6"
-        app:layout_constraintTop_toBottomOf="@+id/homePage_searchView" />
-
-    <FrameLayout
-        android:id="@+id/frameLayout6"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/BottomAppBarHegiht"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
         android:background="@color/universe_yellow"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:backgroundTint="@color/universe_yellow"
+        app:layout_anchorGravity="bottom|center">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -133,18 +156,6 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.bottomappbar.BottomAppBar>
 
-    </FrameLayout>
-
-    <SearchView
-        android:id="@+id/homePage_searchView"
-        android:layout_width="0dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/homePage_topAppBar" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
