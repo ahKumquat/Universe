@@ -8,7 +8,7 @@
     tools:context=".EventFragment">
 
     <androidx.core.widget.NestedScrollView
-        android:id="@+id/eventPage_nestedScrolllView"
+        android:id="@+id/event_nestedScrolllView"
         android:layout_width="match_parent"
         android:layout_height="667dp">
 
@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content">
 
                 <ImageView
-                    android:id="@+id/eventPage_imageView_event"
+                    android:id="@+id/event_imageView_event"
                     android:layout_width="match_parent"
                     android:layout_height="240dp"
                     android:scaleType="fitStart"
@@ -33,17 +33,17 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
-                    android:id="@+id/eventPage_imageView_hostAvatar"
+                    android:id="@+id/event_imageView_hostAvatar"
                     android:layout_width="@dimen/avatar_size_large"
                     android:layout_height="@dimen/avatar_size_large"
                     android:layout_marginStart="@dimen/horizontal_padding"
                     android:cropToPadding="false"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/eventPage_imageView_event"
+                    app:layout_constraintTop_toBottomOf="@+id/event_imageView_event"
                     tools:srcCompat="@drawable/circle_user_avatar" />
 
                 <TextView
-                    android:id="@+id/eventPage_textView_hostName"
+                    android:id="@+id/event_textView_hostName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="32dp"
@@ -51,34 +51,34 @@
                     android:textColor="@color/black"
                     android:textSize="@dimen/textSize_secondTitle"
                     android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="@+id/eventPage_imageView_hostAvatar"
-                    app:layout_constraintStart_toEndOf="@+id/eventPage_imageView_hostAvatar"
-                    app:layout_constraintTop_toTopOf="@+id/eventPage_imageView_hostAvatar" />
+                    app:layout_constraintBottom_toBottomOf="@+id/event_imageView_hostAvatar"
+                    app:layout_constraintStart_toEndOf="@+id/event_imageView_hostAvatar"
+                    app:layout_constraintTop_toTopOf="@+id/event_imageView_hostAvatar" />
 
                 <TextView
-                    android:id="@+id/eventPage_textView_date"
+                    android:id="@+id/event_textView_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/horizontal_padding"
                     android:text="Date"
                     android:textColor="@color/black"
                     android:textSize="@dimen/textSize_thirdTitle"
-                    app:layout_constraintStart_toStartOf="@+id/eventPage_imageView_hostAvatar"
-                    app:layout_constraintTop_toBottomOf="@+id/eventPage_imageView_hostAvatar" />
+                    app:layout_constraintStart_toStartOf="@+id/event_imageView_hostAvatar"
+                    app:layout_constraintTop_toBottomOf="@+id/event_imageView_hostAvatar" />
 
                 <TextView
-                    android:id="@+id/eventPage_textView_location"
+                    android:id="@+id/event_textView_location"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/vertical_padding"
                     android:text="Location"
                     android:textColor="@color/black"
                     android:textSize="@dimen/textSize_thirdTitle"
-                    app:layout_constraintStart_toStartOf="@+id/eventPage_textView_date"
-                    app:layout_constraintTop_toBottomOf="@+id/eventPage_textView_date" />
+                    app:layout_constraintStart_toStartOf="@+id/event_textView_date"
+                    app:layout_constraintTop_toBottomOf="@+id/event_textView_date" />
 
                 <TextView
-                    android:id="@+id/eventPage_textView_description"
+                    android:id="@+id/event_textView_description"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/vertical_padding"
@@ -87,55 +87,55 @@
                     android:textColor="@color/black"
                     android:textSize="@dimen/textSize_thirdTitle"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/eventPage_textView_location"
-                    app:layout_constraintTop_toBottomOf="@+id/eventPage_textView_location" />
+                    app:layout_constraintStart_toStartOf="@+id/event_textView_location"
+                    app:layout_constraintTop_toBottomOf="@+id/event_textView_location" />
 
                 <TextView
-                    android:id="@+id/eventPage_textView_time"
+                    android:id="@+id/event_textView_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Time"
                     android:textColor="@color/black"
                     android:textSize="@dimen/textSize_thirdTitle"
-                    app:layout_constraintBottom_toBottomOf="@+id/eventPage_textView_date"
-                    app:layout_constraintEnd_toStartOf="@+id/eventPage_textView_duration"
-                    app:layout_constraintStart_toEndOf="@+id/eventPage_textView_date"
-                    app:layout_constraintTop_toTopOf="@+id/eventPage_textView_date" />
+                    app:layout_constraintBottom_toBottomOf="@+id/event_textView_date"
+                    app:layout_constraintEnd_toStartOf="@+id/event_textView_duration"
+                    app:layout_constraintStart_toEndOf="@+id/event_textView_date"
+                    app:layout_constraintTop_toTopOf="@+id/event_textView_date" />
 
                 <TextView
-                    android:id="@+id/eventPage_textView_duration"
+                    android:id="@+id/event_textView_duration"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
                     android:text="Duration"
                     android:textColor="@color/black"
                     android:textSize="@dimen/textSize_thirdTitle"
-                    app:layout_constraintBottom_toBottomOf="@+id/eventPage_textView_time"
+                    app:layout_constraintBottom_toBottomOf="@+id/event_textView_time"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/eventPage_textView_time" />
+                    app:layout_constraintTop_toTopOf="@+id/event_textView_time" />
 
                 <com.google.android.gms.maps.MapView
-                    android:id="@+id/mapView"
+                    android:id="@+id/event_mapView_map"
                     android:layout_width="0dp"
                     android:layout_height="150dp"
                     android:layout_marginTop="4dp"
-                    app:layout_constraintEnd_toEndOf="@+id/eventPage_textView_description"
-                    app:layout_constraintStart_toStartOf="@+id/eventPage_textView_description"
-                    app:layout_constraintTop_toBottomOf="@+id/eventPage_textView_description" />
+                    app:layout_constraintEnd_toEndOf="@+id/event_textView_description"
+                    app:layout_constraintStart_toStartOf="@+id/event_textView_description"
+                    app:layout_constraintTop_toBottomOf="@+id/event_textView_description" />
 
                 <TextView
-                    android:id="@+id/eventPage_textView_going"
+                    android:id="@+id/event_textView_going"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/vertical_padding"
                     android:text="Going"
                     android:textColor="@color/black"
                     android:textSize="@dimen/textSize_thirdTitle"
-                    app:layout_constraintStart_toStartOf="@+id/mapView"
-                    app:layout_constraintTop_toBottomOf="@+id/mapView" />
+                    app:layout_constraintStart_toStartOf="@+id/event_mapView_map"
+                    app:layout_constraintTop_toBottomOf="@+id/event_mapView_map" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/eventPage_recyclerView_participants"
+                    android:id="@+id/event_recyclerView_participants"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/horizontal_padding"
@@ -143,7 +143,7 @@
                     android:layout_marginEnd="@dimen/horizontal_padding"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/eventPage_textView_going" />
+                    app:layout_constraintTop_toBottomOf="@+id/event_textView_going" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -163,7 +163,7 @@
             android:layout_height="match_parent">
 
             <ImageButton
-                android:id="@+id/eventPage_imageButton_share"
+                android:id="@+id/event_imageButton_share"
                 android:layout_width="@dimen/Icon_Size"
                 android:layout_height="@dimen/Icon_Size"
                 android:layout_marginStart="16dp"
@@ -175,20 +175,20 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
-                android:id="@+id/eventPage_imageButton_signUp"
+                android:id="@+id/event_imageButton_signUp"
                 android:layout_width="@dimen/Icon_Size"
                 android:layout_height="@dimen/Icon_Size"
                 android:backgroundTint="@color/universe_orange"
                 android:scaleType="centerCrop"
                 android:src="?android:attr/textCheckMark"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/eventPage_imageButton_favourite"
-                app:layout_constraintStart_toEndOf="@+id/eventPage_imageButton_share"
+                app:layout_constraintEnd_toStartOf="@+id/event_imageButton_favourite"
+                app:layout_constraintStart_toEndOf="@+id/event_imageButton_share"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.625" />
 
             <ImageButton
-                android:id="@+id/eventPage_imageButton_post"
+                android:id="@+id/event_imageButton_post"
                 android:layout_width="@dimen/Icon_Size"
                 android:layout_height="@dimen/Icon_Size"
                 android:layout_marginEnd="16dp"
@@ -200,15 +200,15 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
-                android:id="@+id/eventPage_imageButton_favourite"
+                android:id="@+id/event_imageButton_favourite"
                 android:layout_width="@dimen/Icon_Size"
                 android:layout_height="@dimen/Icon_Size"
                 android:backgroundTint="@color/universe_yellow"
                 android:scaleType="centerCrop"
                 android:src="@android:drawable/btn_star_big_off"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/eventPage_imageButton_post"
-                app:layout_constraintStart_toEndOf="@+id/eventPage_imageButton_signUp"
+                app:layout_constraintEnd_toStartOf="@+id/event_imageButton_post"
+                app:layout_constraintStart_toEndOf="@+id/event_imageButton_signUp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.541" />
 

@@ -5,6 +5,15 @@
     android:layout_height="match_parent">
 
     <Button
+        android:id="@+id/button3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/universe_blue"
+        android:text="blue"
+        tools:layout_editor_absoluteX="77dp"
+        tools:layout_editor_absoluteY="203dp" />
+
+    <Button
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -21,15 +30,6 @@
         android:text="Orange"
         tools:layout_editor_absoluteX="74dp"
         tools:layout_editor_absoluteY="130dp" />
-
-    <Button
-        android:id="@+id/postPage_button_postNow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/universe_blue"
-        android:text="blue"
-        tools:layout_editor_absoluteX="77dp"
-        tools:layout_editor_absoluteY="203dp" />
 
     <Button
         android:id="@+id/button4"

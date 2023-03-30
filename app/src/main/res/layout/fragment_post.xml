@@ -26,7 +26,7 @@
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:id="@+id/postPage_textView_title"
+                    android:id="@+id/post_textView_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -38,121 +38,121 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <EditText
-                    android:id="@+id/postPage_editText_Title"
+                    android:id="@+id/post_editText_Title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:hint="Title"
                     android:inputType="textPersonName"
                     android:textSize="18sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/postPage_textView_title"
-                    app:layout_constraintStart_toStartOf="@+id/postPage_editText_date"
-                    app:layout_constraintTop_toTopOf="@+id/postPage_textView_title" />
+                    app:layout_constraintBottom_toBottomOf="@+id/post_textView_title"
+                    app:layout_constraintStart_toStartOf="@+id/post_editText_date"
+                    app:layout_constraintTop_toTopOf="@+id/post_textView_title" />
 
                 <TextView
-                    android:id="@+id/postPage_textView_date"
+                    android:id="@+id/post_textView_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/post_vertical_margin"
                     android:text="@string/postPage_textView_date"
                     android:textColor="@color/black"
                     android:textSize="@dimen/textSize_secondTitle"
-                    app:layout_constraintStart_toStartOf="@+id/postPage_textView_title"
-                    app:layout_constraintTop_toBottomOf="@+id/postPage_textView_title" />
+                    app:layout_constraintStart_toStartOf="@+id/post_textView_title"
+                    app:layout_constraintTop_toBottomOf="@+id/post_textView_title" />
 
                 <EditText
-                    android:id="@+id/postPage_editText_date"
+                    android:id="@+id/post_editText_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:hint="YY/MM/DD"
                     android:inputType="date"
-                    app:layout_constraintBottom_toBottomOf="@+id/postPage_textView_date"
-                    app:layout_constraintStart_toStartOf="@+id/postPage_spinner_timeHour"
-                    app:layout_constraintTop_toTopOf="@+id/postPage_textView_date" />
+                    app:layout_constraintBottom_toBottomOf="@+id/post_textView_date"
+                    app:layout_constraintStart_toStartOf="@+id/post_spinner_timeHour"
+                    app:layout_constraintTop_toTopOf="@+id/post_textView_date" />
 
                 <TextView
-                    android:id="@+id/postPage_textView_date2"
+                    android:id="@+id/post_textView_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/post_vertical_margin"
                     android:text="@string/postPage_textView_time"
                     android:textColor="@color/black"
                     android:textSize="@dimen/textSize_secondTitle"
-                    app:layout_constraintStart_toStartOf="@+id/postPage_textView_date"
-                    app:layout_constraintTop_toBottomOf="@+id/postPage_textView_date" />
+                    app:layout_constraintStart_toStartOf="@+id/post_textView_date"
+                    app:layout_constraintTop_toBottomOf="@+id/post_textView_date" />
 
                 <Spinner
-                    android:id="@+id/postPage_spinner_timeHour"
+                    android:id="@+id/post_spinner_timeHour"
                     android:layout_width="64dp"
                     android:layout_height="25dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/postPage_textView_date2"
-                    app:layout_constraintStart_toStartOf="@+id/editTextTextPersonName8"
-                    app:layout_constraintTop_toTopOf="@+id/postPage_textView_date2" />
+                    app:layout_constraintBottom_toBottomOf="@+id/post_textView_time"
+                    app:layout_constraintStart_toStartOf="@+id/post_editText_location"
+                    app:layout_constraintTop_toTopOf="@+id/post_textView_time" />
 
                 <Spinner
-                    android:id="@+id/postPage_spinner_timeMinute"
+                    android:id="@+id/post_spinner_timeMinute"
                     android:layout_width="64dp"
                     android:layout_height="25dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/postPage_textView_date2"
-                    app:layout_constraintEnd_toStartOf="@+id/postPage_spinner_timeAMPM"
-                    app:layout_constraintStart_toEndOf="@+id/postPage_spinner_timeHour"
-                    app:layout_constraintTop_toTopOf="@+id/postPage_textView_date2"
+                    app:layout_constraintBottom_toBottomOf="@+id/post_textView_time"
+                    app:layout_constraintEnd_toStartOf="@+id/post_spinner_timeAMPM"
+                    app:layout_constraintStart_toEndOf="@+id/post_spinner_timeHour"
+                    app:layout_constraintTop_toTopOf="@+id/post_textView_time"
                     app:layout_constraintVertical_bias="1.0" />
 
                 <Spinner
-                    android:id="@+id/postPage_spinner_timeAMPM"
+                    android:id="@+id/post_spinner_timeAMPM"
                     android:layout_width="64dp"
                     android:layout_height="25dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/postPage_textView_date2"
-                    app:layout_constraintEnd_toEndOf="@+id/editTextTextPersonName8"
-                    app:layout_constraintTop_toTopOf="@+id/postPage_textView_date2" />
+                    app:layout_constraintBottom_toBottomOf="@+id/post_textView_time"
+                    app:layout_constraintEnd_toEndOf="@+id/post_editText_location"
+                    app:layout_constraintTop_toTopOf="@+id/post_textView_time" />
 
                 <TextView
-                    android:id="@+id/postPage_textView_duration"
+                    android:id="@+id/post_textView_duration"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/post_vertical_margin"
                     android:text="@string/postPage_textView_duration"
                     android:textColor="@color/black"
                     android:textSize="@dimen/textSize_secondTitle"
-                    app:layout_constraintStart_toStartOf="@+id/postPage_textView_date2"
-                    app:layout_constraintTop_toBottomOf="@+id/postPage_textView_date2" />
+                    app:layout_constraintStart_toStartOf="@+id/post_textView_time"
+                    app:layout_constraintTop_toBottomOf="@+id/post_textView_time" />
 
                 <EditText
-                    android:id="@+id/postPage_editText_duration"
+                    android:id="@+id/post_editText_duration"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:hint="xx.x"
                     android:inputType="time"
-                    app:layout_constraintBottom_toBottomOf="@+id/postPage_textView_duration"
-                    app:layout_constraintEnd_toEndOf="@+id/postPage_spinner_timeMinute"
-                    app:layout_constraintStart_toStartOf="@+id/editTextTextPersonName8"
-                    app:layout_constraintTop_toTopOf="@+id/postPage_textView_duration" />
+                    app:layout_constraintBottom_toBottomOf="@+id/post_textView_duration"
+                    app:layout_constraintEnd_toEndOf="@+id/post_spinner_timeMinute"
+                    app:layout_constraintStart_toStartOf="@+id/post_editText_location"
+                    app:layout_constraintTop_toTopOf="@+id/post_textView_duration" />
 
                 <Spinner
-                    android:id="@+id/postPage_spinner_timeUnit"
+                    android:id="@+id/post_spinner_timeUnit"
                     android:layout_width="64dp"
                     android:layout_height="25dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/postPage_textView_duration"
-                    app:layout_constraintEnd_toEndOf="@+id/editTextTextPersonName8"
-                    app:layout_constraintStart_toStartOf="@+id/postPage_spinner_timeAMPM"
-                    app:layout_constraintTop_toTopOf="@+id/postPage_textView_duration" />
+                    app:layout_constraintBottom_toBottomOf="@+id/post_textView_duration"
+                    app:layout_constraintEnd_toEndOf="@+id/post_editText_location"
+                    app:layout_constraintStart_toStartOf="@+id/post_spinner_timeAMPM"
+                    app:layout_constraintTop_toTopOf="@+id/post_textView_duration" />
 
                 <TextView
-                    android:id="@+id/postPage_textView_location"
+                    android:id="@+id/post_textView_location"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/post_vertical_margin"
                     android:text="@string/postPage_textView_location"
                     android:textColor="@color/black"
                     android:textSize="@dimen/textSize_secondTitle"
-                    app:layout_constraintStart_toStartOf="@+id/postPage_textView_duration"
-                    app:layout_constraintTop_toBottomOf="@+id/postPage_textView_duration" />
+                    app:layout_constraintStart_toStartOf="@+id/post_textView_duration"
+                    app:layout_constraintTop_toBottomOf="@+id/post_textView_duration" />
 
                 <EditText
-                    android:id="@+id/editTextTextPersonName8"
+                    android:id="@+id/post_editText_location"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="32dp"
@@ -160,23 +160,23 @@
                     android:hint="Address"
                     android:inputType="textPersonName"
                     android:textSize="18sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/postPage_textView_location"
-                    app:layout_constraintStart_toEndOf="@+id/postPage_textView_location"
-                    app:layout_constraintTop_toTopOf="@+id/postPage_textView_location" />
+                    app:layout_constraintBottom_toBottomOf="@+id/post_textView_location"
+                    app:layout_constraintStart_toEndOf="@+id/post_textView_location"
+                    app:layout_constraintTop_toTopOf="@+id/post_textView_location" />
 
                 <TextView
-                    android:id="@+id/postPage_textView_Description"
+                    android:id="@+id/post_textView_Description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/post_vertical_margin"
                     android:text="@string/postPage_textView_Description"
                     android:textColor="@color/black"
                     android:textSize="@dimen/textSize_secondTitle"
-                    app:layout_constraintStart_toStartOf="@+id/postPage_textView_location"
-                    app:layout_constraintTop_toBottomOf="@+id/postPage_textView_location" />
+                    app:layout_constraintStart_toStartOf="@+id/post_textView_location"
+                    app:layout_constraintTop_toBottomOf="@+id/post_textView_location" />
 
                 <EditText
-                    android:id="@+id/postPage_editText_description"
+                    android:id="@+id/post_editText_description"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
@@ -186,30 +186,30 @@
                     android:hint="Describe your event..."
                     android:inputType="textMultiLine"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/postPage_textView_Description"
-                    app:layout_constraintTop_toBottomOf="@+id/postPage_textView_Description" />
+                    app:layout_constraintStart_toStartOf="@+id/post_textView_Description"
+                    app:layout_constraintTop_toBottomOf="@+id/post_textView_Description" />
 
                 <TextView
-                    android:id="@+id/postPage_textView_photo"
+                    android:id="@+id/post_textView_photo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="@string/postPage_textView_photo"
                     android:textColor="@color/black"
                     android:textSize="@dimen/textSize_secondTitle"
-                    app:layout_constraintStart_toStartOf="@+id/postPage_editText_description"
-                    app:layout_constraintTop_toBottomOf="@+id/postPage_editText_description" />
+                    app:layout_constraintStart_toStartOf="@+id/post_editText_description"
+                    app:layout_constraintTop_toBottomOf="@+id/post_editText_description" />
 
                 <ImageButton
-                    android:id="@+id/postPage_imageButton_upload"
+                    android:id="@+id/post_imageButton_upload"
                     android:layout_width="0dp"
                     android:layout_height="200dp"
                     android:layout_marginTop="16dp"
                     android:scaleType="center"
                     android:src="@android:drawable/ic_menu_gallery"
-                    app:layout_constraintEnd_toEndOf="@+id/postPage_editText_description"
-                    app:layout_constraintStart_toStartOf="@+id/postPage_editText_description"
-                    app:layout_constraintTop_toBottomOf="@+id/postPage_textView_photo" />
+                    app:layout_constraintEnd_toEndOf="@+id/post_editText_description"
+                    app:layout_constraintStart_toStartOf="@+id/post_editText_description"
+                    app:layout_constraintTop_toBottomOf="@+id/post_textView_photo" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
@@ -228,7 +228,7 @@
             android:layout_height="match_parent">
 
             <Button
-                android:id="@+id/postPage_button_postNow"
+                android:id="@+id/post_button_postNow"
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
@@ -239,11 +239,11 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
-                android:id="@+id/postPage_button_save"
+                android:id="@+id/post_button_save"
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="24dp"
-                android:backgroundTint="@color/universe_blue_transparent"
+                android:backgroundTint="@color/universe_blue"
                 android:text="@string/postPage_button_save"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

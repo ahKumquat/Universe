@@ -24,7 +24,7 @@
                 tools:layout_editor_absoluteX="1dp">
 
                 <ImageButton
-                    android:id="@+id/homePage_imageButton_chat"
+                    android:id="@+id/home_imageButton_chat"
                     android:layout_width="@dimen/avatar_size_small"
                     android:layout_height="@dimen/avatar_size_small"
                     android:layout_marginEnd="32dp"
@@ -36,19 +36,19 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/homePage_textView_nearby"
+                    android:id="@+id/home_textView_nearby"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/homePage_textView_nearby"
                     android:textColor="@color/black"
                     android:textSize="@dimen/textsize_toolBar"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/homePage_imageButton_chat"
-                    app:layout_constraintStart_toEndOf="@+id/homePage_textView_follow"
+                    app:layout_constraintEnd_toStartOf="@+id/home_imageButton_chat"
+                    app:layout_constraintStart_toEndOf="@+id/home_textView_follow"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/homePage_textView_follow"
+                    android:id="@+id/home_textView_follow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="36dp"
@@ -56,16 +56,16 @@
                     android:textColor="@color/black"
                     android:textSize="@dimen/textsize_toolBar"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/homePage_textView_nearby"
+                    app:layout_constraintEnd_toStartOf="@+id/home_textView_nearby"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
-                    android:id="@+id/chatManager_imageView_dotForNewMessage2"
+                    android:id="@+id/home_imageView_dotForNewMessage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toEndOf="@+id/homePage_imageButton_chat"
-                    app:layout_constraintTop_toTopOf="@+id/homePage_imageButton_chat"
+                    app:layout_constraintEnd_toEndOf="@+id/home_imageButton_chat"
+                    app:layout_constraintTop_toTopOf="@+id/home_imageButton_chat"
                     app:srcCompat="@drawable/orangecircle_newmessage" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.appcompat.widget.Toolbar>
@@ -84,7 +84,7 @@
             android:layout_height="wrap_content">
 
             <SearchView
-                android:id="@+id/homePage_searchView"
+                android:id="@+id/home_searchView"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_marginStart="8dp"
@@ -95,13 +95,13 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/homePage_recyclerView"
+                android:id="@+id/home_recyclerView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/homePage_searchView" />
+                app:layout_constraintTop_toBottomOf="@+id/home_searchView" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
@@ -121,7 +121,7 @@
             android:layout_height="match_parent">
 
             <ImageButton
-                android:id="@+id/homePage_imageButton_home"
+                android:id="@+id/home_imageButton_home"
                 android:layout_width="@dimen/Icon_Size"
                 android:layout_height="@dimen/Icon_Size"
                 android:layout_marginStart="16dp"
@@ -133,7 +133,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
-                android:id="@+id/homePage_imageButton_user"
+                android:id="@+id/home_imageButton_user"
                 android:layout_width="@dimen/Icon_Size"
                 android:layout_height="@dimen/Icon_Size"
                 android:layout_marginEnd="16dp"
@@ -145,7 +145,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
-                android:id="@+id/homePage_imageButton_post"
+                android:id="@+id/home_imageButton_post"
                 android:layout_width="@dimen/BottomAppBarHegiht"
                 android:layout_height="@dimen/BottomAppBarHegiht"
                 android:background="@color/universe_blue"
@@ -153,8 +153,8 @@
                 android:scaleType="fitCenter"
                 android:src="@drawable/plus_icon"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/homePage_imageButton_user"
-                app:layout_constraintStart_toEndOf="@+id/homePage_imageButton_home"
+                app:layout_constraintEnd_toStartOf="@+id/home_imageButton_user"
+                app:layout_constraintStart_toEndOf="@+id/home_imageButton_home"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
