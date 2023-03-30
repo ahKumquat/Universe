@@ -1,47 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/frameLayout4"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".EventFragment" >
+    tools:context=".EventFragment">
 
-    <ScrollView
-        android:id="@+id/eventPage_scrolllView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/frameLayout5"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/eventPage_nestedScrolllView"
+        android:layout_width="match_parent"
+        android:layout_height="667dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/eventPage_imageView_event"
-                android:layout_width="match_parent"
-                android:layout_height="240dp"
-                android:scaleType="fitStart"
-                android:src="@drawable/image_not_found" />
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout"
                 android:layout_width="match_parent"
-                android:layout_height="400dp">
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/eventPage_imageView_event"
+                    android:layout_width="match_parent"
+                    android:layout_height="240dp"
+                    android:scaleType="fitStart"
+                    android:src="@drawable/image_not_found"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
                     android:id="@+id/eventPage_imageView_hostAvatar"
                     android:layout_width="@dimen/avatar_size_large"
                     android:layout_height="@dimen/avatar_size_large"
                     android:layout_marginStart="@dimen/horizontal_padding"
-                    android:layout_marginTop="@dimen/vertical_padding"
                     android:cropToPadding="false"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/eventPage_imageView_event"
                     tools:srcCompat="@drawable/circle_user_avatar" />
 
                 <TextView
@@ -116,16 +114,13 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/eventPage_textView_time" />
 
-                <ImageView
-                    android:id="@+id/eventPage_imageView_location"
+                <com.google.android.gms.maps.MapView
+                    android:id="@+id/mapView"
                     android:layout_width="0dp"
-                    android:layout_height="120dp"
-                    android:layout_marginStart="@dimen/horizontal_padding"
-                    android:layout_marginTop="@dimen/vertical_padding"
-                    android:layout_marginEnd="@dimen/horizontal_padding"
-                    android:src="@drawable/image_not_found"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_height="150dp"
+                    android:layout_marginTop="4dp"
+                    app:layout_constraintEnd_toEndOf="@+id/eventPage_textView_description"
+                    app:layout_constraintStart_toStartOf="@+id/eventPage_textView_description"
                     app:layout_constraintTop_toBottomOf="@+id/eventPage_textView_description" />
 
                 <TextView
@@ -136,15 +131,15 @@
                     android:text="Going"
                     android:textColor="@color/black"
                     android:textSize="@dimen/textSize_thirdTitle"
-                    app:layout_constraintStart_toStartOf="@+id/eventPage_imageView_location"
-                    app:layout_constraintTop_toBottomOf="@+id/eventPage_imageView_location" />
+                    app:layout_constraintStart_toStartOf="@+id/mapView"
+                    app:layout_constraintTop_toBottomOf="@+id/mapView" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/eventPage_recyclerView_participants"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/horizontal_padding"
-                    android:layout_marginTop="@dimen/vertical_padding"
+                    android:layout_marginTop="4dp"
                     android:layout_marginEnd="@dimen/horizontal_padding"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -153,16 +148,15 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
-    <FrameLayout
-        android:id="@+id/frameLayout5"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/BottomAppBarHegiht"
-        android:background="@color/universe_yellow"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+    <com.google.android.material.bottomappbar.BottomAppBar
+        android:id="@+id/bottomAppBar4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:backgroundTint="@color/universe_yellow"
+        app:contentInsetStart="0dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -219,7 +213,6 @@
                 app:layout_constraintVertical_bias="0.541" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.bottomappbar.BottomAppBar>
 
-    </FrameLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

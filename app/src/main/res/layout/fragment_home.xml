@@ -15,6 +15,7 @@
         <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            app:contentInsetStart="0dp"
             app:layout_scrollFlags="scroll|enterAlways">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -112,6 +113,7 @@
         android:layout_gravity="bottom"
         android:background="@color/universe_yellow"
         app:backgroundTint="@color/universe_yellow"
+        app:contentInsetStart="0dp"
         app:layout_anchorGravity="bottom|center">
 
         <androidx.constraintlayout.widget.ConstraintLayout
