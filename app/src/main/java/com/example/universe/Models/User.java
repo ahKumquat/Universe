@@ -1,6 +1,7 @@
 package com.example.universe.Models;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class User {
@@ -14,7 +15,8 @@ public class User {
     public static final String KEY_FAVOURITES_ID_LIST = "favouritesIdList";
     public static final String KEY_POSTS_ID_LIST = "postsIdList";
     public static final String KEY_JOINED_EVENTS_ID_LIST = "joinedEventsIdList";
-    public static final String KEY_CHATS = "chats";
+    public static final String KEY_CHATS_MAP = "chatsMap";
+    public static final String KEY_UNREAD_COUNT = "unreadCount";
 
     private String uid;
     private String userName;
@@ -26,7 +28,8 @@ public class User {
     private List<String> favouritesIdList;
     private List<String> postsIdList;
     private List<String> joinedEventsIdList;
-    private List<Chat> chats;
+    private HashMap<String, String> chatsMap;
+    private int unreadCount;
 
     public User() {
     }
@@ -42,7 +45,8 @@ public class User {
         favouritesIdList = new ArrayList<>();
         postsIdList = new ArrayList<>();
         joinedEventsIdList = new ArrayList<>();
-        chats = new ArrayList<>();
+        chatsMap = new HashMap<>();
+        unreadCount = 0;
     }
 
     public String getUid() {
@@ -97,8 +101,8 @@ public class User {
         return joinedEventsIdList;
     }
 
-    public List<Chat> getChats() {
-        return chats;
+    public HashMap<String, String> getChatsMap() {
+        return chatsMap;
     }
 
     @Override
@@ -147,7 +151,15 @@ public class User {
         this.joinedEventsIdList = joinedEventsIdList;
     }
 
-    public void setChats(List<Chat> chats) {
-        this.chats = chats;
+    public void setChatsMap(HashMap<String, String> chatsMap) {
+        this.chatsMap = chatsMap;
+    }
+
+    public int getUnreadCount() {
+        return unreadCount;
+    }
+
+    public void setUnreadCount(int unreadCount) {
+        this.unreadCount = unreadCount;
     }
 }

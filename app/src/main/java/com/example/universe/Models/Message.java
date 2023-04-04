@@ -1,13 +1,13 @@
 package com.example.universe.Models;
 
 import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Date;
 
 public class Message {
     private String userId;
     private String userName;
-    private String email;
     private Timestamp timestamp;
     private String text;
     private String imageURL;
@@ -15,21 +15,20 @@ public class Message {
     public Message() {
     }
 
-    public Message(User user, String text, String imageURL) {
+    public Message(FirebaseUser user, String text, String imageURL) {
         this.userId = user.getUid();
-        this.userName = user.getUserName();
-        this.email = user.getEmail();
+        this.userName = user.getDisplayName();
         this.text = text;
         this.imageURL = imageURL;
         this.timestamp = new Timestamp(new Date());
     }
 
-    public boolean isImage(){
+    public boolean typeIsImage(){
         return imageURL != null;
     }
 
-    public boolean isText(){
-        return !isImage();
+    public boolean typeIsText(){
+        return imageURL == null;
     }
 
     public String getUserId() {
@@ -38,10 +37,6 @@ public class Message {
 
     public String getUserName() {
         return userName;
-    }
-
-    public String getEmail() {
-        return email;
     }
 
     public Timestamp getTimestamp() {
