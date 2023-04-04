@@ -32,7 +32,6 @@
 
             <ImageView
                 android:id="@+id/participantRecycler_imageView_userAvatar"
-                tools:srcCompat="@drawable/circle_user_avatar"
                 android:layout_width="@dimen/avatar_size_small"
                 android:layout_height="@dimen/avatar_size_small"
                 android:layout_marginStart="32dp"
