@@ -1,19 +1,35 @@
 package com.example.universe.Models;
 
+import com.example.universe.Util;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.GeoPoint;
 
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Event {
+    public static final String KEY_UID = "uid";
+    public static final String KEY_HOST_ID = "hostId";
+    public static final String KEY_TITLE = "title";
+    public static final String KEY_HOST_Name = "hostName";
+    public static final String KEY_TIME_STAMP = "time";
+    public static final String KEY_DURATION = "duration";
+    public static final String KEY_DURATION_UNIT = "durationUnit";
+    public static final String KEY_GEO_POINT = "geoPoint";
+    public static final String KEY_CAPACITY = "capacity";
+    public static final String KEY_DESCRIPTION = "description";
+    public static final String KEY_IMAGE_URL = "imageURL";
+    public static final String KEY_PARTICIPANTS = "participants";
+    public static final String KEY_CANDIDATES = "candidates";
     public static final String[] UNITS = {"min", "hour", "day", "month"};
     public static final String UNIT_MIN = UNITS[0];
     public static final String UNIT_HOUR = UNITS[1];
     public static final String UNIT_DAY = UNITS[2];
     public static final String UNIT_MONTH = UNITS[3];
     private String uid;
+    private String title;
     private String hostId;
     private String hostName;
     private Timestamp time;
@@ -30,10 +46,11 @@ public class Event {
     public Event() {
     }
 
-    public Event(String uid, FirebaseUser user, Timestamp time, double duration, String durationUnit, String address, GeoPoint geoPoint, int capacity, String description, String imageURL) {
+    public Event(String uid, FirebaseUser user, String title,Timestamp time, double duration, String durationUnit, String address, GeoPoint geoPoint, int capacity, String description, String imageURL) {
         this.uid = uid;
         this.hostId = user.getUid();
         this.hostName = user.getDisplayName();
+        this.title = title;
         this.time = time;
         this.duration = duration;
         this.durationUnit = durationUnit;
@@ -44,6 +61,35 @@ public class Event {
         this.imageURL = imageURL;
         this.participants = new ArrayList<>();
         this.candidates = new ArrayList<>();
+    }
+
+    public Message createApplyMessage(FirebaseUser user){
+        String text = "Hi, "+ hostName +"! I'd like to join your event: \"" + title + "\". \n";
+        return new Message(user, text, null);
+    }
+
+    public Message createApproveMessage(FirebaseUser user){
+        String text = "Congratulations! You were approved to participate in the event: \"" + title + "\".\n"
+                + "Time: " + time.toString();
+        return new Message(user, text, null);
+    }
+
+    public Message createRejectMessage(FirebaseUser user){
+        String text = "Your application to join in the event: \"" + title + "\" is rejected.\n"
+                + "Time: " + time.toString();
+        return new Message(user, text, null);
+    }
+
+    public Message createDeletionMessage(FirebaseUser user){
+        String text = "The event: \""+ title +"\" has been deleted.\n"
+                + "Time: " + time.toString();
+        return new Message(user, text, null);
+    }
+
+    public Message createUpdateMessage(FirebaseUser user){
+        String text = "The event: \""+ title +"\" has changed state.\n"
+                + "Time: " + time.toString();
+        return new Message(Util.getInstance().getCurrentUser(), text, null);
     }
 
     public String getUid() {
@@ -68,6 +114,14 @@ public class Event {
 
     public void setHostName(String hostName) {
         this.hostName = hostName;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public Timestamp getTime() {
@@ -149,4 +203,5 @@ public class Event {
     public void setCandidates(List<String> candidates) {
         this.candidates = candidates;
     }
+
 }
