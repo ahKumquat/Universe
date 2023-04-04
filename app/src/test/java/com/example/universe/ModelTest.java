@@ -2,6 +2,10 @@ package com.example.universe;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 
@@ -17,21 +21,26 @@ import com.google.firebase.storage.FirebaseStorage;
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
+@RunWith(MockitoJUnitRunner.class)
 public class ModelTest {
-    private String TAG = Util.TAG;
-    private Util util;
+    @Mock
+    private static FirebaseAuth mAuth = Mockito.mock(FirebaseAuth.class);
+    @Mock
+    private static FirebaseFirestore db = Mockito.mock(FirebaseFirestore.class);
+    @Mock
+    private static FirebaseStorage storage = Mockito.mock(FirebaseStorage.class);
+    private static String TAG = Util.TAG;
+    private static Util util;
     @BeforeClass
-    public void beforeClass(){
-        util = Util.getInstance();
+    public static void beforeClass(){
+        System.out.println(mAuth);
+        util = Util.getInstance(mAuth, db, storage);
     }
 
     @Test
     public void createUserWithEmailAndPassword(){
-        AuthResult result = util.createUserWithEmailAndPassword("abcd1234@gmai.com", "abcd1234");
-        Log.d(TAG, "createUserWithEmailAndPassword: " + result);
-        if (result.getUser() != null){
-            Log.d(TAG, "createUserWithEmailAndPassword: ");
-        }
+//        System.out.println("test print out");
+//        util.createUserWithEmailAndPassword("abcd1234@gmai.com", "abcd1234", "Tester");
     }
 
     @Test

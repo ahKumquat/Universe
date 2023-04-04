@@ -2,7 +2,6 @@ package com.example.universe.Models;
 
 import com.google.firebase.Timestamp;
 
-import java.security.KeyStore;
 import java.util.Date;
 
 public class Message {
@@ -17,7 +16,7 @@ public class Message {
     }
 
     public Message(User user, String text, String imageURL) {
-        this.userId = user.getUserId();
+        this.userId = user.getUid();
         this.userName = user.getUserName();
         this.email = user.getEmail();
         this.text = text;
