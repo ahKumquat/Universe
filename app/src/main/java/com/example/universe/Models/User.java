@@ -1,10 +1,22 @@
 package com.example.universe.Models;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 public class User {
-    private String userId;
+    public static final String KEY_UID = "uid";
+    public static final String KEY_USERNAME = "userName";
+    public static final String KEY_EMAIL = "email";
+    public static final String KEY_ABOUT = "about";
+    public static final String KEY_DRAFT_EVENT = "draftEvent";
+    public static final String KEY_FOLLOWERS_ID_LIST = "followersIdList";
+    public static final String KEY_FOLLOWING_ID_LIST = "followingIdList";
+    public static final String KEY_FAVOURITES_ID_LIST = "favouritesIdList";
+    public static final String KEY_POSTS_ID_LIST = "postsIdList";
+    public static final String KEY_JOINED_EVENTS_ID_LIST = "joinedEventsIdList";
+    public static final String KEY_CHATS = "chats";
+
+    private String uid;
     private String userName;
     private String email;
     private String about;
@@ -13,28 +25,28 @@ public class User {
     private List<String> followingIdList;
     private List<String> favouritesIdList;
     private List<String> postsIdList;
-    private List<String> pastEventsIdList;
+    private List<String> joinedEventsIdList;
     private List<Chat> chats;
 
     public User() {
     }
 
-    public User(String userId, String userName, String email) {
-        this.userId = userId;
+    public User(String uid, String userName, String email) {
+        this.uid = uid;
         this.userName = userName;
         this.email = email;
         about = "";
         this.draftEvent = null;
-        followersIdList = new LinkedList<>();
-        followingIdList = new LinkedList<>();
-        favouritesIdList = new LinkedList<>();
-        postsIdList = new LinkedList<>();
-        pastEventsIdList = new LinkedList<>();
-        chats = new LinkedList<>();
+        followersIdList = new ArrayList<>();
+        followingIdList = new ArrayList<>();
+        favouritesIdList = new ArrayList<>();
+        postsIdList = new ArrayList<>();
+        joinedEventsIdList = new ArrayList<>();
+        chats = new ArrayList<>();
     }
 
-    public String getUserId() {
-        return userId;
+    public String getUid() {
+        return uid;
     }
 
     public String getUserName() {
@@ -59,5 +71,83 @@ public class User {
 
     public void setAbout(String about) {
         this.about = about;
+    }
+
+    public Event getDraftEvent() {
+        return draftEvent;
+    }
+
+    public List<String> getFollowersIdList() {
+        return followersIdList;
+    }
+
+    public List<String> getFollowingIdList() {
+        return followingIdList;
+    }
+
+    public List<String> getFavouritesIdList() {
+        return favouritesIdList;
+    }
+
+    public List<String> getPostsIdList() {
+        return postsIdList;
+    }
+
+    public List<String> getJoinedEventsIdList() {
+        return joinedEventsIdList;
+    }
+
+    public List<Chat> getChats() {
+        return chats;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "uid='" + uid + '\'' +
+                ", userName='" + userName + '\'' +
+                ", email='" + email + '\'' +
+                ", about='" + about + '\'' +
+                '}';
+    }
+
+    /**
+     * These setters are not recommended to use.
+     */
+
+    /**
+     *
+     * @param uid
+     */
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public void setDraftEvent(Event draftEvent) {
+        this.draftEvent = draftEvent;
+    }
+
+    public void setFollowersIdList(List<String> followersIdList) {
+        this.followersIdList = followersIdList;
+    }
+
+    public void setFollowingIdList(List<String> followingIdList) {
+        this.followingIdList = followingIdList;
+    }
+
+    public void setFavouritesIdList(List<String> favouritesIdList) {
+        this.favouritesIdList = favouritesIdList;
+    }
+
+    public void setPostsIdList(List<String> postsIdList) {
+        this.postsIdList = postsIdList;
+    }
+
+    public void setJoinedEventsIdList(List<String> joinedEventsIdList) {
+        this.joinedEventsIdList = joinedEventsIdList;
+    }
+
+    public void setChats(List<Chat> chats) {
+        this.chats = chats;
     }
 }
