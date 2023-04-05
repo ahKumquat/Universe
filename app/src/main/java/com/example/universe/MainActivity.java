@@ -44,10 +44,12 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
         if (util.getCurrentUser() != null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.containerMain, HomeFragment.newInstance(),"FragmentHome")
+                    .addToBackStack(null)
                     .commit();
         } else {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.containerMain, Login.newInstance(),"FragmentLogin")
+                    .addToBackStack(null)
                     .commit();
         }
     }
@@ -62,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
     public void openChatManager() {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.containerMain, ChatManager.newInstance(), "FragmentChatManager")
-                .commit();
+                .addToBackStack(null).commit();
     }
 
     @Override
