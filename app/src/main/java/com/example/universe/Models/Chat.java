@@ -1,5 +1,6 @@
 package com.example.universe.Models;
 
+import com.example.universe.Util;
 import com.google.firebase.Timestamp;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ public class Chat {
     public static String KEY_OTHER_USER_NAME = "otherUserName";
     public static String KEY_MESSAGES = "messages";
     public static String KEY_UNREAD_Count = "unreadCount";
-    public static String KEY_TIME_STAMP = "lastMessageTime";
+    public static String KEY_LATEST_MESSAGE_TIME = "lastMessageTime";
     private String otherUserId;
     private List<Message> messages;
     private int unreadCount;
@@ -65,7 +66,7 @@ public class Chat {
     public String toString() {
         return "Chat{" +
                 "otherUserId='" + otherUserId + '\'' +
-                ", lastMessageTime=" + lastMessageTime +
+                ", lastMessageTime=" + Util.timeStampToEventTimeString(lastMessageTime) +
                 ", messages=" + messages +
                 '}';
     }

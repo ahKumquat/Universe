@@ -6,8 +6,10 @@ import com.example.universe.Models.Chat;
 import com.example.universe.Models.Event;
 import com.example.universe.Models.Message;
 import com.example.universe.Models.User;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.text.ParseException;
@@ -35,8 +37,8 @@ public class Test extends Thread{
         util.createUserWithEmailAndPassword(TEST_USER_EMAILS[i],  TEST_USER_PWS[i], "Tester " + (i+1), Util.DEFAULT_VOID_S_LISTENER, Util.DEFAULT_F_LISTENER);
     }
 
-    public void loginUserWithEmailAndPassword(int i){
-        util.loginUserWithEmailAndPassword(TEST_USER_EMAILS[i],  TEST_USER_PWS[i], Util.DEFAULT_AUTH_S_LISTENER, Util.DEFAULT_F_LISTENER);
+    public void loginUserWithEmailAndPassword(int i, OnSuccessListener<AuthResult> sListener){
+        util.loginUserWithEmailAndPassword(TEST_USER_EMAILS[i],  TEST_USER_PWS[i], sListener, Util.DEFAULT_F_LISTENER);
 
     }
 
@@ -60,7 +62,7 @@ public class Test extends Thread{
     public void saveDraftEvent(){
         Event event = new Event(util.createUid(), util.getCurrentUser(), "DRAFT EVENT",
                 new Timestamp(new Date()), 2.0, Event.UNIT_MIN,
-                "79 Brook St", new GeoPoint(15.0, 18.0),
+                "79 Brook St", new GeoPoint(25.0, 25.0),
                 10, "desc", "URL");
         util.saveDraftEvent(event, Util.DEFAULT_VOID_S_LISTENER, Util.DEFAULT_F_LISTENER);
     }
@@ -68,7 +70,7 @@ public class Test extends Thread{
     public void postEvent(String eventId){
         Event event = new Event(eventId, util.getCurrentUser(), "TEST EVENT",
                 new Timestamp(new Date()), 2.0, Event.UNIT_MIN,
-                "79 Brook St", new GeoPoint(15.0, 18.0),
+                "79 Brook St", new GeoPoint(25.0, 25.0),
                 30, "desc", "URL");
         util.postEvent(event, Util.DEFAULT_VOID_S_LISTENER, Util.DEFAULT_F_LISTENER);
     }
@@ -79,6 +81,10 @@ public class Test extends Thread{
 
     public void joinEvent(String eventId){
         util.joinEvent(eventId, Util.DEFAULT_VOID_S_LISTENER, Util.DEFAULT_F_LISTENER);
+    }
+
+    public void quitEvent(String eventId){
+        util.quitEvent(eventId, Util.DEFAULT_VOID_S_LISTENER, Util.DEFAULT_F_LISTENER);
     }
 
     public void approveJoinEvent(String otherUserId, String eventId){
@@ -125,8 +131,9 @@ public class Test extends Thread{
         util.getFollowers(userUid, new OnSuccessListener<List<User>>() {
             @Override
             public void onSuccess(List<User> users) {
+                Log.d(TAG, "on getFollowers Success: " + users.size());
                 for (User user: users){
-                    Log.d(TAG, "on getFollowers Success: " + user);
+                    Log.d(TAG, user.toString());
                 }
             }
         }, Util.DEFAULT_F_LISTENER);
@@ -160,6 +167,15 @@ public class Test extends Thread{
                 Log.d(TAG, "on getJoinEvents Success: " + events.size() + "    " + events);
             }
         }, Util.DEFAULT_F_LISTENER);
+    }
+
+    public void getParticipantsAndCandidates(Event event){
+        util.getParticipantsAndCandidates(event, new OnSuccessListener<List<User>>() {
+            @Override
+            public void onSuccess(List<User> users) {
+                Log.d(TAG, "on ParticipantsAndCandidates Success: " + users.size() + "    " + users);
+            }
+        },Util.DEFAULT_F_LISTENER);
     }
 
     public void getPostEvents(String userUid){
@@ -225,10 +241,28 @@ public class Test extends Thread{
     @Override
     public void run() {
         //createUserWithEmailAndPassword();
-        loginUserWithEmailAndPassword(0);
-        try {
-            Thread.sleep(3000);
-            getFollowingEvents();
+        loginUserWithEmailAndPassword(0, authResult -> {
+            Log.d(TAG, "on Login Success: " + util.getmAuth().getUid());
+            util.getUser(util.getCurrentUser().getUid(), new OnSuccessListener<User>() {
+                @Override
+                public void onSuccess(User user) {
+                    Log.d(TAG, "onSuccess: " + user.getUserName());
+                }
+            }, Util.DEFAULT_F_LISTENER);
+//            util.getChat(TEST_USER_IDS[1], new OnSuccessListener<Chat>() {
+//                @Override
+//                public void onSuccess(Chat chat) {
+//                    Log.d(TAG, "onSuccess: " + chat);
+//                }
+//            }, Util.DEFAULT_F_LISTENER);
+//            util.getEvent(TEST_EVENT_UIDs[1], new OnSuccessListener<Event>() {
+//                @Override
+//                public void onSuccess(Event event) {
+//                    getParticipantsAndCandidates(event);
+//                }
+//            }, Util.DEFAULT_F_LISTENER);
+        });
+            //getFollowingEvents();
             //getFollowing(util.getmAuth().getUid());
             //getNearbyEvents(new GeoPoint(31, 31), Util.DEFAULT_RADIUS);
             //prepopulateEvents(new GeoPoint(30, 30), 0.2, 10);
@@ -251,8 +285,5 @@ public class Test extends Thread{
             //removeFavouriteEvent();
             //getUser();
             //deleteEvent(TEST_EVENT_UIDs[2]);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 }

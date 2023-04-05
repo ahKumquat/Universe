@@ -81,6 +81,16 @@ public class Event {
     }
 
     /**
+     * Create a quit message based on event info. Use when user applies for an event.
+     * @param user should pass in the current authorized user.
+     * @return a message to be sent.
+     */
+    public Message createQuitMessage(FirebaseUser user){
+        String text = "Hi, "+ hostName +"! I'm sorry that I have to quit your event: \"" + title + "\". \n";
+        return new Message(user, text, null);
+    }
+
+    /**
      * Create an approve message based on event info.
      * @param user should pass in the current authorized user.
      * @return a message to be sent.
@@ -244,5 +254,12 @@ public class Event {
     public void setCandidates(List<String> candidates) {
         this.candidates = candidates;
     }
+
+    public List<String> getParticipantsAndCandidates(){
+        ArrayList<String> list = new ArrayList<>(participants);
+        list.addAll(candidates);
+        return list;
+    }
+
 
 }
