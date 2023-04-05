@@ -6,22 +6,20 @@ import com.example.universe.Models.Chat;
 import com.example.universe.Models.Event;
 import com.example.universe.Models.Message;
 import com.example.universe.Models.User;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class Test extends Thread{
     private static String TAG = Util.TAG;
     private static String[] TEST_EVENT_UIDs = {"test_event_uid", "test_event_uid_2", "test_event_uid_3"};
-    private static String[] TEST_USER_EMAILS = {"abcd1234@gmai.com", "bcde2345@gmai.com", "cdef3456@gmai.com"};
-    private static String[] TEST_USER_PWS = {"abcd1234", "bcde2345", "cdef3456"};
+    private static String[] TEST_USER_EMAILS = {"abcd1234@gmai.com", "bcde2345@gmai.com", "cdef3456@gmai.com", "defg4567@gmai.com"};
+    private static String[] TEST_USER_PWS = {"abcd1234", "bcde2345", "cdef3456", "defg4567"};
     private static String[] TEST_USER_IDS = {
             "i32u2BHOHIZeEFz7TJ67XlpmZE12",
             "BPPVNqSwlOg5EjQDq9pvKmXT1rq1",
@@ -42,8 +40,8 @@ public class Test extends Thread{
 
     }
 
-    public void getUser(){
-        util.getUser("i32u2BHOHIZeEFz7TJ67XlpmZE12", new OnSuccessListener<User>() {
+    public void getUser(String uid){
+        util.getUser(uid, new OnSuccessListener<User>() {
             @Override
             public void onSuccess(User user) {
                 Log.d(TAG, "on getUser Success: " + user);
@@ -116,6 +114,15 @@ public class Test extends Thread{
         util.deleteChat(otherUserId, Util.DEFAULT_VOID_S_LISTENER, Util.DEFAULT_F_LISTENER);
     }
 
+    public void getChat(String otherUserUid){
+        util.getChat(otherUserUid, new OnSuccessListener<Chat>() {
+            @Override
+            public void onSuccess(Chat chat) {
+                Log.d(TAG, "on getChat Success: " + chat);
+            }
+        }, Util.DEFAULT_F_LISTENER);
+    }
+
     public void getChats(){
         util.getChats(new OnSuccessListener<List<Chat>>() {
             @Override
@@ -178,6 +185,15 @@ public class Test extends Thread{
         },Util.DEFAULT_F_LISTENER);
     }
 
+    public void getEvent(String eventId){
+        util.getEvent(eventId, new OnSuccessListener<Event>() {
+            @Override
+            public void onSuccess(Event event) {
+                Log.d(TAG, "on getEvent Success: " + event);
+            }
+        }, Util.DEFAULT_F_LISTENER);
+    }
+
     public void getPostEvents(String userUid){
         util.getPostEvents(userUid, new OnSuccessListener<List<Event>>() {
             @Override
@@ -227,7 +243,7 @@ public class Test extends Thread{
     }
 
     public void getFollowingEvents(){
-        util.getFollowingEvents(new OnSuccessListener<List<Event>>() {
+        util.getFriendEvents(new OnSuccessListener<List<Event>>() {
             @Override
             public void onSuccess(List<Event> events) {
                 Log.d(TAG, "onSuccess: " + events);
@@ -240,27 +256,10 @@ public class Test extends Thread{
 
     @Override
     public void run() {
-        //createUserWithEmailAndPassword();
-        loginUserWithEmailAndPassword(0, authResult -> {
+        //createUserWithEmailAndPassword(3);
+        loginUserWithEmailAndPassword(3, authResult -> {
             Log.d(TAG, "on Login Success: " + util.getmAuth().getUid());
-            util.getUser(util.getCurrentUser().getUid(), new OnSuccessListener<User>() {
-                @Override
-                public void onSuccess(User user) {
-                    Log.d(TAG, "onSuccess: " + user.getUserName());
-                }
-            }, Util.DEFAULT_F_LISTENER);
-//            util.getChat(TEST_USER_IDS[1], new OnSuccessListener<Chat>() {
-//                @Override
-//                public void onSuccess(Chat chat) {
-//                    Log.d(TAG, "onSuccess: " + chat);
-//                }
-//            }, Util.DEFAULT_F_LISTENER);
-//            util.getEvent(TEST_EVENT_UIDs[1], new OnSuccessListener<Event>() {
-//                @Override
-//                public void onSuccess(Event event) {
-//                    getParticipantsAndCandidates(event);
-//                }
-//            }, Util.DEFAULT_F_LISTENER);
+            getUser(util.getCurrentUser().getUid());
         });
             //getFollowingEvents();
             //getFollowing(util.getmAuth().getUid());

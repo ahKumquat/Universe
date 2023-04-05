@@ -36,7 +36,6 @@ import com.google.firebase.storage.FirebaseStorage;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -177,7 +176,7 @@ public class Util {
      * Get the user with the user's uid. For current user, use util.getmAuth.getUid() to get its uid.
      *
      * @param uid       the uid of a user
-     * @param sListener OnSuccessListener<DocumentSnapshot>, the DocumentSnapshot can be converted to a User by toObject(User.class) method.
+     * @param sListener OnSuccessListener<User>
      * @param fListener onFailure Listener
      */
     public void getUser(String uid, OnSuccessListener<User> sListener, OnFailureListener fListener) {
@@ -354,7 +353,7 @@ public class Util {
     }
 
     /**
-     * Update the db to remove event an event from favourite.
+     * Update the db to remove an event from favourite.
      *
      * @param eventUid  uid of the event to remove from favourite
      * @param sListener OnSuccessListener<Void>
@@ -398,6 +397,12 @@ public class Util {
                 .addOnFailureListener(fListener);
     }
 
+    /**
+     * Update the db to quit from an event. It will also send a message to the host. This is a transaction.
+     * @param eventUid Uid of event to quit from
+     * @param sListener OnSuccessListener<Void>
+     * @param fListener OnFailureListener
+     */
     public void quitEvent(String eventUid, OnSuccessListener<Void> sListener, OnFailureListener fListener){
         currentTask = "quitEvent";
         DocumentReference eventRef = db.collection(EVENTS_COLLECTION_NAME).document(eventUid);
@@ -567,7 +572,7 @@ public class Util {
     public void getChats(OnSuccessListener<List<Chat>> sListener, OnFailureListener fListener) {
         currentTask = "getChats";
         DocumentReference userRef = db.collection(USERS_COLLECTION_NAME).document(mAuth.getUid());
-        userRef.collection("chats")
+        userRef.collection(CHATS_COLLECTION_NAME)
                 .orderBy(Chat.KEY_LATEST_MESSAGE_TIME, Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -580,45 +585,40 @@ public class Util {
     }
 
     /**
-     * Get a Chat order by latest message time in descending order.
+     * Get a Chat by otherUser's Uid
      *
-     * @param sListener OnSuccessListener<List<Chat>>
+     * @param sListener OnSuccessListener<Chat>
      * @param fListener OnFailureListener
      */
     public void getChat(String otherUserId, OnSuccessListener<Chat> sListener, OnFailureListener fListener) {
         currentTask = "getChat";
-//        DocumentReference userRef = db.collection(USERS_COLLECTION_NAME).document(mAuth.getUid());
-//        userRef.collection("chats")
-//                .document(otherUserId)
-//                .get()
-//                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-//                    @Override
-//                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-//                        Chat chat = documentSnapshot.toObject(Chat.class);
-//                        if (chat == null){
-//                            db.runTransaction(new Transaction.Function<Void>() {
-//                                        @Nullable
-//                                        @Override
-//                                        public Void apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
-//                                            int unreadCount = transaction.get(chatRef).get(Chat.KEY_UNREAD_Count, int.class);
-//                                            transaction.update(userRef, User.KEY_UNREAD_COUNT, FieldValue.increment(-unreadCount));
-//                                            transaction.delete(chatRef);
-//                                            return null;
-//                                        }
-//                                    })
-//                                    .addOnSuccessListener(sListener)
-//                                    .addOnFailureListener(fListener);
-//                        sListener.onSuccess(chat);
-//                    }
-//                }).addOnFailureListener(fListener);
-//        }
+        DocumentReference userRef = db.collection(USERS_COLLECTION_NAME).document(mAuth.getUid());
+        DocumentReference chatRef = userRef.collection(CHATS_COLLECTION_NAME).document(otherUserId);
+        chatRef.get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (!documentSnapshot.exists()){
+                            Chat chat = new Chat(otherUserId);
+                            chatRef.set(chat).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    sListener.onSuccess(chat);
+                                }
+                            }).addOnFailureListener(fListener);
+                        } else {
+                            Chat chat = documentSnapshot.toObject(Chat.class);
+                            sListener.onSuccess(chat);
+                        }
+                }
+        }).addOnFailureListener(fListener);
     }
 
     public static enum FollowType {FOLLOWER, FOLLOWING}
 
     /**
-     * Get following of a user by userUid
-     * @param userUid the user uid
+     * Get a User List containing the following of a user.
+     * @param userUid the user uid  to get the followings from.
      * @param sListener OnSuccessListener<List<User>>
      * @param fListener OnFailureListener
      */
@@ -628,8 +628,8 @@ public class Util {
     }
 
     /**
-     * Get followers of a user by userUid
-     * @param userUid the user uid
+     * Get a User List containing the followers of a user.
+     * @param userUid the user uid to get the followers from.
      * @param sListener OnSuccessListener<List<User>>
      * @param fListener OnFailureListener
      */
@@ -639,8 +639,8 @@ public class Util {
     }
 
     /**
-     *
-     * @param event Get participants and candidates of an event.
+     * Get a userList containing participants and candidates.
+     * @param event     The event to get participants and candidates from.
      * @param sListener OnSuccessListener<List<User>>
      * @param fListener OnFailureListener
      */
@@ -648,6 +648,13 @@ public class Util {
         getUsersByIdList(event.getParticipantsAndCandidates(), sListener, fListener);
     }
 
+    /**
+     * Get a List of User by Follow Type, this is private method.
+     * @param userUid the uid of user to get followers/following from.
+     * @param type Enum FollowType
+     * @param sListener OnSuccessListener<List<User>>
+     * @param fListener OnFailureListener
+     */
     private void getUsersByType(String userUid, FollowType type, OnSuccessListener<List<User>> sListener, OnFailureListener fListener) {
         DocumentReference userRef = db.collection(USERS_COLLECTION_NAME).document(mAuth.getUid());
         getUser(userUid, new OnSuccessListener<User>() {
@@ -665,16 +672,17 @@ public class Util {
                         usersIdList = new ArrayList<>();
                 }
 
-//                if (usersIdList.size() == 0){
-//                    sListener.onSuccess(new ArrayList<>());
-//                    return;
-//                }
-
                 getUsersByIdList(usersIdList,sListener, fListener);
             }
         }, fListener);
     }
 
+    /**
+     * Provide a usersIdList, get a List of Users in the Id List.
+     * @param usersIdList List<String> userIdList
+     * @param sListener OnSuccessListener<List<User>>
+     * @param fListener OnFailureListener
+     */
     public void getUsersByIdList(List<String> usersIdList, OnSuccessListener<List<User>> sListener, OnFailureListener fListener){
         List<Task<QuerySnapshot>> tasks = new ArrayList<>();
         List<List<String>> splitUserIds = splitIDList(usersIdList);
@@ -698,18 +706,42 @@ public class Util {
 
     public static enum EventType {FAVOURITE, JOIN, POST}
 
+    /**
+     * Get a List of Event a user joined.
+     * @param userUid the uid of user to get events from
+     * @param sListener OnSuccessListener<List<Event>>
+     * @param fListener OnFailureListener
+     */
     public void getJoinEvents(String userUid, OnSuccessListener<List<Event>> sListener, OnFailureListener fListener){
         getEventsByType(userUid, EventType.JOIN , sListener, fListener);
     }
 
+    /**
+     * Get a List of Event a user posted.
+     * @param userUid the uid of user to get events from
+     * @param sListener OnSuccessListener<List<Event>>
+     * @param fListener OnFailureListener
+     */
     public void getPostEvents(String userUid, OnSuccessListener<List<Event>> sListener, OnFailureListener fListener){
         getEventsByType(userUid, EventType.POST, sListener, fListener);
     }
 
+    /**
+     * Get a List of Event a user favourites.
+     * @param userUid the uid of user to get events from
+     * @param sListener OnSuccessListener<List<Event>>
+     * @param fListener OnFailureListener
+     */
     public void getFavouriteEvents(String userUid, OnSuccessListener<List<Event>> sListener, OnFailureListener fListener){
         getEventsByType(userUid, EventType.FAVOURITE, sListener, fListener);
     }
 
+    /**
+     * Private method. Get a List of Event from a user By type.
+     * @param type Enum EventType
+     * @param sListener OnSuccessListener<List<Event>>
+     * @param fListener OnFailureListener
+     */
     private void getEventsByType(String userUid, EventType type, OnSuccessListener<List<Event>> sListener, OnFailureListener fListener) {
         DocumentReference userRef = db.collection(USERS_COLLECTION_NAME).document(mAuth.getUid());
         getUser(userUid, new OnSuccessListener<User>() {
@@ -734,6 +766,12 @@ public class Util {
         }, fListener);
     }
 
+    /**
+     * Provide a List of event Uid, return a List of Event in the Uid list.
+     * @param eventIdList List<String> a List of event id.
+     * @param sListener OnSuccessListener<List<Event>>
+     * @param fListener OnFailureListener
+     */
     public void getEventsByIdList(List<String> eventIdList, OnSuccessListener<List<Event>> sListener, OnFailureListener fListener){
         List<Task<QuerySnapshot>> tasks = new ArrayList<>();
         List<List<String>> splitEventIds = splitIDList(eventIdList);
@@ -754,6 +792,12 @@ public class Util {
                 .addOnFailureListener(fListener);
     }
 
+    /**
+     * Get an Event based on event uid.
+     * @param uid the uid of event to get.
+     * @param sListener OnSuccessListener<Event>
+     * @param fListener OnFailureListener
+     */
     public void getEvent(String uid, OnSuccessListener<Event> sListener, OnFailureListener fListener) {
         currentTask = "getEvent";
         db.collection(EVENTS_COLLECTION_NAME)
@@ -769,11 +813,11 @@ public class Util {
     }
 
     /**
-     *
-     * @param geoPoint
-     * @param radius radius in Meter.
-     * @param sListener
-     * @param fListener
+     * Provide a geoPoint, and search radius, get a List of Event in that search radius. The resulting list is not sorted.
+     * @param geoPoint the start location of search.
+     * @param radius the search radius, unit: Meter.
+     * @param sListener OnSuccessListener<List<Event>>
+     * @param fListener OnFailureListener
      */
     public void getNearByEvents(GeoPoint geoPoint, double radius, OnSuccessListener<List<Event>> sListener, OnFailureListener fListener){
         GeoLocation location = new GeoLocation(geoPoint.getLatitude(), geoPoint.getLongitude());
@@ -801,7 +845,12 @@ public class Util {
                 .addOnFailureListener(fListener);
     }
 
-    public void getFollowingEvents(OnSuccessListener<List<Event>> sListener, OnFailureListener fListener){
+    /**
+     * Get a List of Events that are posted by users' friends. The resulting list is not sorted.
+     * @param sListener OnSuccessListener<List<Event>>
+     * @param fListener OnFailureListener
+     */
+    public void getFriendEvents(OnSuccessListener<List<Event>> sListener, OnFailureListener fListener){
         DocumentReference userRef = db.collection(USERS_COLLECTION_NAME).document(mAuth.getUid());
         getFollowing(mAuth.getUid(), new OnSuccessListener<List<User>>() {
             @Override
@@ -811,7 +860,7 @@ public class Util {
                     eventIds.addAll(user.getPostsIdList());
                 }
                 List<Task<QuerySnapshot>> tasks = new ArrayList<>();
-                Timestamp cutOffTime = new Timestamp(new Date(System.currentTimeMillis() - CUT_OFF_TIME_MILLISECONDS));
+                //Timestamp cutOffTime = new Timestamp(new Date(System.currentTimeMillis() - CUT_OFF_TIME_MILLISECONDS));
                 List<List<String>> splitEventIds = splitIDList(eventIds);
                 for (List<String> ids: splitEventIds) {
                     Task<QuerySnapshot> task = db.collection(EVENTS_COLLECTION_NAME).whereIn(FieldPath.documentId(), ids).get();
@@ -832,9 +881,9 @@ public class Util {
     }
 
     /**
-     * send a message within a transaction. This method can only be used before the transaction call any
+     * send a message within a transaction. This method can only be used before the transaction update anything in the database.
      *
-     * @param transaction  the transaction, which SHOULD NOT modify any data before passed into this method.
+     * @param transaction  the transaction, which SHOULD NOT update anything in the database before passed into this method.
      * @param otherUserUid the uid of the user this message is sending to.
      * @param message      the message.
      * @throws FirebaseFirestoreException
@@ -859,6 +908,13 @@ public class Util {
         transaction.update(selfChatRef, Chat.KEY_MESSAGES, FieldValue.arrayUnion(message));
     }
 
+    /**
+     * Group ids in the list by 10 and return a list of id list groups.
+     * This is used for querying with WhereIn method, which has a limit of 10 ids per query.
+     *
+     * @param idList List<String> the id list to split
+     * @return List<List<String>> a list of sub id list, each sub id list contains a maximum of 10 ids.
+     */
     public List<List<String>> splitIDList(List<String> idList){
         int size = idList.size();
         List<List<String>> list = new ArrayList<>();

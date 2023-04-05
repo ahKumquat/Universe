@@ -12,6 +12,7 @@ public class User {
     public static final String KEY_USERNAME = "userName";
     public static final String KEY_EMAIL = "email";
     public static final String KEY_ABOUT = "about";
+    public static final String KEY_AVATAR_URL = "avatarUrl";
     public static final String KEY_DRAFT_EVENT = "draftEvent";
     public static final String KEY_FOLLOWERS_ID_LIST = "followersIdList";
     public static final String KEY_FOLLOWING_ID_LIST = "followingIdList";
@@ -23,6 +24,7 @@ public class User {
     private String uid;
     private String userName;
     private String email;
+    private String avatarUrl;
     private String about;
     private Event draftEvent;
     private List<String> followersIdList;
@@ -40,6 +42,7 @@ public class User {
         this.uid = uid;
         this.userName = userName;
         this.email = email;
+        avatarUrl = null;
         about = "";
         this.draftEvent = null;
         followersIdList = new ArrayList<>();
@@ -70,6 +73,10 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public String getAvatarUrl() {return avatarUrl;}
+
+    public void setAvatarUrl(String avatarUrl) {this.avatarUrl = avatarUrl;}
 
     public String getAbout() {
         return about;
@@ -122,7 +129,6 @@ public class User {
      */
 
     /**
-     *
      * @param uid
      */
     public void setUid(String uid) {

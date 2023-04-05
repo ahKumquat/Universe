@@ -262,4 +262,22 @@ public class Event {
     }
 
 
+    @Override
+    public String toString() {
+        return "Event{" +
+                "uid='" + uid + '\'' +
+                ", title='" + title + '\'' +
+                ", hostId='" + hostId + '\'' +
+                ", hostName='" + hostName + '\'' +
+                ", time=" + time +
+                ", duration=" + duration +
+                ", durationUnit='" + durationUnit + '\'' +
+                ", address='" + address + '\'' +
+                ", geoPoint=" + geoPoint +
+                ", capacity=" + capacity +
+                ", imageURL='" + imageURL + '\'' +
+                ", participants=" + participants +
+                ", candidates=" + candidates +
+                '}';
+    }
 }
