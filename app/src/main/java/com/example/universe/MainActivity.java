@@ -5,19 +5,24 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.example.universe.Models.Chat;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Login.IloginFragmentAction, HomeFragment.IhomeFragmentAction, ChatAdapter.IchatListRecyclerAction {
     private String TAG = Util.TAG;
+    private Util util;
+    private FirebaseUser currentUser;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        Log.d(TAG, "onCreate Activity: " + mAuth.getCurrentUser().getEmail());
+        mAuth = FirebaseAuth.getInstance();
+        util = Util.getInstance();
+//        Log.d(TAG, "onCreate Activity: " + mAuth.getCurrentUser().getEmail());
         //TODO: comment this out when testing is not needed
         //test();
     }
@@ -26,5 +31,42 @@ public class MainActivity extends AppCompatActivity {
         Test test = new Test();
         Thread thread = new Thread(test);
         thread.start();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        currentUser = mAuth.getCurrentUser();
+        populateScreen();
+    }
+
+    private void populateScreen() {
+        if (util.getCurrentUser() != null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.containerMain, HomeFragment.newInstance(),"FragmentHome")
+                    .commit();
+        } else {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.containerMain, Login.newInstance(),"FragmentLogin")
+                    .commit();
+        }
+    }
+
+    @Override
+    public void populateMainFragment(FirebaseUser mUser) {
+        this.currentUser = mUser;
+        populateScreen();
+    }
+
+    @Override
+    public void openChatManager() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.containerMain, ChatManager.newInstance(), "FragmentChatManager")
+                .commit();
+    }
+
+    @Override
+    public void chatClickedFromRecyclerView(Chat chat) {
+
     }
 }
