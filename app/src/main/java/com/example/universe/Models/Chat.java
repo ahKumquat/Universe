@@ -2,6 +2,7 @@ package com.example.universe.Models;
 
 import com.example.universe.Util;
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.Exclude;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -41,8 +42,11 @@ public class Chat {
     public List<Message> getMessages() {
         return messages;
     }
-
+    @Exclude
     public Message getLastMessage() {
+        if (messages.size() == 0){
+            return new Message(Util.getInstance().getCurrentUser(), "", "");
+        }
         return messages.get(messages.size() - 1);
     }
 
