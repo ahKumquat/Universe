@@ -42,6 +42,10 @@ public class Chat {
         return messages;
     }
 
+    public Message getLastMessage() {
+        return messages.get(messages.size() - 1);
+    }
+
     public void setMessages(List<Message> messages) {
         this.messages = messages;
     }

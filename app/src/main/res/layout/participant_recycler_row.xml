@@ -19,19 +19,19 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/participantRecycler_textView_userName"
+                android:id="@+id/participants_textView_userName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:text="Participant Name"
                 android:textSize="@dimen/textSize_body"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/participantRecycler_imageView_userAvatar"
-                app:layout_constraintStart_toEndOf="@+id/participantRecycler_imageView_userAvatar"
-                app:layout_constraintTop_toTopOf="@+id/participantRecycler_imageView_userAvatar" />
+                app:layout_constraintBottom_toBottomOf="@+id/participants_imageView_userAvatar"
+                app:layout_constraintStart_toEndOf="@+id/participants_imageView_userAvatar"
+                app:layout_constraintTop_toTopOf="@+id/participants_imageView_userAvatar" />
 
             <ImageView
-                android:id="@+id/participantRecycler_imageView_userAvatar"
+                android:id="@+id/participants_imageView_userAvatar"
                 android:layout_width="@dimen/avatar_size_small"
                 android:layout_height="@dimen/avatar_size_small"
                 android:layout_marginStart="32dp"
@@ -52,9 +52,9 @@
                 android:text="Approve"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:textSize="@dimen/textSize_body"
-                app:layout_constraintBottom_toBottomOf="@+id/participantRecycler_textView_userName"
+                app:layout_constraintBottom_toBottomOf="@+id/participants_textView_userName"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/participantRecycler_textView_userName" />
+                app:layout_constraintTop_toTopOf="@+id/participants_textView_userName" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
