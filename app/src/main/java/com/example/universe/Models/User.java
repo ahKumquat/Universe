@@ -20,7 +20,6 @@ public class User {
     public static final String KEY_JOINED_EVENTS_ID_LIST = "joinedEventsIdList";
     public static final String KEY_CHATS_MAP = "chatsMap";
     public static final String KEY_UNREAD_COUNT = "unreadCount";
-
     private String uid;
     private String userName;
     private String email;

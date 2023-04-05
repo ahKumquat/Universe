@@ -14,7 +14,7 @@ public class Chat {
     public static String KEY_OTHER_USER_NAME = "otherUserName";
     public static String KEY_MESSAGES = "messages";
     public static String KEY_UNREAD_Count = "unreadCount";
-    private static String KEY_TIME_STAMP = "lastMessageTime";
+    public static String KEY_TIME_STAMP = "lastMessageTime";
     private String otherUserId;
     private List<Message> messages;
     private int unreadCount;
@@ -59,5 +59,14 @@ public class Chat {
 
     public void setLastMessageTime(Timestamp lastMessageTime) {
         this.lastMessageTime = lastMessageTime;
+    }
+
+    @Override
+    public String toString() {
+        return "Chat{" +
+                "otherUserId='" + otherUserId + '\'' +
+                ", lastMessageTime=" + lastMessageTime +
+                ", messages=" + messages +
+                '}';
     }
 }

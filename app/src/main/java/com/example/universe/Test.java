@@ -2,17 +2,18 @@ package com.example.universe;
 
 import android.util.Log;
 
+import com.example.universe.Models.Chat;
 import com.example.universe.Models.Event;
 import com.example.universe.Models.Message;
 import com.example.universe.Models.User;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.GeoPoint;
-import com.google.firebase.storage.FirebaseStorage;
 
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Test extends Thread{
     private static String TAG = Util.TAG;
@@ -40,16 +41,16 @@ public class Test extends Thread{
     }
 
     public void getUser(){
-        util.getUser("i32u2BHOHIZeEFz7TJ67XlpmZE12", new OnSuccessListener<DocumentSnapshot>() {
+        util.getUser("i32u2BHOHIZeEFz7TJ67XlpmZE12", new OnSuccessListener<User>() {
             @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                Log.d(TAG, "on getUser Success: " + documentSnapshot.toObject(User.class).toString());
+            public void onSuccess(User user) {
+                Log.d(TAG, "on getUser Success: " + user);
             }
         }, Util.DEFAULT_F_LISTENER);
     }
 
-    public void followUser(){
-        util.followUser("BPPVNqSwlOg5EjQDq9pvKmXT1rq1", Util.DEFAULT_VOID_S_LISTENER, Util.DEFAULT_F_LISTENER);
+    public void followUser(String otherUserUid){
+        util.followUser(otherUserUid, Util.DEFAULT_VOID_S_LISTENER, Util.DEFAULT_F_LISTENER);
     }
 
     public void unfollowUser(){
@@ -64,12 +65,12 @@ public class Test extends Thread{
         util.saveDraftEvent(event, Util.DEFAULT_VOID_S_LISTENER, Util.DEFAULT_F_LISTENER);
     }
 
-    public void publishEvent(String eventId){
+    public void postEvent(String eventId){
         Event event = new Event(eventId, util.getCurrentUser(), "TEST EVENT",
                 new Timestamp(new Date()), 2.0, Event.UNIT_MIN,
                 "79 Brook St", new GeoPoint(15.0, 18.0),
                 30, "desc", "URL");
-        util.publishEvent(event, Util.DEFAULT_VOID_S_LISTENER, Util.DEFAULT_F_LISTENER);
+        util.postEvent(event, Util.DEFAULT_VOID_S_LISTENER, Util.DEFAULT_F_LISTENER);
     }
 
     public void deleteEvent(String eventUid){
@@ -88,24 +89,159 @@ public class Test extends Thread{
         util.rejectJoinEvent(otherUserId, eventId, Util.DEFAULT_VOID_S_LISTENER, Util.DEFAULT_F_LISTENER);
     }
 
-    public void addFavouriteEvent(){
-        util.addFavouriteEvent("211a39e7-6fc0-472a-b4d7-4e35a8bcaf5f", Util.DEFAULT_VOID_S_LISTENER,Util.DEFAULT_F_LISTENER);
+    public void addFavouriteEvent(String eventUid){
+        util.addFavouriteEvent(eventUid, Util.DEFAULT_VOID_S_LISTENER,Util.DEFAULT_F_LISTENER);
     }
 
-    public void removeFavouriteEvent(){
-        util.removeFavouriteEvent("211a39e7-6fc0-472a-b4d7-4e35a8bcaf5f", Util.DEFAULT_VOID_S_LISTENER,Util.DEFAULT_F_LISTENER);
+    public void removeFavouriteEvent(String eventUid){
+        util.removeFavouriteEvent(eventUid, Util.DEFAULT_VOID_S_LISTENER,Util.DEFAULT_F_LISTENER);
     }
 
     public void sendMessage(String otherUserId){
         Message message = new Message(util.getCurrentUser(), "Test Message!", null);
         util.sendMessage(otherUserId, message, Util.DEFAULT_VOID_S_LISTENER, Util.DEFAULT_F_LISTENER);
     }
+
+    public void readChat(String otherUserId){
+        util.readChat(otherUserId, Util.DEFAULT_VOID_S_LISTENER, Util.DEFAULT_F_LISTENER);
+    }
+
+    public void deleteChat(String otherUserId){
+        util.deleteChat(otherUserId, Util.DEFAULT_VOID_S_LISTENER, Util.DEFAULT_F_LISTENER);
+    }
+
+    public void getChats(){
+        util.getChats(new OnSuccessListener<List<Chat>>() {
+            @Override
+            public void onSuccess(List<Chat> chats) {
+                for (Chat chat: chats){
+                    Log.d(TAG, "on get Chats Success: " + chat);
+                }
+            }
+        }, Util.DEFAULT_F_LISTENER);
+    }
+
+    public void getFollowers(String userUid){
+        util.getFollowers(userUid, new OnSuccessListener<List<User>>() {
+            @Override
+            public void onSuccess(List<User> users) {
+                for (User user: users){
+                    Log.d(TAG, "on getFollowers Success: " + user);
+                }
+            }
+        }, Util.DEFAULT_F_LISTENER);
+    }
+
+    public void getFollowing(String userUid){
+        util.getFollowing(userUid, new OnSuccessListener<List<User>>() {
+            @Override
+            public void onSuccess(List<User> users) {
+                Log.d(TAG, "on getFollowing Success: " + users);
+                for (User user: users){
+                    Log.d(TAG, user.toString());
+                }
+            }
+        }, Util.DEFAULT_F_LISTENER);
+    }
+
+    public void getFavouriteEvents(String userUid){
+        util.getFavouriteEvents(userUid, new OnSuccessListener<List<Event>>() {
+            @Override
+            public void onSuccess(List<Event> events) {
+                Log.d(TAG, "on getFavouriteEvents Success: " + events.size() + "    " + events);
+            }
+        }, Util.DEFAULT_F_LISTENER);
+    }
+
+    public void getJoinEvents(String userUid){
+        util.getJoinEvents(userUid, new OnSuccessListener<List<Event>>() {
+            @Override
+            public void onSuccess(List<Event> events) {
+                Log.d(TAG, "on getJoinEvents Success: " + events.size() + "    " + events);
+            }
+        }, Util.DEFAULT_F_LISTENER);
+    }
+
+    public void getPostEvents(String userUid){
+        util.getPostEvents(userUid, new OnSuccessListener<List<Event>>() {
+            @Override
+            public void onSuccess(List<Event> events) {
+                Log.d(TAG, "on getPostEvents Success: " + events.size() + "    " + events);
+            }
+        }, Util.DEFAULT_F_LISTENER);
+    }
+
+    public void getNearbyEvents(GeoPoint geoPoint, double radius){
+        util.getNearByEvents(geoPoint, radius, new OnSuccessListener<List<Event>>() {
+            @Override
+            public void onSuccess(List<Event> events) {
+                Log.d(TAG, "on getNearbyEvents Success: " + events);
+                for (Event event: events){
+                    Log.d(TAG, event.getGeoPoint().getLatitude() + "_" + event.getGeoPoint().getLongitude());
+                }
+            }
+        }, Util.DEFAULT_F_LISTENER);
+    }
+
+    public void prepopulateEvents(GeoPoint startPoint, double stepDist,  int step) throws ParseException {
+        double lat = startPoint.getLatitude();
+        double lon = startPoint.getLongitude();
+        String uid = "testRange_" + 0 + "_" + lat + "_" + lon;
+        Event event = new Event(uid, util.getCurrentUser(), "", new Timestamp(Util.EVENT_TIME_FORMAT.parse("2023/04/01" + ", " + "00:00")),
+                1, Event.UNIT_HOUR, "", new GeoPoint(lat, lon),
+                1, "", "");
+        util.postEvent(event, Util.DEFAULT_VOID_S_LISTENER, Util.DEFAULT_F_LISTENER);
+
+        util.postEvent(event, Util.DEFAULT_VOID_S_LISTENER, Util.DEFAULT_F_LISTENER);
+        for (int i = 0; i <step; i++){
+            lat = lat + stepDist;
+            if (lat > 90){
+                lat -= 180;
+            }
+            lon = startPoint.getLongitude();
+            for (int j = 0; j < step; j++){
+                lon = (lon + stepDist) % 180;
+                uid = "testRange_" + i + "_" + j + "_" + lat + "_" + lon;
+                    event = new Event(uid, util.getCurrentUser(), "", new Timestamp(Util.EVENT_TIME_FORMAT.parse("2023/04/0" + (i%9 + 1) + ", " + "00:00")),
+                            i+1, Event.UNIT_HOUR, "", new GeoPoint(lat, lon),
+                            i + 1, "", "");
+                util.postEvent(event, Util.DEFAULT_VOID_S_LISTENER, Util.DEFAULT_F_LISTENER);
+            }
+        }
+    }
+
+    public void getFollowingEvents(){
+        util.getFollowingEvents(new OnSuccessListener<List<Event>>() {
+            @Override
+            public void onSuccess(List<Event> events) {
+                Log.d(TAG, "onSuccess: " + events);
+                for (Event event: events){
+                    Log.d(TAG, event.getUid() + ", " + Util.timeStampToEventTimeString(event.getTime()) );
+                }
+            }
+        }, Util.DEFAULT_F_LISTENER);
+    }
+
     @Override
     public void run() {
         //createUserWithEmailAndPassword();
         loginUserWithEmailAndPassword(0);
         try {
             Thread.sleep(3000);
+            getFollowingEvents();
+            //getFollowing(util.getmAuth().getUid());
+            //getNearbyEvents(new GeoPoint(31, 31), Util.DEFAULT_RADIUS);
+            //prepopulateEvents(new GeoPoint(30, 30), 0.2, 10);
+            //getJoinEvents(util.getCurrentUser().getUid());
+            //getFavouriteEvents(util.getCurrentUser().getUid());
+            //getPostEvents(util.getCurrentUser().getUid());
+            //addFavouriteEvent(TEST_EVENT_UIDs[2]);
+            //addFavouriteEvent();
+            //getFollowers(util.getCurrentUser().getUid());
+            //getChats();
+            //deleteChat(TEST_USER_IDS[1]);
+            //readChat(TEST_USER_IDS[0]);
+            //sendMessage(TEST_USER_IDS[1]);
             //deleteEvent(TEST_EVENT_UIDs[0]);
             //approveJoinEvent(TEST_USER_IDS[1], TEST_EVENT_UIDs[0]);
             //joinEvent(TEST_EVENT_UIDs[0]);
@@ -114,8 +250,8 @@ public class Test extends Thread{
             //publishEvent(TEST_EVENT_UIDs[0]);
             //removeFavouriteEvent();
             //getUser();
-            deleteEvent(TEST_EVENT_UIDs[0]);
-        } catch (InterruptedException e) {
+            //deleteEvent(TEST_EVENT_UIDs[2]);
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
