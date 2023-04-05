@@ -5,10 +5,12 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.GeoPoint;
 
-import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The Event class represents an event.
+ */
 public class Event {
     public static final String KEY_UID = "uid";
     public static final String KEY_HOST_ID = "hostId";
@@ -63,32 +65,57 @@ public class Event {
         this.candidates = new ArrayList<>();
     }
 
+    /**
+     * Create an apply message based on event info. Use when user applies for an event.
+     * @param user should pass in the current authorized user.
+     * @return a message to be sent.
+     */
     public Message createApplyMessage(FirebaseUser user){
         String text = "Hi, "+ hostName +"! I'd like to join your event: \"" + title + "\". \n";
         return new Message(user, text, null);
     }
 
+    /**
+     * Create an approve message based on event info.
+     * @param user should pass in the current authorized user.
+     * @return a message to be sent.
+     */
     public Message createApproveMessage(FirebaseUser user){
         String text = "Congratulations! You were approved to participate in the event: \"" + title + "\".\n"
-                + "Time: " + time.toString();
+                + "Time: " + Util.timeStampToEventTimeString(time);
         return new Message(user, text, null);
     }
 
+    /**
+     * Create a reject message based on event info. Use when user rejects someone.
+     * @param user should pass in the current authorized user.
+     * @return a message to be sent.
+     */
     public Message createRejectMessage(FirebaseUser user){
         String text = "Your application to join in the event: \"" + title + "\" is rejected.\n"
-                + "Time: " + time.toString();
+                + "Time: " + Util.timeStampToEventTimeString(time);
         return new Message(user, text, null);
     }
 
+    /**
+     * Create a delete message based on event info. Use when user deletes an event.
+     * @param user should pass in the current authorized user.
+     * @return a message to be sent.
+     */
     public Message createDeletionMessage(FirebaseUser user){
         String text = "The event: \""+ title +"\" has been deleted.\n"
-                + "Time: " + time.toString();
+                + "Time: " + Util.timeStampToEventTimeString(time);
         return new Message(user, text, null);
     }
 
+    /**
+     * Create an update message based on event info. Use when user updates an event.
+     * @param user should pass in the current authorized user.
+     * @return a message to be sent.
+     */
     public Message createUpdateMessage(FirebaseUser user){
         String text = "The event: \""+ title +"\" has changed state.\n"
-                + "Time: " + time.toString();
+                + "Time: " + Util.timeStampToEventTimeString(time);
         return new Message(Util.getInstance().getCurrentUser(), text, null);
     }
 

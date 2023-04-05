@@ -6,16 +6,19 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * The Chat class represents a chat, recording all the messages in a List.
+ */
 public class Chat {
     public static String KEY_OTHER_USER_ID = "otherUserId";
     public static String KEY_OTHER_USER_NAME = "otherUserName";
     public static String KEY_MESSAGES = "messages";
     public static String KEY_UNREAD_Count = "unreadCount";
-    private static String KEY_TIME_STAMP = "lastMessageTIme";
+    private static String KEY_TIME_STAMP = "lastMessageTime";
     private String otherUserId;
     private List<Message> messages;
     private int unreadCount;
-    private Timestamp lastMessageTIme;
+    private Timestamp lastMessageTime;
     public Chat() {
     }
 
@@ -23,7 +26,7 @@ public class Chat {
         this.otherUserId = otherUserId;
         this.messages = new ArrayList<>();
         this.unreadCount = 0;
-        this.lastMessageTIme = new Timestamp(new Date());
+        this.lastMessageTime = new Timestamp(new Date());
     }
 
     public String getOtherUserId() {
@@ -50,11 +53,11 @@ public class Chat {
         this.unreadCount = unreadCount;
     }
 
-    public Timestamp getLastMessageTIme() {
-        return lastMessageTIme;
+    public Timestamp getLastMessageTime() {
+        return lastMessageTime;
     }
 
-    public void setLastMessageTIme(Timestamp lastMessageTIme) {
-        this.lastMessageTIme = lastMessageTIme;
+    public void setLastMessageTime(Timestamp lastMessageTime) {
+        this.lastMessageTime = lastMessageTime;
     }
 }

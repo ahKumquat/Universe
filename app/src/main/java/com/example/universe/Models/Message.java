@@ -5,6 +5,9 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Date;
 
+/**
+ * The Message class represents a message.
+ */
 public class Message {
     private String userId;
     private String userName;

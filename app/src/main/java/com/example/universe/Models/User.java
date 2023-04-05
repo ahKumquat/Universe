@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * This class represents a user.
+ */
 public class User {
     public static final String KEY_UID = "uid";
     public static final String KEY_USERNAME = "userName";
