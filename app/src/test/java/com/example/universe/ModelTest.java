@@ -34,7 +34,7 @@ public class ModelTest {
     @BeforeClass
     public static void beforeClass(){
         System.out.println(mAuth);
-        util = Util.getInstance(mAuth, db, storage);
+        //util = Util.getInstance(mAuth, db, storage);
     }
 
     @Test

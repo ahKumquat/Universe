@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         Log.d(TAG, "onCreate Activity: " + mAuth.getCurrentUser().getEmail());
         //TODO: comment this out when testing is not needed
-        test();
+        //test();
     }
 
     public void test(){
