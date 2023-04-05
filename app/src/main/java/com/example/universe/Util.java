@@ -12,7 +12,6 @@ import com.example.universe.Models.User;
 import com.firebase.geofire.GeoFireUtils;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQueryBounds;
-import com.google.android.gms.common.util.ArrayUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -276,6 +275,20 @@ public class Util {
                         transaction.update(userRef, User.KEY_DRAFT_EVENT, null);
                         transaction.update(userRef, User.KEY_POSTS_ID_LIST, FieldValue.arrayUnion(event.getUid()));
                         transaction.set(eventRef, event);
+                        Message message = event.createUpdateMessage(getCurrentUser());
+
+                        for (String participantId : event.getParticipants()) {
+                            DocumentReference participantRef = db.collection(USERS_COLLECTION_NAME).document(participantId);
+                            //send notification to users that are affected by deletion.
+                            sendMessage(participantId, message, DEFAULT_VOID_S_LISTENER, DEFAULT_F_LISTENER);
+                        }
+
+                        for (String candidateId : event.getCandidates()) {
+                            DocumentReference participantRef = db.collection(USERS_COLLECTION_NAME).document(candidateId);
+                            //send notification to users that are affected by deletion.
+                            sendMessage(candidateId, message, DEFAULT_VOID_S_LISTENER, DEFAULT_F_LISTENER);
+                        }
+
                         return null;
                     }
                 })
@@ -378,6 +391,30 @@ public class Util {
 
                         transaction.update(selfUserRef, User.KEY_JOINED_EVENTS_ID_LIST, FieldValue.arrayUnion(eventUid));
                         transaction.update(eventRef, Event.KEY_CANDIDATES, FieldValue.arrayUnion(mAuth.getUid()));
+                        return null;
+                    }
+                })
+                .addOnSuccessListener(sListener)
+                .addOnFailureListener(fListener);
+    }
+
+    public void quitEvent(String eventUid, OnSuccessListener<Void> sListener, OnFailureListener fListener){
+        currentTask = "quitEvent";
+        DocumentReference eventRef = db.collection(EVENTS_COLLECTION_NAME).document(eventUid);
+        DocumentReference selfUserRef = db.collection(USERS_COLLECTION_NAME).document(mAuth.getUid());
+        db.runTransaction(new Transaction.Function<Void>() {
+                    @Nullable
+                    @Override
+                    public Void apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
+                        Event event = transaction.get(eventRef).toObject(Event.class);
+                        //send notification to users that are affected by approval.
+                        Message message = event.createQuitMessage(getCurrentUser());
+                        if (event.getParticipants().contains(mAuth.getUid())){
+                            sendMessageWithTransaction(transaction, event.getHostId(), message);
+                        }
+                        transaction.update(selfUserRef, User.KEY_JOINED_EVENTS_ID_LIST, FieldValue.arrayRemove(eventUid));
+                        transaction.update(eventRef, Event.KEY_CANDIDATES, FieldValue.arrayRemove(mAuth.getUid()));
+                        transaction.update(eventRef, Event.KEY_PARTICIPANTS, FieldValue.arrayRemove(mAuth.getUid()));
                         return null;
                     }
                 })
@@ -522,15 +559,17 @@ public class Util {
     }
 
     /**
-     * Get a QuerySnapshot which can be casted to Chat objects.
+     * Get a List of Chats order by latest message time in descending order.
      *
-     * @param sListener OnSuccessListener<QuerySnapshot>
+     * @param sListener OnSuccessListener<List<Chat>>
      * @param fListener OnFailureListener
      */
     public void getChats(OnSuccessListener<List<Chat>> sListener, OnFailureListener fListener) {
         currentTask = "getChats";
         DocumentReference userRef = db.collection(USERS_COLLECTION_NAME).document(mAuth.getUid());
-        userRef.collection("chats").get()
+        userRef.collection("chats")
+                .orderBy(Chat.KEY_LATEST_MESSAGE_TIME, Query.Direction.DESCENDING)
+                .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -540,16 +579,73 @@ public class Util {
                 }).addOnFailureListener(fListener);
     }
 
+    /**
+     * Get a Chat order by latest message time in descending order.
+     *
+     * @param sListener OnSuccessListener<List<Chat>>
+     * @param fListener OnFailureListener
+     */
+    public void getChat(String otherUserId, OnSuccessListener<Chat> sListener, OnFailureListener fListener) {
+        currentTask = "getChat";
+//        DocumentReference userRef = db.collection(USERS_COLLECTION_NAME).document(mAuth.getUid());
+//        userRef.collection("chats")
+//                .document(otherUserId)
+//                .get()
+//                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+//                    @Override
+//                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+//                        Chat chat = documentSnapshot.toObject(Chat.class);
+//                        if (chat == null){
+//                            db.runTransaction(new Transaction.Function<Void>() {
+//                                        @Nullable
+//                                        @Override
+//                                        public Void apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
+//                                            int unreadCount = transaction.get(chatRef).get(Chat.KEY_UNREAD_Count, int.class);
+//                                            transaction.update(userRef, User.KEY_UNREAD_COUNT, FieldValue.increment(-unreadCount));
+//                                            transaction.delete(chatRef);
+//                                            return null;
+//                                        }
+//                                    })
+//                                    .addOnSuccessListener(sListener)
+//                                    .addOnFailureListener(fListener);
+//                        sListener.onSuccess(chat);
+//                    }
+//                }).addOnFailureListener(fListener);
+//        }
+    }
+
     public static enum FollowType {FOLLOWER, FOLLOWING}
 
+    /**
+     * Get following of a user by userUid
+     * @param userUid the user uid
+     * @param sListener OnSuccessListener<List<User>>
+     * @param fListener OnFailureListener
+     */
     public void getFollowing(String userUid, OnSuccessListener<List<User>> sListener, OnFailureListener fListener) {
         currentTask = "getFollowing";
         getUsersByType(userUid, FollowType.FOLLOWING, sListener, fListener);
     }
 
+    /**
+     * Get followers of a user by userUid
+     * @param userUid the user uid
+     * @param sListener OnSuccessListener<List<User>>
+     * @param fListener OnFailureListener
+     */
     public void getFollowers(String userUid, OnSuccessListener<List<User>> sListener, OnFailureListener fListener) {
         currentTask = "getFollowers";
         getUsersByType(userUid, FollowType.FOLLOWER, sListener, fListener);
+    }
+
+    /**
+     *
+     * @param event Get participants and candidates of an event.
+     * @param sListener OnSuccessListener<List<User>>
+     * @param fListener OnFailureListener
+     */
+    public void getParticipantsAndCandidates(Event event, OnSuccessListener<List<User>> sListener, OnFailureListener fListener){
+        getUsersByIdList(event.getParticipantsAndCandidates(), sListener, fListener);
     }
 
     private void getUsersByType(String userUid, FollowType type, OnSuccessListener<List<User>> sListener, OnFailureListener fListener) {
@@ -569,31 +665,35 @@ public class Util {
                         usersIdList = new ArrayList<>();
                 }
 
-                if (usersIdList.size() == 0){
-                    sListener.onSuccess(new ArrayList<>());
-                    return;
-                }
+//                if (usersIdList.size() == 0){
+//                    sListener.onSuccess(new ArrayList<>());
+//                    return;
+//                }
 
-                List<Task<QuerySnapshot>> tasks = new ArrayList<>();
-                List<List<String>> splitUserIds = splitIDList(usersIdList);
-                for (List<String> ids: splitUserIds) {
-                    Task<QuerySnapshot> task = db.collection(USERS_COLLECTION_NAME).whereIn(FieldPath.documentId(), ids).get();
-                    tasks.add(task);
-                }
-                Tasks.whenAllComplete(tasks).addOnSuccessListener( new OnSuccessListener<List<Task<?>>>() {
-                            @Override
-                            public void onSuccess(List<Task<?>> t) {
-                                List<User> users = new ArrayList<>();
-                                for (Task<QuerySnapshot> task: tasks){
-                                    List<User> result = task.getResult().toObjects(User.class);
-                                    users.addAll(result);
-                                }
-                                sListener.onSuccess(users);
-                            }
-                        })
-                        .addOnFailureListener(fListener);
+                getUsersByIdList(usersIdList,sListener, fListener);
             }
         }, fListener);
+    }
+
+    public void getUsersByIdList(List<String> usersIdList, OnSuccessListener<List<User>> sListener, OnFailureListener fListener){
+        List<Task<QuerySnapshot>> tasks = new ArrayList<>();
+        List<List<String>> splitUserIds = splitIDList(usersIdList);
+        for (List<String> ids: splitUserIds) {
+            Task<QuerySnapshot> task = db.collection(USERS_COLLECTION_NAME).whereIn(FieldPath.documentId(), ids).get();
+            tasks.add(task);
+        }
+        Tasks.whenAllComplete(tasks).addOnSuccessListener( new OnSuccessListener<List<Task<?>>>() {
+                    @Override
+                    public void onSuccess(List<Task<?>> t) {
+                        List<User> users = new ArrayList<>();
+                        for (Task<QuerySnapshot> task: tasks){
+                            List<User> result = task.getResult().toObjects(User.class);
+                            users.addAll(result);
+                        }
+                        sListener.onSuccess(users);
+                    }
+                })
+                .addOnFailureListener(fListener);
     }
 
     public static enum EventType {FAVOURITE, JOIN, POST}
@@ -629,29 +729,43 @@ public class Util {
                     default:
                         eventIdList = new ArrayList<>();
                 }
-                if (eventIdList.size() == 0){
-                    sListener.onSuccess(new ArrayList<>());
-                    return;
-                }
-                List<Task<QuerySnapshot>> tasks = new ArrayList<>();
-                List<List<String>> splitEventIds = splitIDList(eventIdList);
-                for (List<String> ids: splitEventIds) {
-                    Task<QuerySnapshot> task = db.collection(EVENTS_COLLECTION_NAME).whereIn(FieldPath.documentId(), ids).get();
-                    tasks.add(task);
-                }
-                Tasks.whenAllComplete(tasks).addOnSuccessListener( new OnSuccessListener<List<Task<?>>>() {
-                            @Override
-                            public void onSuccess(List<Task<?>> t) {
-                                List<Event> events = new ArrayList<>();
-                                for (Task<QuerySnapshot> task: tasks){
-                                    events.addAll(task.getResult().toObjects(Event.class));
-                                }
-                                sListener.onSuccess(events);
-                            }
-                        })
-                        .addOnFailureListener(fListener);
+                getEventsByIdList(eventIdList, sListener, fListener);
             }
         }, fListener);
+    }
+
+    public void getEventsByIdList(List<String> eventIdList, OnSuccessListener<List<Event>> sListener, OnFailureListener fListener){
+        List<Task<QuerySnapshot>> tasks = new ArrayList<>();
+        List<List<String>> splitEventIds = splitIDList(eventIdList);
+        for (List<String> ids: splitEventIds) {
+            Task<QuerySnapshot> task = db.collection(EVENTS_COLLECTION_NAME).whereIn(FieldPath.documentId(), ids).get();
+            tasks.add(task);
+        }
+        Tasks.whenAllComplete(tasks).addOnSuccessListener( new OnSuccessListener<List<Task<?>>>() {
+                    @Override
+                    public void onSuccess(List<Task<?>> t) {
+                        List<Event> events = new ArrayList<>();
+                        for (Task<QuerySnapshot> task: tasks){
+                            events.addAll(task.getResult().toObjects(Event.class));
+                        }
+                        sListener.onSuccess(events);
+                    }
+                })
+                .addOnFailureListener(fListener);
+    }
+
+    public void getEvent(String uid, OnSuccessListener<Event> sListener, OnFailureListener fListener) {
+        currentTask = "getEvent";
+        db.collection(EVENTS_COLLECTION_NAME)
+                .document(uid)
+                .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        Event event = documentSnapshot.toObject(Event.class);
+                        sListener.onSuccess(event);
+                    }
+                })
+                .addOnFailureListener(fListener);
     }
 
     /**
@@ -738,10 +852,10 @@ public class Util {
             transaction.set(otherChatRef, new Chat(mAuth.getUid()));
         }
         transaction.update(otherChatRef, Chat.KEY_MESSAGES, FieldValue.arrayUnion(message));
-        transaction.update(otherChatRef, Chat.KEY_TIME_STAMP, FieldValue.serverTimestamp());
+        transaction.update(otherChatRef, Chat.KEY_LATEST_MESSAGE_TIME, FieldValue.serverTimestamp());
         transaction.update(otherChatRef, Chat.KEY_UNREAD_Count, FieldValue.increment(1));
         transaction.update(otherUserRef, User.KEY_UNREAD_COUNT, FieldValue.increment(1));
-        transaction.update(selfChatRef, Chat.KEY_TIME_STAMP, FieldValue.serverTimestamp());
+        transaction.update(selfChatRef, Chat.KEY_LATEST_MESSAGE_TIME, FieldValue.serverTimestamp());
         transaction.update(selfChatRef, Chat.KEY_MESSAGES, FieldValue.arrayUnion(message));
     }
 
