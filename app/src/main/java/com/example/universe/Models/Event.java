@@ -1,6 +1,8 @@
 package com.example.universe.Models;
 
 import com.example.universe.Util;
+import com.firebase.geofire.GeoFireUtils;
+import com.firebase.geofire.GeoLocation;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.GeoPoint;
@@ -20,6 +22,7 @@ public class Event {
     public static final String KEY_DURATION = "duration";
     public static final String KEY_DURATION_UNIT = "durationUnit";
     public static final String KEY_GEO_POINT = "geoPoint";
+    public static final String KEY_GEO_HASH = "geoHash";
     public static final String KEY_CAPACITY = "capacity";
     public static final String KEY_DESCRIPTION = "description";
     public static final String KEY_IMAGE_URL = "imageURL";
@@ -39,6 +42,7 @@ public class Event {
     private String durationUnit;
     private String address;
     private GeoPoint geoPoint;
+    private String geoHash;
     private int capacity;
     private String description;
     private String imageURL;
@@ -58,6 +62,7 @@ public class Event {
         this.durationUnit = durationUnit;
         this.address = address;
         this.geoPoint = geoPoint;
+        this.geoHash = GeoFireUtils.getGeoHashForLocation(new GeoLocation(geoPoint.getLatitude(), geoPoint.getLongitude()));
         this.capacity = capacity;
         this.description = description;
         this.imageURL = imageURL;
@@ -189,6 +194,15 @@ public class Event {
 
     public void setGeoPoint(GeoPoint geoPoint) {
         this.geoPoint = geoPoint;
+        this.geoHash = GeoFireUtils.getGeoHashForLocation(new GeoLocation(geoPoint.getLatitude(), geoPoint.getLongitude()));
+    }
+
+    public String getGeoHash() {
+        return geoHash;
+    }
+
+    public void setGeoHash(String geoHash) {
+        this.geoHash = geoHash;
     }
 
     public int getCapacity() {

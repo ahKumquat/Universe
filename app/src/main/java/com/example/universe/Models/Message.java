@@ -53,4 +53,13 @@ public class Message {
     public String getImageURL() {
         return imageURL;
     }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "userId='" + userId + '\'' +
+                ", text='" + text + '\'' +
+                ", imageURL='" + imageURL + '\'' +
+                "}";
+    }
 }
