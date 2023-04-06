@@ -24,8 +24,14 @@
         android:layout_marginEnd="8dp"
         android:background="@color/universe_blue_transparent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@drawable/circle_user_avatar"
+        app:layout_constraintEnd_toStartOf="@+id/chatRoom_imageView_senderAvatar"
         app:layout_constraintTop_toTopOf="@+id/chatRoom_imageView_senderAvatar">
+
+        <ImageView
+            android:id="@+id/chatRoom_imageView_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:srcCompat="@drawable/image" />
 
         <TextView
             android:id="@+id/chatRoom_textView_messageContent"

@@ -26,6 +26,12 @@
         app:layout_constraintStart_toEndOf="@+id/chatRoom_imageView_senderAvatar"
         app:layout_constraintTop_toTopOf="@+id/chatRoom_imageView_senderAvatar">
 
+        <ImageView
+            android:id="@+id/chatRoom_imageView_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:srcCompat="@drawable/image" />
+
         <TextView
             android:id="@+id/chatRoom_textView_messageContent"
             android:layout_width="wrap_content"

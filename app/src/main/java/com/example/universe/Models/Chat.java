@@ -47,7 +47,9 @@ public class Chat {
         if (messages.size() == 0){
             return new Message(Util.getInstance().getCurrentUser(), "", "");
         }
-        return messages.get(messages.size() - 1);
+        int count = messages.size();
+        if (count == 0) return null;
+        else return messages.get(count - 1);
     }
 
     public void setMessages(List<Message> messages) {

@@ -2,7 +2,9 @@ package com.example.universe.Models;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.Exclude;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -10,6 +12,7 @@ import java.util.Date;
  */
 public class Message {
     private String userId;
+    //this is the sender's userId
     private String userName;
     private Timestamp timestamp;
     private String text;
@@ -44,6 +47,11 @@ public class Message {
 
     public Timestamp getTimestamp() {
         return timestamp;
+    }
+    @Exclude
+    public String getSimpleTime() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm a");
+        return simpleDateFormat.format(timestamp.toDate());
     }
 
     public String getText() {
