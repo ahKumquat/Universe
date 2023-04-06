@@ -10,10 +10,10 @@
 
     <ImageView
         android:id="@+id/logo_imageView_Login"
-        android:layout_width="333dp"
-        android:layout_height="356dp"
+        android:layout_width="0dp"
+        android:layout_height="300dp"
         android:layout_marginStart="39dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="39dp"
         android:src="@drawable/logo"
         app:layout_constraintEnd_toEndOf="parent"
@@ -51,7 +51,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView"
         app:layout_constraintTop_toBottomOf="@+id/logo_imageView_Login"
-        tools:ignore="SpeakableTextPresentCheck" />
+        tools:ignore="Autofill,LabelFor,SpeakableTextPresentCheck" />
 
     <EditText
         android:id="@+id/login_edittext_password"
@@ -70,7 +70,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView2"
         app:layout_constraintTop_toBottomOf="@+id/login_edittext_username"
-        tools:ignore="Deprecated,SpeakableTextPresentCheck" />
+        tools:ignore="Autofill,Deprecated,LabelFor,SpeakableTextPresentCheck" />
 
     <TextView
         android:id="@+id/textView2"
@@ -142,15 +142,16 @@
         android:singleLine="true"
         android:text="@string/login_textview_register_now"
         android:textColor="@color/universe_yellow"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView4"
         app:layout_constraintTop_toBottomOf="@+id/login_button_login_google" />
 
     <View
-        android:layout_width="90dp"
+        android:layout_width="102dp"
         android:layout_height="1dp"
-        android:layout_marginStart="284dp"
-        android:layout_marginEnd="37dp"
+        android:layout_marginStart="278dp"
+        android:layout_marginEnd="31dp"
         android:background="@color/universe_yellow"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -10,17 +10,41 @@
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/universe_yellow">
+        android:background="@color/white"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
 
         <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:contentInsetStart="0dp"
-            app:layout_scrollFlags="scroll|enterAlways">
+            android:background="@color/universe_yellow"
+            app:layout_scrollFlags="noScroll|scroll|enterAlways">
+
+            <com.google.android.material.tabs.TabLayout
+                android:layout_width="200dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@color/universe_yellow"
+                app:tabIndicatorColor="@color/universe_orange"
+                app:tabTextColor="@color/black"
+                tools:layout_editor_absoluteY="56dp">
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/homePage_textView_follow" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/homePage_textView_nearby" />
+
+            </com.google.android.material.tabs.TabLayout>
+
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_gravity="end"
                 tools:layout_editor_absoluteX="1dp">
 
                 <ImageButton
@@ -33,32 +57,9 @@
                     android:src="@android:drawable/stat_notify_chat"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="ContentDescription,SpeakableTextPresentCheck,TouchTargetSizeCheck,ImageContrastCheck" />
 
-                <TextView
-                    android:id="@+id/home_textView_nearby"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/homePage_textView_nearby"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/textsize_toolBar"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/home_imageButton_chat"
-                    app:layout_constraintStart_toEndOf="@+id/home_textView_follow"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/home_textView_follow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="36dp"
-                    android:text="@string/homePage_textView_follow"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/textsize_toolBar"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/home_textView_nearby"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
                     android:id="@+id/home_imageView_dotForNewMessage"
@@ -66,44 +67,42 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="@+id/home_imageButton_chat"
                     app:layout_constraintTop_toTopOf="@+id/home_imageButton_chat"
-                    app:srcCompat="@drawable/orangecircle_newmessage" />
+                    app:srcCompat="@drawable/orangecircle_newmessage"
+                    tools:ignore="ContentDescription,ImageContrastCheck" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.appcompat.widget.Toolbar>
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/home_searchView"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_white_rounded"
+            app:defaultQueryHint="Type your keyword here !"
+            app:iconifiedByDefault="false"
+            app:layout_scrollFlags="scroll|enterAlways">
+
+        </androidx.appcompat.widget.SearchView>
 
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
-        android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        android:layout_height="602dp"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/home_recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <SearchView
-                android:id="@+id/home_searchView"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/home_recyclerView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/home_searchView" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.recyclerview.widget.RecyclerView>
     </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.bottomappbar.BottomAppBar
@@ -114,7 +113,7 @@
         android:background="@color/universe_yellow"
         app:backgroundTint="@color/universe_yellow"
         app:contentInsetStart="0dp"
-        app:layout_anchorGravity="bottom|center">
+        >
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -130,7 +129,8 @@
                 android:src="@drawable/home_icon"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
 
             <ImageButton
                 android:id="@+id/home_imageButton_user"
@@ -142,7 +142,8 @@
                 android:src="@drawable/person_icon"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
 
             <ImageButton
                 android:id="@+id/home_imageButton_post"
@@ -155,7 +156,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/home_imageButton_user"
                 app:layout_constraintStart_toEndOf="@+id/home_imageButton_home"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.bottomappbar.BottomAppBar>

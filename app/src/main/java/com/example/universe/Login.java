@@ -1,6 +1,7 @@
 package com.example.universe;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,8 +13,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -25,9 +30,12 @@ public class Login extends Fragment {
     private static Util util;
     private String TAG = Util.TAG;
     private EditText editTextUserEmail, editTextPassword;
-    private Button buttonLogin, buttonLoginWithGoogle, buttonRegisterNow;
+    private TextView textViewRegister;
+    private Button buttonLogin, buttonLoginWithGoogle;
     private String userEmail, password;
     private IloginFragmentAction mListener;
+
+
 
     public Login() {
         // Required empty public constructor
@@ -61,6 +69,9 @@ public class Login extends Fragment {
         editTextPassword = view.findViewById(R.id.login_edittext_password);
         buttonLogin = view.findViewById(R.id.login_button_login);
         buttonLoginWithGoogle = view.findViewById(R.id.login_button_login_google);
+        textViewRegister = view.findViewById(R.id.login_textview_register);
+
+
 
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,6 +123,21 @@ public class Login extends Fragment {
                 }
             }
         });
+
+        textViewRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.populateRegisterFragment();
+            }
+        });
+
+        buttonLoginWithGoogle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.signWithGoogle();
+            }
+        });
+
         return view;
     }
 
@@ -121,12 +147,13 @@ public class Login extends Fragment {
         if (context instanceof IloginFragmentAction){
             this.mListener = (IloginFragmentAction) context;
         }else{
-            throw new RuntimeException(context.toString()+ "must implement login Fragment Action");
+            throw new RuntimeException(context + "must implement login Fragment Action");
         }
     }
 
     public interface IloginFragmentAction {
         void populateMainFragment(FirebaseUser mUser);
-//        void populateRegisterFragment();
+        void populateRegisterFragment();
+        void signWithGoogle();
     }
 }
