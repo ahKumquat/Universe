@@ -271,7 +271,7 @@ public class Test extends Thread{
         //createUserWithEmailAndPassword(3);
         loginUserWithEmailAndPassword(0, authResult -> {
             Log.d(TAG, "on Login Success: " + util.getmAuth().getUid());
-            getChat(TEST_USER_IDS[0]);
+            //getChat(TEST_USER_IDS[0]);
         });
             //getFollowingEvents();
             //getFollowing(util.getmAuth().getUid());
