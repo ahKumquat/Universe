@@ -125,7 +125,7 @@ public class ChatRoom extends Fragment {
                     Toast.makeText(getContext(),"Enter message first",
                             Toast.LENGTH_LONG).show();
                 } else {
-                    Message message = new Message(util.getCurrentUser(), enteredMessage, null);
+                    Message message = new Message(util.getCurrentUser(), enteredMessage, null, null);
                     util.sendMessage(otherUserId, message, new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {
@@ -138,6 +138,7 @@ public class ChatRoom extends Fragment {
         });
 
         imageButtonCamera.setOnClickListener(v -> mListener.sendImage());
+        imageButtonFile.setOnClickListener(v -> mListener.sendFile());
 
         //Create a listener for Firebase data change...
         util.getDB().collection("users")
@@ -183,7 +184,17 @@ public class ChatRoom extends Fragment {
     }
 
     public void sendImage(Uri downloadUri) {
-        Message message = new Message(util.getCurrentUser(), null, downloadUri.toString());
+        Message message = new Message(util.getCurrentUser(), null, downloadUri.toString(), null);
+        util.sendMessage(otherUserId, message, new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+
+            }
+        }, DEFAULT_F_LISTENER);
+    }
+
+    public void sendFile(Uri fileUri) {
+        Message message = new Message(util.getCurrentUser(), null, null, fileUri.toString());
         util.sendMessage(otherUserId, message, new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
@@ -194,5 +205,6 @@ public class ChatRoom extends Fragment {
 
     public interface IchatFragmentButtonAction {
         void sendImage();
+        void sendFile();
     }
 }

@@ -103,7 +103,7 @@ public class Test extends Thread{
     }
 
     public void sendMessage(String otherUserId){
-        Message message = new Message(util.getCurrentUser(), "Test Message!", null);
+        Message message = new Message(util.getCurrentUser(), "Test Message!", null,null);
         util.sendMessage(otherUserId, message, Util.DEFAULT_VOID_S_LISTENER, Util.DEFAULT_F_LISTENER);
     }
 

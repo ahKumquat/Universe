@@ -15,31 +15,32 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+public class FragmentDisplayFile extends Fragment {
 
-public class FragmentDisplayImage extends Fragment {
-
-    protected static final String ARG_URI = "imageUri";
+    protected static final String ARG_FILEURI = "fileUri";
+    protected static final String ARG_FILEPATH = "filePath";
     private static Util util;
     private String TAG = Util.TAG;
-    private Uri imageUri;
-    private ImageView imageViewPhoto;
+    private Uri fileUri;
     private Button buttonRetake;
     private Button buttonUpload;
-    private IdisplayImageAction mListener;
+    private IdisplayFileAction mListener;
     private ProgressBar progressBar;
     private ImageButton imageButtonBack;
-
-
-    public FragmentDisplayImage() {
+    private String filePath;
+    private TextView textViewFileUri;
+    private TextView textViewFilePath;
+    public FragmentDisplayFile() {
         // Required empty public constructor
     }
 
-    public static FragmentDisplayImage newInstance(Uri imageUri) {
-        FragmentDisplayImage fragment = new FragmentDisplayImage();
+    public static FragmentDisplayFile newInstance(Uri fileUri, String filePath) {
+        FragmentDisplayFile fragment = new FragmentDisplayFile();
         Bundle args = new Bundle();
-        args.putParcelable(ARG_URI, imageUri);
+        args.putParcelable(ARG_FILEURI, fileUri);
+        args.putString(ARG_FILEPATH, filePath);
         fragment.setArguments(args);
         return fragment;
     }
@@ -48,15 +49,15 @@ public class FragmentDisplayImage extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            imageUri = getArguments().getParcelable(ARG_URI);
+            fileUri = getArguments().getParcelable(ARG_FILEURI);
+            filePath = getArguments().getString(ARG_FILEPATH);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_display_image, container, false);
+        View view = inflater.inflate(R.layout.fragment_display_file, container, false);
         progressBar = view.findViewById(R.id.progressBar);
         progressBar.setVisibility(View.GONE);
         imageButtonBack = view.findViewById(R.id.displayImage_imageButton_back);
@@ -68,28 +69,17 @@ public class FragmentDisplayImage extends Fragment {
             }
         });
 
-        imageViewPhoto = view.findViewById(R.id.imageViewPhoto);
         buttonRetake = view.findViewById(R.id.buttonRetake);
         buttonUpload = view.findViewById(R.id.buttonUpload);
 
-        Glide.with(view)
-                .load(imageUri)
-                .centerCrop()
-                .into(imageViewPhoto);
+        //TODO: preview the selected file
+        textViewFileUri = view.findViewById(R.id.displayFile_textView_fileUrl);
+        textViewFileUri.setText(fileUri.toString());
+        textViewFilePath = view.findViewById(R.id.displayFile_textView_filePath);
+        textViewFilePath.setText(filePath);
 
-        buttonRetake.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mListener.onRetakePressed();
-            }
-        });
-
-        buttonUpload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mListener.onUploadButtonPressed(imageUri, progressBar);
-            }
-        });
+        buttonRetake.setOnClickListener(v -> mListener.onReselectPressed());
+        buttonUpload.setOnClickListener(v -> mListener.onUploadFileButtonPressed(fileUri,progressBar));
         return view;
     }
 
@@ -97,14 +87,14 @@ public class FragmentDisplayImage extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if(context instanceof FragmentCameraController.DisplayTakenPhoto){
-            mListener = (IdisplayImageAction) context;
+            mListener = (IdisplayFileAction) context;
         }else{
             throw new RuntimeException(context+" must implement RetakePhoto");
         }
     }
 
-    public interface IdisplayImageAction {
-        void onRetakePressed();
-        void onUploadButtonPressed(Uri imageUri, ProgressBar progressBar);
+    public interface IdisplayFileAction{
+        void onReselectPressed();
+        void onUploadFileButtonPressed(Uri fileUri, ProgressBar progressBar);
     }
 }

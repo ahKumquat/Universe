@@ -45,4 +45,5 @@
     <string name="flip_camera">flip camera</string>
     <string name="open_gallery">open gallery</string>
     <string name="take_photo">take photo</string>
+    <string name="displayFile_button_reselect">Reselect</string>
 </resources>

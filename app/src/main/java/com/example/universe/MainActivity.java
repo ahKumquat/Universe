@@ -3,12 +3,10 @@ package com.example.universe;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -34,7 +32,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -48,8 +45,8 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
         HomeFragment.IhomeFragmentAction, ChatAdapter.IchatListRecyclerAction,
         ChatManager.IchatManagerFragmentAction, Register.IRegisterFragmentAction,
         Profile.IProfileFragmentAction, Setting.ISettingFragmentAction,
-        FragmentCameraController.DisplayTakenPhoto, FragmentDisplayImage.RetakePhoto,
-        ChatRoom.IchatFragmentButtonAction {
+        FragmentCameraController.DisplayTakenPhoto, FragmentDisplayImage.IdisplayImageAction,
+        ChatRoom.IchatFragmentButtonAction, FragmentDisplayFile.IdisplayFileAction {
     private String TAG = Util.TAG;
     private Util util;
     private FirebaseUser currentUser;
@@ -61,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
     private static final int PERMISSIONS_CODE_POSTEVENT = 0x100;
     private static final int PERMISSIONS_CODE_PROFILE = 0x200;
     private static final int PERMISSIONS_CODE_CHATROOM= 0x300;
+    private static final int PERMISSIONS_CODE_FILE = 0x400;
 
     private GoogleSignInClient googleSignInClient;
 
@@ -270,6 +268,9 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
                     .replace(R.id.containerMain, FragmentCameraController.newInstance(), "cameraFragment")
                     .addToBackStack("chatroom").commit();
             Log.d(TAG, "onRequestPermissionsResult: permission granted + open camera from chatroom");
+        } else if (requestCode == PERMISSIONS_CODE_FILE && grantResults.length > 0 && grantResults[0]
+                == PackageManager.PERMISSION_GRANTED) {
+            selectFile();
         } else{
             Toast.makeText(this, "You must allow Camera and Storage permissions!", Toast.LENGTH_LONG).show();
         }
@@ -371,7 +372,7 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
 //                        getSupportFragmentManager().beginTransaction()
 //                                .replace(R.id.containerMain, FragmentProfile.newInstance(downloadUri),"profileFragment")
 //                                .commit();
-                    } else if (name.equals("chatroom")){
+                    } else if (name.equals("chatroom")) {
                         ChatRoom fragment = (ChatRoom) getSupportFragmentManager().findFragmentByTag("chatFragment");
                         fragment.sendImage(downloadUri);
                         startChatPage(otherUserId);
@@ -403,5 +404,120 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
             }, PERMISSIONS_CODE_CHATROOM);
             Log.d(TAG, "send image: asking for permission");
         }
+    }
+
+    //Retrieving a file....
+    ActivityResultLauncher<Intent> fileLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    Intent data = result.getData();
+                    if (data != null) {
+                        Uri fileUri = data.getData();
+                        String filePath = fileUri.getPath();
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.containerMain, FragmentDisplayFile.newInstance(fileUri, filePath),"displayFileFragment")
+                                .addToBackStack("filePreview").commit();
+                    }
+
+                }
+            }
+    );
+
+    @Override
+    public void sendFile() {
+        if (ActivityCompat.checkSelfPermission(
+                MainActivity.this,
+                Manifest.permission
+                        .READ_EXTERNAL_STORAGE)
+                != PackageManager
+                .PERMISSION_GRANTED) {
+            // When permission is not granted
+            ActivityCompat.requestPermissions(
+                    MainActivity.this,
+                    new String[] {Manifest.permission
+                                    .READ_EXTERNAL_STORAGE },
+                    PERMISSIONS_CODE_FILE);
+        }
+        else {
+            selectFile();
+        }
+    }
+
+
+    private void selectFile()
+    {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("application/*");
+        String[] mimeTypes = {"application/pdf", "application/docx"};
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+        fileLauncher.launch(intent);
+
+//        Intent intent = new Intent(Intent.ACTION_PICK);
+//        intent.setType("application/*");
+//        String[] mimeTypes = {"application/pdf", "application/docx"};
+//        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+//        fileLauncher.launch(intent);
+
+//        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//        intent.setType("application/pdf");
+//        resultLauncher.launch(intent);
+    }
+
+    @Override
+    public void onReselectPressed() {
+        getSupportFragmentManager().popBackStack();
+    }
+
+    @Override
+    public void onUploadFileButtonPressed(Uri fileUri, ProgressBar progressBar) {
+        progressBar.setVisibility(View.VISIBLE);
+        StorageReference storageReference = util.getStorage().getReference().child("files/"+fileUri.getLastPathSegment());
+        UploadTask uploadFile = storageReference.putFile(fileUri);
+        uploadFile.addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(MainActivity.this, "Upload Failed! Try again!", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Toast.makeText(MainActivity.this, "Upload successful! Check Firestore", Toast.LENGTH_SHORT).show();
+                        progressBar.setVisibility(View.GONE);
+                    }
+                })
+                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                        double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
+                        Log.d(TAG, "onProgress: "+progress);
+                        progressBar.setProgress((int) progress);
+                    }
+                });
+
+        Task<Uri> urlTask = uploadFile.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if (!task.isSuccessful()) {
+                    throw task.getException();
+                }
+                // Continue with the task to get the download URL
+                return storageReference.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) {
+                    Uri downloadUri = task.getResult();
+                        ChatRoom fragment = (ChatRoom) getSupportFragmentManager().findFragmentByTag("chatFragment");
+                        fragment.sendFile(downloadUri);
+                        startChatPage(otherUserId);
+                    } else {
+                        Log.d(TAG, "error sending file");
+                    }
+            }
+        });
     }
 }
