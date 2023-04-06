@@ -70,7 +70,12 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>{
                 holder.getTextViewUserName().setText(name);
             }
         }, Util.DEFAULT_F_LISTENER);
-        holder.getTextViewLastMessage().setText(chat.getLastMessage().getText());
+        if (chat.getLastMessage()!= null) {
+            holder.getTextViewLastMessage().setText(chat.getLastMessage().getText());
+        } else {
+            holder.getTextViewLastMessage().setText("");
+        }
+
         holder.getTextViewUserName().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

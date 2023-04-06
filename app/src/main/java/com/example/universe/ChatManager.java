@@ -87,4 +87,8 @@ public class ChatManager extends Fragment {
         chatAdapter.setChats(chats);
         chatAdapter.notifyDataSetChanged();
     }
+
+    public interface IchatManagerFragmentAction {
+        void startChatPage(String otherUserId);
+    }
 }
