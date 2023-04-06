@@ -77,7 +77,7 @@ public class Event {
      */
     public Message createApplyMessage(FirebaseUser user){
         String text = "Hi, "+ hostName +"! I'd like to join your event: \"" + title + "\". \n";
-        return new Message(user, text, null);
+        return new Message(user, text, null, null);
     }
 
     /**
@@ -87,7 +87,7 @@ public class Event {
      */
     public Message createQuitMessage(FirebaseUser user){
         String text = "Hi, "+ hostName +"! I'm sorry that I have to quit your event: \"" + title + "\". \n";
-        return new Message(user, text, null);
+        return new Message(user, text, null,null);
     }
 
     /**
@@ -98,7 +98,7 @@ public class Event {
     public Message createApproveMessage(FirebaseUser user){
         String text = "Congratulations! You were approved to participate in the event: \"" + title + "\".\n"
                 + "Time: " + Util.timeStampToEventTimeString(time);
-        return new Message(user, text, null);
+        return new Message(user, text, null,null);
     }
 
     /**
@@ -109,7 +109,7 @@ public class Event {
     public Message createRejectMessage(FirebaseUser user){
         String text = "Your application to join in the event: \"" + title + "\" is rejected.\n"
                 + "Time: " + Util.timeStampToEventTimeString(time);
-        return new Message(user, text, null);
+        return new Message(user, text, null,null);
     }
 
     /**
@@ -120,7 +120,7 @@ public class Event {
     public Message createDeletionMessage(FirebaseUser user){
         String text = "The event: \""+ title +"\" has been deleted.\n"
                 + "Time: " + Util.timeStampToEventTimeString(time);
-        return new Message(user, text, null);
+        return new Message(user, text, null, null);
     }
 
     /**
@@ -131,7 +131,7 @@ public class Event {
     public Message createUpdateMessage(FirebaseUser user){
         String text = "The event: \""+ title +"\" has changed state.\n"
                 + "Time: " + Util.timeStampToEventTimeString(time);
-        return new Message(Util.getInstance().getCurrentUser(), text, null);
+        return new Message(Util.getInstance().getCurrentUser(), text, null, null);
     }
 
     public String getUid() {

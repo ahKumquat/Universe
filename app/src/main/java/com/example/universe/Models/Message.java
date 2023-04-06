@@ -22,16 +22,18 @@ public class Message {
     private Timestamp timestamp;
     private String text;
     private String imageURL;
+    private String fileURL;
 
     public Message() {
     }
 
-    public Message(FirebaseUser user, String text, String imageURL) {
+    public Message(FirebaseUser user, String text, String imageURL, String fileURL) {
         this.messageUid = Util.createUid();
         this.userId = user.getUid();
         this.userName = user.getDisplayName();
         this.text = text;
         this.imageURL = imageURL;
+        this.fileURL = fileURL;
         this.timestamp = new Timestamp(new Date());
     }
 
@@ -76,6 +78,7 @@ public class Message {
                 ", timestamp=" + Util.timeStampToEventTimeString(timestamp) +
                 ", text='" + text + '\'' +
                 ", imageURL='" + imageURL + '\'' +
+                ", fileURL='" + fileURL + '\'' +
                 '}';
     }
 
@@ -105,5 +108,13 @@ public class Message {
 
     public void setImageURL(String imageURL) {
         this.imageURL = imageURL;
+    }
+
+    public String getFileURL() {
+        return fileURL;
+    }
+
+    public void setFileURL(String fileURL) {
+        this.fileURL = fileURL;
     }
 }

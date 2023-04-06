@@ -78,36 +78,42 @@ public class MessageAdapter extends RecyclerView.Adapter {
 
             if (message.getImageURL()!=null) {
                 viewHolder.getImageViewPhoto().setVisibility(View.VISIBLE);
-                //load user avatar
-                util.getUser(message.getUserId(), new OnSuccessListener<User>() {
-                    @Override
-                    public void onSuccess(User user) {
-                        if (user.getAvatarUrl() != null) {
-                            Glide.with(context).load(Uri.parse(user.getAvatarUrl()))
-                                    .centerCrop()
-                                    .into(viewHolder.getImageViewUserAvatar());
-                        }
-                    }
-                }, Util.DEFAULT_F_LISTENER);
-
-//                Log.d(TAG, "onBindViewHolder: get image Uri" + message.getImageURL());
+                viewHolder.getTextViewTimeOfMessage().setVisibility(View.INVISIBLE);
                 Glide.with(context).load(Uri.parse(message.getImageURL()))
                         .centerCrop()
                         .override(500,500)
                         .into(viewHolder.getImageViewPhoto());
             }
+            if (message.getFileURL()!=null) {
+                viewHolder.getTextViewMessage().setText("A file has been sent");
+            }
             viewHolder.getTextViewMessage().setText(message.getText());
             viewHolder.getTextViewTimeOfMessage().setText(message.getSimpleTime());
-            Log.d(TAG, "onBindViewHolder: get message time: " + message.getSimpleTime());
         } else {
             ReceiverViewHolder viewHolder = (ReceiverViewHolder) holder;
+            //load user avatar
+            util.getUser(message.getUserId(), new OnSuccessListener<User>() {
+                @Override
+                public void onSuccess(User user) {
+                    if (user.getAvatarUrl() != null) {
+                        Glide.with(context).load(Uri.parse(user.getAvatarUrl()))
+                                .centerCrop()
+                                .into(viewHolder.getImageViewUserAvatar());
+                    }
+                }
+            }, Util.DEFAULT_F_LISTENER);
+
             viewHolder.getTextViewMessage().setText(message.getText());
             viewHolder.getTextViewTimeOfMessage().setText(message.getSimpleTime());
             if (message.getImageURL()!=null) {
                 viewHolder.getImageViewPhoto().setVisibility(View.VISIBLE);
+                viewHolder.getTextViewTimeOfMessage().setVisibility(View.INVISIBLE);
                 Glide.with(context).load(Uri.parse(message.getImageURL()))
                         .centerCrop().override(500,500)
                         .into(viewHolder.getImageViewPhoto());
+            }
+            if (message.getFileURL()!=null) {
+
             }
         }
     }
