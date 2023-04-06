@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.example.universe.Models.Chat;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -72,7 +73,12 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
 
     @Override
     public void chatClickedFromRecyclerView(Chat chat) {
-        startChatPage(chat.getOtherUserId());
+        util.readChat(chat.getOtherUserId(), new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                startChatPage(chat.getOtherUserId());
+            }
+        }, Util.DEFAULT_F_LISTENER);
     }
 
     @Override
