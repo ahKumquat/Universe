@@ -49,6 +49,7 @@ public class Util {
     public static final String USERS_COLLECTION_NAME = "users";
     public static final String EVENTS_COLLECTION_NAME = "events";
     public static final String CHATS_COLLECTION_NAME = "chats";
+    public static final String MESSAGES_COLLECTION_NAME = "messages";
     private static final long CUT_OFF_TIME_MILLISECONDS = 1000 * 60 * 60 * 24 * 3;
     public static final double DEFAULT_RADIUS =  50 * 1000;
     public static final SimpleDateFormat EVENT_TIME_FORMAT = new SimpleDateFormat("yyyy/MM/dd, HH:mm");
@@ -99,6 +100,14 @@ public class Util {
     }
 
     /**
+     * Create a random uid string
+     * @return a random uid
+     */
+    public static String createUid() {
+        return UUID.randomUUID().toString();
+    }
+
+    /**
      * private constructor for singleton.
      */
     private Util() {
@@ -119,14 +128,6 @@ public class Util {
 
     public FirebaseUser getCurrentUser() {
         return mAuth.getCurrentUser();
-    }
-
-    /**
-     * Create a random uid string
-     * @return a random uid
-     */
-    public String createUid() {
-        return UUID.randomUUID().toString();
     }
 
     /**
@@ -549,18 +550,27 @@ public class Util {
         currentTask = "deleteChat";
         DocumentReference userRef = db.collection(USERS_COLLECTION_NAME).document(mAuth.getUid());
         DocumentReference chatRef = userRef.collection(Util.CHATS_COLLECTION_NAME).document(otherUserUid);
-        db.runTransaction(new Transaction.Function<Void>() {
-                    @Nullable
-                    @Override
-                    public Void apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
-                        int unreadCount = transaction.get(chatRef).get(Chat.KEY_UNREAD_Count, int.class);
-                        transaction.update(userRef, User.KEY_UNREAD_COUNT, FieldValue.increment(-unreadCount));
-                        transaction.delete(chatRef);
-                        return null;
-                    }
-                })
-                .addOnSuccessListener(sListener)
-                .addOnFailureListener(fListener);
+        chatRef.collection(MESSAGES_COLLECTION_NAME).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                db.runTransaction(new Transaction.Function<Void>() {
+                            @Nullable
+                            @Override
+                            public Void apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
+                                int unreadCount = transaction.get(chatRef).get(Chat.KEY_UNREAD_Count, int.class);
+                                for (DocumentSnapshot snapshot: queryDocumentSnapshots){
+                                    DocumentReference messageRef = chatRef.collection(MESSAGES_COLLECTION_NAME).document(snapshot.get(Message.KEY_MESSAGE_UID, String.class));
+                                    transaction.delete(messageRef);
+                                }
+                                transaction.update(userRef, User.KEY_UNREAD_COUNT, FieldValue.increment(-unreadCount));
+                                transaction.delete(chatRef);
+                                return null;
+                            }
+                        })
+                        .addOnSuccessListener(sListener)
+                        .addOnFailureListener(fListener);
+            }
+        }).addOnFailureListener(fListener);
     }
 
     /**
@@ -612,6 +622,26 @@ public class Util {
                         }
                 }
         }).addOnFailureListener(fListener);
+    }
+
+    /**
+     * Get a List of Message by otherUserId. Message will be ascending ordered by time.
+     * @param otherUserId the id of other user chat with
+     * @param sListener OnSuccessListener<List<Message>>
+     * @param fListener OnFailureListener
+     */
+    public void getMessages(String otherUserId, OnSuccessListener<List<Message>> sListener, OnFailureListener fListener){
+        DocumentReference userRef = db.collection(USERS_COLLECTION_NAME).document(mAuth.getUid());
+        DocumentReference chatRef = userRef.collection(CHATS_COLLECTION_NAME).document(otherUserId);
+        chatRef.collection(MESSAGES_COLLECTION_NAME)
+                .orderBy(Message.KEY_TIME, Query.Direction.ASCENDING)
+                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        List<Message> messages = queryDocumentSnapshots.toObjects(Message.class);
+                        sListener.onSuccess(messages);
+                    }
+                }).addOnFailureListener(fListener);
     }
 
     public static enum FollowType {FOLLOWER, FOLLOWING}
@@ -900,12 +930,21 @@ public class Util {
         if (!otherChatExists) {
             transaction.set(otherChatRef, new Chat(mAuth.getUid()));
         }
-        transaction.update(otherChatRef, Chat.KEY_MESSAGES, FieldValue.arrayUnion(message));
+
+        DocumentReference selfMessageRef = selfChatRef.collection(MESSAGES_COLLECTION_NAME).document(message.getMessageUid());
+        DocumentReference otherMessageRef = otherChatRef.collection(MESSAGES_COLLECTION_NAME).document(message.getMessageUid());
+
+        transaction.set(selfMessageRef, message);
+        transaction.update(selfMessageRef, Message.KEY_TIME, FieldValue.serverTimestamp());
+        transaction.update(selfChatRef, Chat.KEY_LATEST_MESSAGE, message);
+        transaction.update(selfChatRef, Chat.KEY_LATEST_MESSAGE_TIME, FieldValue.serverTimestamp());
+
+        transaction.set(otherMessageRef, message);
+        transaction.update(otherMessageRef, Message.KEY_TIME, FieldValue.serverTimestamp());
+        transaction.update(otherChatRef, Chat.KEY_LATEST_MESSAGE, message);
         transaction.update(otherChatRef, Chat.KEY_LATEST_MESSAGE_TIME, FieldValue.serverTimestamp());
         transaction.update(otherChatRef, Chat.KEY_UNREAD_Count, FieldValue.increment(1));
         transaction.update(otherUserRef, User.KEY_UNREAD_COUNT, FieldValue.increment(1));
-        transaction.update(selfChatRef, Chat.KEY_LATEST_MESSAGE_TIME, FieldValue.serverTimestamp());
-        transaction.update(selfChatRef, Chat.KEY_MESSAGES, FieldValue.arrayUnion(message));
     }
 
     /**

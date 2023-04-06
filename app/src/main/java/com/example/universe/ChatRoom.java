@@ -27,9 +27,12 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
+import org.checkerframework.checker.units.qual.A;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class ChatRoom extends Fragment {
     private static Util util;
@@ -131,13 +134,21 @@ public class ChatRoom extends Fragment {
                         if(error!=null){
                             Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
                         }else{
-                            ArrayList<Message> messages = new ArrayList<>();
-                            Chat chat = value.toObject(Chat.class);
-                            for (Message m: chat.getMessages()) {
-                                messages.add(m);
-                            }
-                            messageAdaptor.setMessages(messages);
-                            messageAdaptor.notifyDataSetChanged();
+                            util.getMessages(otherUserId, new OnSuccessListener<List<Message>>() {
+                                @Override
+                                public void onSuccess(List<Message> messages) {
+                                    messageAdaptor.setMessages(new ArrayList<>(messages));
+                                    messageAdaptor.notifyDataSetChanged();
+                                }
+                            }, DEFAULT_F_LISTENER);
+
+//                            ArrayList<Message> messages = new ArrayList<>();
+//                            Chat chat = value.toObject(Chat.class);
+//                            for (Message m: chat.getMessages()) {
+//                                messages.add(m);
+//                            }
+//                            messageAdaptor.setMessages(messages);
+//                            messageAdaptor.notifyDataSetChanged();
                         }
                     }
                 });
@@ -146,17 +157,27 @@ public class ChatRoom extends Fragment {
     }
 
     private void loadData() {
-        ArrayList<Message> messages = new ArrayList<>();
-        util.getChat(otherUserId, new OnSuccessListener<Chat>() {
+        util.getMessages(otherUserId, new OnSuccessListener<List<Message>>() {
             @Override
-            public void onSuccess(Chat chat) {
-                for (Message message: chat.getMessages()) {
-                    messages.add(message);
-                }
-                updateRecyclerView(messages);
+            public void onSuccess(List<Message> newMessages) {
+                updateRecyclerView(new ArrayList<Message>(newMessages));
             }
         }, DEFAULT_F_LISTENER);
     }
+
+
+//    private void loadData() {
+//        ArrayList<Message> messages = new ArrayList<>();
+//        util.getChat(otherUserId, new OnSuccessListener<Chat>() {
+//            @Override
+//            public void onSuccess(Chat chat) {
+//                for (Message message: chat.getMessages()) {
+//                    messages.add(message);
+//                }
+//                updateRecyclerView(messages);
+//            }
+//        }, DEFAULT_F_LISTENER);
+//    }
 
     public void updateRecyclerView(ArrayList<Message> messages) {
         this.messageList = messages;
