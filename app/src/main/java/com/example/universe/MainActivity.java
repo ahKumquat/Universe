@@ -1,5 +1,7 @@
 package com.example.universe;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -7,11 +9,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.universe.Models.Chat;
@@ -20,7 +28,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -28,18 +38,29 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements Login.IloginFragmentAction,
         HomeFragment.IhomeFragmentAction, ChatAdapter.IchatListRecyclerAction,
         ChatManager.IchatManagerFragmentAction, Register.IRegisterFragmentAction,
-        Profile.IProfileFragmentAction, Setting.ISettingFragmentAction{
+        Profile.IProfileFragmentAction, Setting.ISettingFragmentAction,
+        FragmentCameraController.DisplayTakenPhoto, FragmentDisplayImage.RetakePhoto,
+        ChatRoom.IchatFragmentButtonAction {
     private String TAG = Util.TAG;
     private Util util;
     private FirebaseUser currentUser;
     private FirebaseAuth mAuth;
     private String otherUserId;
+    private Boolean cameraAllowed;
+    private Boolean readAllowed;
+    private Boolean writeAllowed;
+    private static final int PERMISSIONS_CODE_POSTEVENT = 0x100;
+    private static final int PERMISSIONS_CODE_PROFILE = 0x200;
+    private static final int PERMISSIONS_CODE_CHATROOM= 0x300;
 
     private GoogleSignInClient googleSignInClient;
 
@@ -88,6 +109,11 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
                 .build();
         googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
 
+        //        Asking for permissions in runtime......
+        cameraAllowed = ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
+        readAllowed = ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+        writeAllowed = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+
         util = Util.getInstance();
 //        Log.d(TAG, "onCreate Activity: " + mAuth.getCurrentUser().getEmail());
         //TODO: comment this out when testing is not needed
@@ -113,12 +139,12 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
         if (util.getCurrentUser() != null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.containerMain, HomeFragment.newInstance(),"FragmentHome")
-                    .addToBackStack(null)
+                    .addToBackStack("home")
                     .commit();
         } else {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.containerMain, Login.newInstance(),"FragmentLogin")
-                    .addToBackStack(null)
+                    .addToBackStack("login")
                     .commit();
         }
     }
@@ -138,28 +164,28 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
     public void populateRegisterFragment() {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.containerMain, Register.newInstance(), "FragmentRegister")
-                .addToBackStack("FragmentLogin").commit();
+                .addToBackStack("register").commit();
     }
 
     @Override
     public void openChatManager() {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.containerMain, ChatManager.newInstance(), "FragmentChatManager")
-                .addToBackStack("FragmentHome").commit();
+                .addToBackStack("chatmanager").commit();
     }
 
     @Override
     public void openProfile() {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.containerMain, Profile.newInstance(), "FragmentProfile")
-                .addToBackStack("FragmentHome").commit();
+                .addToBackStack("profile").commit();
     }
 
     @Override
     public void openPost() {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.containerMain, PostFragment.newInstance(), "FragmentPost")
-                .addToBackStack("FragmentProfile").commit();
+                .addToBackStack("post").commit();
     }
 
     @Override
@@ -186,6 +212,7 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.containerMain, ChatRoom.newInstance().getClass(),
                         bundle,"chatFragment")
+                .addToBackStack("chatroom")
                 .commit();
         Log.d(TAG, "startChatPage: success");
     }
@@ -200,14 +227,14 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
         Fragment fragment = getSupportFragmentManager().findFragmentByTag("FragmentHome");
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.containerMain, Objects.requireNonNull(fragment))
-                .addToBackStack("FragmentProfile").commit();
+                .addToBackStack("home").commit();
     }
 
     @Override
     public void populateSettingFragment() {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.containerMain, Setting.newInstance(), "FragmentSetting")
-                .addToBackStack("FragmentProfile").commit();
+                .addToBackStack("settings").commit();
     }
 
     @Override
@@ -215,6 +242,166 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
         Fragment fragment = getSupportFragmentManager().findFragmentByTag("FragmentProfile");
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.containerMain, Objects.requireNonNull(fragment))
-                .addToBackStack("FragmentSetting").commit();
+                .addToBackStack("profile").commit();
+    }
+
+    @Override
+    public void onTakePhoto(Uri imageUri) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.containerMain, FragmentDisplayImage.newInstance(imageUri),"displayFragment")
+                .addToBackStack("camera").commit();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(grantResults.length>2 && requestCode==PERMISSIONS_CODE_POSTEVENT){
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.containerMain, FragmentCameraController.newInstance(), "cameraFragment")
+                    .addToBackStack("event").commit();
+            Log.d(TAG, "onRequestPermissionsResult: permission granted + open camera from post event");
+        }else if (grantResults.length>2 && requestCode==PERMISSIONS_CODE_PROFILE){
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.containerMain, FragmentCameraController.newInstance(), "cameraFragment")
+                    .addToBackStack("profile").commit();
+            Log.d(TAG, "onRequestPermissionsResult: permission granted + open camera from profile");
+        } else if (grantResults.length>2 && requestCode==PERMISSIONS_CODE_CHATROOM){
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.containerMain, FragmentCameraController.newInstance(), "cameraFragment")
+                    .addToBackStack("chatroom").commit();
+            Log.d(TAG, "onRequestPermissionsResult: permission granted + open camera from chatroom");
+        } else{
+            Toast.makeText(this, "You must allow Camera and Storage permissions!", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    //Retrieving an image from gallery....
+    ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if(result.getResultCode()==RESULT_OK){
+                        Intent data = result.getData();
+                        Uri selectedImageUri = data.getData();
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.containerMain, FragmentDisplayImage.newInstance(selectedImageUri),"displayFragment")
+                                .addToBackStack("gallery").commit();
+                    }
+                }
+            }
+    );
+
+    @Override
+    public void onOpenGalleryPressed() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        String[] mimeTypes = {"image/jpeg", "image/png"};
+        intent.putExtra(Intent.EXTRA_MIME_TYPES,mimeTypes);
+        galleryLauncher.launch(intent);
+    }
+
+    @Override
+    public void onRetakePressed() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.containerMain, FragmentCameraController.newInstance(), "cameraFragment")
+                .addToBackStack("display").commit();
+    }
+
+    @Override
+    public void onUploadButtonPressed(Uri imageUri, ProgressBar progressBar) {
+//        ProgressBar.......
+        progressBar.setVisibility(View.VISIBLE);
+//        Upload an image from local file....
+        StorageReference storageReference = util.getStorage().getReference().child("images/"+imageUri.getLastPathSegment());
+        UploadTask uploadImage = storageReference.putFile(imageUri);
+        uploadImage.addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(MainActivity.this, "Upload Failed! Try again!", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Toast.makeText(MainActivity.this, "Upload successful! Check Firestore", Toast.LENGTH_SHORT).show();
+                        progressBar.setVisibility(View.GONE);
+                    }
+                })
+                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                        double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
+                        Log.d(TAG, "onProgress: "+progress);
+                        progressBar.setProgress((int) progress);
+                    }
+                });
+
+        Task<Uri> urlTask = uploadImage.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if (!task.isSuccessful()) {
+                    throw task.getException();
+                }
+                // Continue with the task to get the download URL
+                return storageReference.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) {
+                    Uri downloadUri = task.getResult();
+
+                    int count = getSupportFragmentManager().getBackStackEntryCount();
+//                    Log.d(TAG, "count of current fragments: " + count);
+//                    Log.d(TAG, "current fragments: " + getSupportFragmentManager().getFragments().toString());
+                    String name = getSupportFragmentManager().getBackStackEntryAt(count - 3).getName();
+                    Log.d(TAG, "last fragment name: " + getSupportFragmentManager().getBackStackEntryAt(count - 1).getName());
+                    Log.d(TAG, "second last fragment name: " + name);
+                    Log.d(TAG, "third last fragment name: " + getSupportFragmentManager().getBackStackEntryAt(count - 3).getName());
+                    if (name.equals("event")) {
+                        //TODO: implement going back to the posting event page
+//                        getSupportFragmentManager().beginTransaction()
+//                                .replace(R.id.containerMain, FragmentRegister.newInstance(user, downloadUri),"registerFragment")
+//                                .commit();
+                    } else if (name.equals("profile")) {
+                        //TODO: implement going back to profile page with updated avatar
+//                        db.collection("users").document(currentUser.getEmail())
+//                                .update("profilePhotoUri", downloadUri);
+//                        getSupportFragmentManager().beginTransaction()
+//                                .replace(R.id.containerMain, FragmentProfile.newInstance(downloadUri),"profileFragment")
+//                                .commit();
+                    } else if (name.equals("chatroom")){
+                        ChatRoom fragment = (ChatRoom) getSupportFragmentManager().findFragmentByTag("chatFragment");
+                        fragment.sendImage(downloadUri);
+                        startChatPage(otherUserId);
+                    } else {
+                        Log.d(TAG, "did not define back method for fragment: " + name);
+                    }
+
+                } else {
+                    Log.d(TAG, "Error getting download Url");
+                }
+            }
+        });
+    }
+
+
+    @Override
+    public void sendImage() {
+        if(cameraAllowed && readAllowed && writeAllowed){
+            Toast.makeText(this, "All permissions granted!", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "setProfilePhoto: all permissions granted");
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.containerMain, FragmentCameraController.newInstance(), "cameraFragment")
+                    .addToBackStack("chatroom").commit();
+        } else{
+            requestPermissions(new String[]{
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+            }, PERMISSIONS_CODE_CHATROOM);
+            Log.d(TAG, "send image: asking for permission");
+        }
     }
 }

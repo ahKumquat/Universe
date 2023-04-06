@@ -21,7 +21,7 @@
     <string name="login_textview_register_now">Register Now!</string>
     <string name="login_textview_password">Password</string>
     <string name="login_textview_do_not_have_an_account_yet">Do not have an account yet?</string>
-    <string name="setting_textview_setting_title">Setting</string>
+    <string name="setting_textview_setting_title">Settings</string>
     <string name="setting_textview_name">Name:</string>
     <string name="setting_textview_email">Email:</string>
     <string name="setting_textview_password">Password:</string>
@@ -41,4 +41,8 @@
     <string name="profile_tabitem_post">Post</string>
     <string name="profile_tabitem_activity">Activity</string>
     <string name="profile_tabitem_fav">Fav</string>
+    <string name="settings_button_logout">Log Out</string>
+    <string name="flip_camera">flip camera</string>
+    <string name="open_gallery">open gallery</string>
+    <string name="take_photo">take photo</string>
 </resources>
