@@ -20,6 +20,7 @@ public class Setting extends Fragment {
     private ImageView imageViewEdit;
 
     private Button buttonSave;
+    private ImageButton imageButtonLogOut;
 
     private ISettingFragmentAction mListener;
 
@@ -52,8 +53,10 @@ public class Setting extends Fragment {
         imageButtonBack = view.findViewById(R.id.setting_imagebutton_backbutton);
         imageViewEdit = view.findViewById(R.id.setting_imageview_edit);
         buttonSave = view.findViewById(R.id.setting_button_save);
+        imageButtonLogOut = view.findViewById(R.id.setting_imageButton_logout);
 
         imageButtonBack.setOnClickListener(v -> mListener.populateProfileFragment());
+        imageButtonLogOut.setOnClickListener(v -> mListener.logOut());
 
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,5 +88,6 @@ public class Setting extends Fragment {
 
     public interface ISettingFragmentAction {
         void populateProfileFragment();
+        void logOut();
     }
 }

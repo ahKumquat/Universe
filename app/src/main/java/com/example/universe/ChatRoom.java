@@ -3,8 +3,11 @@ package com.example.universe;
 import static com.example.universe.Util.DEFAULT_F_LISTENER;
 import static com.example.universe.Util.DEFAULT_VOID_S_LISTENER;
 
+import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -50,6 +53,7 @@ public class ChatRoom extends Fragment {
     private SimpleDateFormat simpleDateFormat;
     private String otherUserId;
     private User otherUser;
+    private IchatFragmentButtonAction mListener;
 
     public ChatRoom() {
         // Required empty public constructor
@@ -78,6 +82,16 @@ public class ChatRoom extends Fragment {
                 }
             }, DEFAULT_F_LISTENER);
             loadData();
+        }
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if(context instanceof IchatFragmentButtonAction){
+            mListener = (IchatFragmentButtonAction) context;
+        }else{
+            throw new RuntimeException(context.toString()+ "must implement IchatFragmentAction");
         }
     }
 
@@ -123,6 +137,8 @@ public class ChatRoom extends Fragment {
             }
         });
 
+        imageButtonCamera.setOnClickListener(v -> mListener.sendImage());
+
         //Create a listener for Firebase data change...
         util.getDB().collection("users")
                 .document(util.getCurrentUser().getUid())
@@ -142,13 +158,6 @@ public class ChatRoom extends Fragment {
                                 }
                             }, DEFAULT_F_LISTENER);
 
-//                            ArrayList<Message> messages = new ArrayList<>();
-//                            Chat chat = value.toObject(Chat.class);
-//                            for (Message m: chat.getMessages()) {
-//                                messages.add(m);
-//                            }
-//                            messageAdaptor.setMessages(messages);
-//                            messageAdaptor.notifyDataSetChanged();
                         }
                     }
                 });
@@ -166,23 +175,24 @@ public class ChatRoom extends Fragment {
     }
 
 
-//    private void loadData() {
-//        ArrayList<Message> messages = new ArrayList<>();
-//        util.getChat(otherUserId, new OnSuccessListener<Chat>() {
-//            @Override
-//            public void onSuccess(Chat chat) {
-//                for (Message message: chat.getMessages()) {
-//                    messages.add(message);
-//                }
-//                updateRecyclerView(messages);
-//            }
-//        }, DEFAULT_F_LISTENER);
-//    }
-
     public void updateRecyclerView(ArrayList<Message> messages) {
         this.messageList = messages;
         messageAdaptor.setMessages(messages);
         Log.d(TAG, "updateRecyclerView: " + messages.toString());
         messageAdaptor.notifyDataSetChanged();
+    }
+
+    public void sendImage(Uri downloadUri) {
+        Message message = new Message(util.getCurrentUser(), null, downloadUri.toString());
+        util.sendMessage(otherUserId, message, new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+
+            }
+        }, DEFAULT_F_LISTENER);
+    }
+
+    public interface IchatFragmentButtonAction {
+        void sendImage();
     }
 }
