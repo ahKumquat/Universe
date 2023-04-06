@@ -10,10 +10,10 @@
 
     <ImageView
         android:id="@+id/logo_imageView_Login"
-        android:layout_width="333dp"
-        android:layout_height="356dp"
+        android:layout_width="0dp"
+        android:layout_height="300dp"
         android:layout_marginStart="39dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="39dp"
         android:src="@drawable/logo"
         app:layout_constraintEnd_toEndOf="parent"
@@ -120,7 +120,7 @@
         tools:ignore="VisualLintBounds" />
 
     <TextView
-        android:id="@+id/login_textview_register"
+        android:id="@+id/register_textview_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="48dp"
@@ -129,6 +129,7 @@
         android:singleLine="true"
         android:text="@string/register_textview_login"
         android:textColor="@color/universe_yellow"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.228"
         app:layout_constraintStart_toEndOf="@+id/textView4"
@@ -136,14 +137,14 @@
         tools:ignore="VisualLintBounds" />
 
     <View
-        android:layout_width="35dp"
+        android:layout_width="45dp"
         android:layout_height="1dp"
-        android:layout_marginStart="284dp"
-        android:layout_marginEnd="92dp"
+        android:layout_marginStart="281dp"
+        android:layout_marginEnd="85dp"
         android:background="@color/universe_yellow"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login_textview_register"
+        app:layout_constraintTop_toBottomOf="@+id/register_textview_login"
         tools:ignore="VisualLintBounds" />
 
     <TextView
@@ -171,6 +172,7 @@
         android:inputType="textPersonName"
         android:minHeight="48dp"
         android:singleLine="true"
+        android:textColor="@color/universe_yellow"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/textView3"

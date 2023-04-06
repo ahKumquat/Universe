@@ -11,7 +11,7 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/setting_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="wrap_content"
         android:background="@color/universe_yellow"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
@@ -19,20 +19,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/setting_imageview_backbutton"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+        <ImageButton
+            android:id="@+id/setting_imagebutton_backbutton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="top"
+            android:background="@color/universe_yellow"
             android:src="@drawable/baseline_arrow_back_ios_new_24"
+            tools:ignore="ContentDescription,SpeakableTextPresentCheck"
             tools:layout_editor_absoluteX="16dp"
-            tools:layout_editor_absoluteY="16dp"
-            tools:ignore="ContentDescription" />
+            tools:layout_editor_absoluteY="16dp" />
 
         <TextView
             android:id="@+id/setting_textview_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="center|top"
             android:singleLine="true"
             android:text="@string/setting_textview_setting_title"
             android:textColor="@color/black"
@@ -43,24 +45,25 @@
     </androidx.appcompat.widget.Toolbar>
 
     <ImageView
-        android:id="@+id/imageView6"
+        android:id="@+id/setting_imageview_edit"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginStart="155dp"
-        android:layout_marginTop="68dp"
+        android:layout_marginTop="28dp"
         android:layout_marginEnd="156dp"
         android:src="@drawable/circle_user_profile"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/setting_toolbar"
-        tools:ignore="ContentDescription" />
+        tools:ignore="ContentDescription,ImageContrastCheck" />
 
     <ImageView
         android:id="@+id/imageView7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="136dp"
-        android:layout_marginEnd="172dp"
+        android:layout_marginTop="92dp"
+        android:layout_marginEnd="176dp"
         android:src="@drawable/baseline_edit_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/setting_toolbar"
@@ -71,7 +74,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="37dp"
-        android:layout_marginTop="202dp"
         android:layout_marginEnd="315dp"
         android:singleLine="true"
         android:text="@string/setting_textview_name"
@@ -80,31 +82,31 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/setting_toolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/setting_imageview_edit" />
 
     <EditText
         android:id="@+id/editTextTextPersonName2"
-        android:layout_width="350dp"
+        android:layout_width="351dp"
         android:layout_height="48dp"
         android:layout_marginStart="35dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="26dp"
         android:background="@color/universe_grey"
         android:ems="10"
+        android:importantForAutofill="no"
         android:inputType="textPersonName"
         android:singleLine="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView10"
-        tools:ignore="LabelFor,SpeakableTextPresentCheck"
-        android:importantForAutofill="no" />
+        tools:ignore="LabelFor,SpeakableTextPresentCheck" />
 
     <TextView
         android:id="@+id/textView10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="36dp"
-        android:layout_marginTop="26dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="319dp"
         android:singleLine="true"
         android:text="@string/setting_textview_email"
@@ -117,7 +119,7 @@
 
     <EditText
         android:id="@+id/editTextTextPersonName3"
-        android:layout_width="350dp"
+        android:layout_width="345dp"
         android:layout_height="48dp"
         android:layout_marginStart="36dp"
         android:layout_marginTop="20dp"
@@ -137,7 +139,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="37dp"
-        android:layout_marginTop="23dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="279dp"
         android:singleLine="true"
         android:text="@string/setting_textview_password"
@@ -150,7 +152,7 @@
 
     <EditText
         android:id="@+id/editTextTextPersonName"
-        android:layout_width="350dp"
+        android:layout_width="351dp"
         android:layout_height="48dp"
         android:layout_marginStart="36dp"
         android:layout_marginTop="20dp"
@@ -169,7 +171,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="37dp"
-        android:layout_marginTop="22dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="313dp"
         android:singleLine="true"
         android:text="@string/setting_textview_about"
@@ -183,7 +185,7 @@
     <EditText
         android:id="@+id/editTextTextPersonName4"
         android:layout_width="350dp"
-        android:layout_height="80dp"
+        android:layout_height="52dp"
         android:layout_marginStart="36dp"
         android:layout_marginTop="19dp"
         android:layout_marginEnd="25dp"
@@ -198,11 +200,11 @@
         tools:ignore="Autofill,Deprecated,LabelFor,SpeakableTextPresentCheck,VisualLintBounds" />
 
     <Button
-        android:id="@+id/button7"
+        android:id="@+id/setting_button_save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="130dp"
-        android:layout_marginTop="54dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="131dp"
         android:backgroundTint="@color/universe_blue"
         android:text="@string/setting_button_save_changes"
