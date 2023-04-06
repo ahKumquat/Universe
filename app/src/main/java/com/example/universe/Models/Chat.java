@@ -13,12 +13,11 @@ import java.util.List;
  */
 public class Chat {
     public static String KEY_OTHER_USER_ID = "otherUserId";
-    public static String KEY_OTHER_USER_NAME = "otherUserName";
-    public static String KEY_MESSAGES = "messages";
     public static String KEY_UNREAD_Count = "unreadCount";
+    public static String KEY_LATEST_MESSAGE = "lastMessage";
     public static String KEY_LATEST_MESSAGE_TIME = "lastMessageTime";
     private String otherUserId;
-    private List<Message> messages;
+    private Message lastMessage;
     private int unreadCount;
     private Timestamp lastMessageTime;
     public Chat() {
@@ -26,8 +25,8 @@ public class Chat {
 
     public Chat(String otherUserId) {
         this.otherUserId = otherUserId;
-        this.messages = new ArrayList<>();
         this.unreadCount = 0;
+        this.lastMessage = null;
         this.lastMessageTime = new Timestamp(new Date());
     }
 
@@ -39,21 +38,19 @@ public class Chat {
         this.otherUserId = otherUserId;
     }
 
-    public List<Message> getMessages() {
-        return messages;
-    }
-    @Exclude
-    public Message getLastMessage() {
-        if (messages.size() == 0){
-            return new Message(Util.getInstance().getCurrentUser(), "", "");
-        }
-        int count = messages.size();
-        if (count == 0) return null;
-        else return messages.get(count - 1);
+    public void setLastMessage(Message lastMessage){
+        this.lastMessage = lastMessage;
     }
 
-    public void setMessages(List<Message> messages) {
-        this.messages = messages;
+
+    public Message getLastMessage() {
+        return lastMessage;
+//        if (messages.size() == 0){
+//            return new Message(Util.getInstance().getCurrentUser(), "", "");
+//        }
+//        int count = messages.size();
+//        if (count == 0) return null;
+//        else return messages.get(count - 1);
     }
 
     public int getUnreadCount() {
@@ -77,7 +74,6 @@ public class Chat {
         return "Chat{" +
                 "otherUserId='" + otherUserId + '\'' +
                 ", lastMessageTime=" + Util.timeStampToEventTimeString(lastMessageTime) +
-                ", messages=" + messages +
                 '}';
     }
 }

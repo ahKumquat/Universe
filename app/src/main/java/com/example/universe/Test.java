@@ -23,7 +23,8 @@ public class Test extends Thread{
     private static String[] TEST_USER_IDS = {
             "i32u2BHOHIZeEFz7TJ67XlpmZE12",
             "BPPVNqSwlOg5EjQDq9pvKmXT1rq1",
-            "05PF5OxNMWYdHKw5Upj4kU5tnAK2"
+            "05PF5OxNMWYdHKw5Upj4kU5tnAK2",
+            "p17DVqKKhSMrtSmap9lj2tD77x13"
     };
     private static Util util;
 
@@ -129,6 +130,17 @@ public class Test extends Thread{
             public void onSuccess(List<Chat> chats) {
                 for (Chat chat: chats){
                     Log.d(TAG, "on get Chats Success: " + chat);
+                }
+            }
+        }, Util.DEFAULT_F_LISTENER);
+    }
+
+    public void getMessages(String otherUserId){
+        util.getMessages(otherUserId, new OnSuccessListener<List<Message>>() {
+            @Override
+            public void onSuccess(List<Message> messages) {
+                for (Message message: messages){
+                    Log.d(TAG, message.toString());
                 }
             }
         }, Util.DEFAULT_F_LISTENER);
@@ -257,9 +269,9 @@ public class Test extends Thread{
     @Override
     public void run() {
         //createUserWithEmailAndPassword(3);
-        loginUserWithEmailAndPassword(3, authResult -> {
+        loginUserWithEmailAndPassword(0, authResult -> {
             Log.d(TAG, "on Login Success: " + util.getmAuth().getUid());
-            getUser(util.getCurrentUser().getUid());
+            getChat(TEST_USER_IDS[0]);
         });
             //getFollowingEvents();
             //getFollowing(util.getmAuth().getUid());
