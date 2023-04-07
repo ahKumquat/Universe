@@ -1,8 +1,10 @@
 package com.example.universe;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -30,6 +32,7 @@ public class PostFragment extends Fragment {
     private EditText editTextLocation;
     private EditText editTextDescription;
     private ImageButton eventPic;
+    private IPostFragmentAction mListener;
 
     private ArrayAdapter<String> adapterHour;
     private ArrayAdapter<String> adapterMin;
@@ -69,6 +72,8 @@ public class PostFragment extends Fragment {
         editTextDescription = view.findViewById(R.id.post_editText_description);
         editTextLocation = view.findViewById(R.id.post_editText_location);
         editTextDuration = view.findViewById(R.id.post_editText_duration);
+        eventPic = view.findViewById(R.id.post_imageButton_eventPic);
+        eventPic.setOnClickListener(v -> mListener.setEventPic());
 
         String[] ampm = {"AM","PM"};
         adapterAMPM = new ArrayAdapter<>(requireActivity(),
@@ -103,5 +108,19 @@ public class PostFragment extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof Setting.ISettingFragmentAction){
+            this.mListener = (IPostFragmentAction) context;
+        }else{
+            throw new RuntimeException(context + "must implement Setting Fragment Action");
+        }
+    }
+
+    public interface IPostFragmentAction {
+        void setEventPic();
     }
 }

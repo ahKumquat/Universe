@@ -38,6 +38,7 @@ public class Setting extends Fragment {
     private ISettingFragmentAction mListener;
 
     private Util util;
+    private ImageView imageViewEditAvatar;
 
 
     public Setting() {
@@ -73,9 +74,11 @@ public class Setting extends Fragment {
         editTextPassword = view.findViewById(R.id.setting_editText_password);
         buttonSave = view.findViewById(R.id.setting_button_save);
         imageButtonLogOut = view.findViewById(R.id.setting_imageButton_logout);
+        imageViewEditAvatar = view.findViewById(R.id.setting_imageView_editAvatar);
 
         imageButtonBack.setOnClickListener(v -> mListener.populateProfileFragment());
         imageButtonLogOut.setOnClickListener(v -> mListener.logOut());
+        imageViewEditAvatar.setOnClickListener(v -> mListener.setAvatar());
 
         editTextName.setText(user.getUserName());
         editTextEmail.setText(user.getEmail());
@@ -112,5 +115,6 @@ public class Setting extends Fragment {
     public interface ISettingFragmentAction {
         void populateProfileFragment();
         void logOut();
+        void setAvatar();
     }
 }
