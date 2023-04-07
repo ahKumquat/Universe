@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
         Profile.IProfileFragmentAction, Setting.ISettingFragmentAction,
         FragmentCameraController.DisplayTakenPhoto, FragmentDisplayImage.IdisplayImageAction,
         ChatRoom.IchatFragmentButtonAction, FragmentDisplayFile.IdisplayFileAction,
-        HomeEventAdapter.IEventListRecyclerAction {
+        HomeEventAdapter.IEventListRecyclerAction, PostFragment.IPostFragmentAction {
     private String TAG = Util.TAG;
     private Util util;
     private FirebaseUser currentUser;
@@ -219,6 +219,23 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
     }
 
     @Override
+    public void setAvatar() {
+        if(cameraAllowed && readAllowed && writeAllowed){
+            Log.d(TAG, "setAvatar: all permissions granted");
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.containerMain, FragmentCameraController.newInstance(), "cameraFragment")
+                    .addToBackStack("settings").commit();
+        } else{
+            requestPermissions(new String[]{
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+            }, PERMISSIONS_CODE_PROFILE);
+            Log.d(TAG, "set avatar: asking for permission");
+        }
+    }
+
+    @Override
     public void chatClickedFromRecyclerView(Chat chat) {
         util.readChat(chat.getOtherUserId(), new OnSuccessListener<Void>() {
             @Override
@@ -282,7 +299,7 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
         if(grantResults.length>2 && requestCode==PERMISSIONS_CODE_POSTEVENT){
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.containerMain, FragmentCameraController.newInstance(), "cameraFragment")
-                    .addToBackStack("event").commit();
+                    .addToBackStack("post").commit();
             Log.d(TAG, "onRequestPermissionsResult: permission granted + open camera from post event");
         }else if (grantResults.length>2 && requestCode==PERMISSIONS_CODE_PROFILE){
             getSupportFragmentManager().beginTransaction()
@@ -387,18 +404,31 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
                     Log.d(TAG, "last fragment name: " + getSupportFragmentManager().getBackStackEntryAt(count - 1).getName());
                     Log.d(TAG, "second last fragment name: " + name);
                     Log.d(TAG, "third last fragment name: " + getSupportFragmentManager().getBackStackEntryAt(count - 3).getName());
-                    if (name.equals("event")) {
-                        //TODO: implement going back to the posting event page
-//                        getSupportFragmentManager().beginTransaction()
-//                                .replace(R.id.containerMain, FragmentRegister.newInstance(user, downloadUri),"registerFragment")
-//                                .commit();
-                    } else if (name.equals("profile")) {
-                        //TODO: implement going back to profile page with updated avatar
+                    if (name.equals("post")) {
+                        //TODO: implement upload the event pic and save path in Post Fragment
+                        if (takePhotoNotFromGallery) {
+                            getSupportFragmentManager().popBackStack();
+                            getSupportFragmentManager().popBackStack();
+                        } else {
+                            getSupportFragmentManager().popBackStack();
+                            getSupportFragmentManager().popBackStack();
+                            getSupportFragmentManager().popBackStack();
+                        }
+                        takePhotoNotFromGallery = true;
+                    } else if (name.equals("profile") ||name.equals("settings")) {
+                        //TODO: implement updating user avatar in the database
 //                        db.collection("users").document(currentUser.getEmail())
 //                                .update("profilePhotoUri", downloadUri);
-//                        getSupportFragmentManager().beginTransaction()
-//                                .replace(R.id.containerMain, FragmentProfile.newInstance(downloadUri),"profileFragment")
-//                                .commit();
+                        Log.d(TAG, "download avatar url: " + downloadUri);
+                        if (takePhotoNotFromGallery) {
+                            getSupportFragmentManager().popBackStack();
+                            getSupportFragmentManager().popBackStack();
+                        } else {
+                            getSupportFragmentManager().popBackStack();
+                            getSupportFragmentManager().popBackStack();
+                            getSupportFragmentManager().popBackStack();
+                        }
+                        takePhotoNotFromGallery = true;
                     } else if (name.equals("chatroom")) {
                         ChatRoom fragment = (ChatRoom) getSupportFragmentManager().findFragmentByTag("chatFragment");
                         fragment.sendImage(storageReference.getPath());
@@ -563,5 +593,23 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
       getSupportFragmentManager().beginTransaction()
               .replace(R.id.containerMain, EventFragment.newInstance(event))
               .addToBackStack("FragmentHome").commit();
+    }
+
+    @Override
+    public void setEventPic() {
+        if(cameraAllowed && readAllowed && writeAllowed){
+            Toast.makeText(this, "All permissions granted!", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "setProfilePhoto: all permissions granted");
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.containerMain, PostFragment.newInstance(), "cameraFragment")
+                    .addToBackStack("post").commit();
+        } else{
+            requestPermissions(new String[]{
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+            }, PERMISSIONS_CODE_POSTEVENT);
+            Log.d(TAG, "send image: asking for permission");
+        }
     }
 }

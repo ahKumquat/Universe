@@ -210,7 +210,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/post_editText_description" />
 
                 <ImageButton
-                    android:id="@+id/post_imageButton_upload"
+                    android:id="@+id/post_imageButton_eventPic"
                     android:layout_width="0dp"
                     android:layout_height="200dp"
                     android:layout_marginTop="16dp"
