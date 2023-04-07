@@ -2,7 +2,6 @@ package com.example.universe;
 
 import android.content.Context;
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,21 +67,33 @@ public class MessageAdapter extends RecyclerView.Adapter {
             util.getUser(message.getUserId(), new OnSuccessListener<User>() {
                 @Override
                 public void onSuccess(User user) {
-                    if (user.getAvatarUrl() != null) {
-                        Glide.with(context).load(Uri.parse(user.getAvatarUrl()))
-                                .centerCrop()
-                                .into(viewHolder.getImageViewUserAvatar());
+                    if (user.getAvatarPath() != null) {
+                        util.getDownloadUrlFromPath(user.getAvatarPath(), new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                Glide.with(context)
+                                        .load(uri)
+                                        .centerCrop()
+                                        .into(viewHolder.getImageViewUserAvatar());
+                            }
+                        }, Util.DEFAULT_F_LISTENER);
                     }
                 }
             }, Util.DEFAULT_F_LISTENER);
 
-            if (message.getImageURL()!=null) {
+            if (message.getImagePath()!=null) {
                 viewHolder.getImageViewPhoto().setVisibility(View.VISIBLE);
                 viewHolder.getTextViewTimeOfMessage().setVisibility(View.INVISIBLE);
-                Glide.with(context).load(Uri.parse(message.getImageURL()))
-                        .centerCrop()
-                        .override(500,500)
-                        .into(viewHolder.getImageViewPhoto());
+                util.getDownloadUrlFromPath(message.getImagePath(), new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Glide.with(context)
+                                .load(uri)
+                                .centerCrop()
+                                .override(500,500)
+                                .into(viewHolder.getImageViewPhoto());
+                    }
+                }, Util.DEFAULT_F_LISTENER);
             }
             if (message.getFileURL()!=null) {
                 viewHolder.getTextViewMessage().setText("A file has been sent");
@@ -95,8 +106,8 @@ public class MessageAdapter extends RecyclerView.Adapter {
             util.getUser(message.getUserId(), new OnSuccessListener<User>() {
                 @Override
                 public void onSuccess(User user) {
-                    if (user.getAvatarUrl() != null) {
-                        Glide.with(context).load(Uri.parse(user.getAvatarUrl()))
+                    if (user.getAvatarPath() != null) {
+                        Glide.with(context).load(Uri.parse(user.getAvatarPath()))
                                 .centerCrop()
                                 .into(viewHolder.getImageViewUserAvatar());
                     }
@@ -105,10 +116,10 @@ public class MessageAdapter extends RecyclerView.Adapter {
 
             viewHolder.getTextViewMessage().setText(message.getText());
             viewHolder.getTextViewTimeOfMessage().setText(message.getSimpleTime());
-            if (message.getImageURL()!=null) {
+            if (message.getImagePath()!=null) {
                 viewHolder.getImageViewPhoto().setVisibility(View.VISIBLE);
                 viewHolder.getTextViewTimeOfMessage().setVisibility(View.INVISIBLE);
-                Glide.with(context).load(Uri.parse(message.getImageURL()))
+                Glide.with(context).load(Uri.parse(message.getImagePath()))
                         .centerCrop().override(500,500)
                         .into(viewHolder.getImageViewPhoto());
             }

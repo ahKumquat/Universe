@@ -13,7 +13,7 @@ public class User implements Serializable {
     public static final String KEY_USERNAME = "userName";
     public static final String KEY_EMAIL = "email";
     public static final String KEY_ABOUT = "about";
-    public static final String KEY_AVATAR_URL = "avatarUrl";
+    public static final String KEY_AVATAR_Path = "avatarPath";
     public static final String KEY_DRAFT_EVENT = "draftEvent";
     public static final String KEY_FOLLOWERS_ID_LIST = "followersIdList";
     public static final String KEY_FOLLOWING_ID_LIST = "followingIdList";
@@ -25,7 +25,7 @@ public class User implements Serializable {
     private String uid;
     private String userName;
     private String email;
-    private String avatarUrl;
+    private String avatarPath;
     private String about;
     private Event draftEvent;
     private List<String> followersIdList;
@@ -43,7 +43,7 @@ public class User implements Serializable {
         this.uid = uid;
         this.userName = userName;
         this.email = email;
-        avatarUrl = null;
+        avatarPath = null;
         about = "";
         this.draftEvent = null;
         followersIdList = new ArrayList<>();
@@ -75,9 +75,9 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    public String getAvatarUrl() {return avatarUrl;}
+    public String getAvatarPath() {return avatarPath;}
 
-    public void setAvatarUrl(String avatarUrl) {this.avatarUrl = avatarUrl;}
+    public void setAvatarPath(String avatarPath) {this.avatarPath = avatarPath;}
 
     public String getAbout() {
         return about;

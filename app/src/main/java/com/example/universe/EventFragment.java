@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,11 +17,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.universe.Models.Event;
-import com.example.universe.Models.User;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -101,14 +98,28 @@ public class EventFragment extends Fragment {
 
         title.setText(event.getTitle());
 
-        if (!event.getImageURL().equals("")) {
-            Glide.with(requireContext()).load(event.getImageURL()).error(R.drawable.image_not_found).into(eventPic);
+        if (!event.getImagePath().equals("")) {
+            util.getDownloadUrlFromPath(event.getImagePath(), new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Glide.with(requireContext())
+                            .load(uri)
+                            .error(R.drawable.image_not_found)
+                            .into(eventPic);
+                }
+            }, Util.DEFAULT_F_LISTENER);
         }
 
         util.getUser(event.getHostId(), user -> {
-            if (user.getAvatarUrl() != null) {
-                Glide.with(requireContext()).load(Uri.parse(user.getAvatarUrl()))
-                        .into(hostAvatar);
+            if (user.getAvatarPath() != null) {
+                util.getDownloadUrlFromPath(user.getAvatarPath(), new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Glide.with(requireContext()).load(uri)
+                                .into(hostAvatar);
+                    }
+                }, Util.DEFAULT_F_LISTENER);
+
             }
         }, Util.DEFAULT_F_LISTENER);
 
@@ -127,10 +138,6 @@ public class EventFragment extends Fragment {
         recyclerViewLayoutManager = new LinearLayoutManager(getContext());
 
 
-
-
-
-
         return view;
     }
 
@@ -138,8 +145,8 @@ public class EventFragment extends Fragment {
         mapView.onCreate(null);
         mapView.onResume();
         mapView.getMapAsync(googleMap -> {
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat,lon), 13f));
-            googleMap.addMarker(new MarkerOptions().position(new LatLng(lat,lon)));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 13f));
+            googleMap.addMarker(new MarkerOptions().position(new LatLng(lat, lon)));
             googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
             googleMap.getUiSettings().setAllGesturesEnabled(false);
         });

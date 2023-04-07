@@ -398,7 +398,7 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
 //                                .commit();
                     } else if (name.equals("chatroom")) {
                         ChatRoom fragment = (ChatRoom) getSupportFragmentManager().findFragmentByTag("chatFragment");
-                        fragment.sendImage(downloadUri);
+                        fragment.sendImage(storageReference.getPath());
                         startChatPage(otherUserId);
                     } else {
                         Log.d(TAG, "did not define back method for fragment: " + name);

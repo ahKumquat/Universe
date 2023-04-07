@@ -1,6 +1,7 @@
 package com.example.universe;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.universe.Models.Event;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.List;
 
@@ -51,8 +53,16 @@ public class HomeEventAdapter extends RecyclerView.Adapter<HomeEventAdapter.View
     public void onBindViewHolder(@NonNull HomeEventAdapter.ViewHolder holder, int position) {
         Event event = this.getEventList().get(position);
         holder.getTextViewTitle().setText(event.getTitle());
-        if (!event.getImageURL().equals("")) {
-            Glide.with(context).load(event.getImageURL()).error(R.drawable.image_not_found).into(holder.imageButtonEventPic);
+        if (!"".equals(event.getImagePath())) {
+            util.getDownloadUrlFromPath(event.getImagePath(), new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Glide.with(context)
+                            .load(uri)
+                            .error(R.drawable.image_not_found)
+                            .into(holder.imageButtonEventPic);
+                }
+            }, Util.DEFAULT_F_LISTENER);
         }
         holder.getImageButtonEventPic().setOnClickListener(v -> mListener.eventClickedFromRecyclerView(event));
     }

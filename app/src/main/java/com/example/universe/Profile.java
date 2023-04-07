@@ -124,8 +124,8 @@ public class Profile extends Fragment {
 
         }
 
-        if (user.getAvatarUrl() != null) {
-            Glide.with(requireContext()).load(user.getAvatarUrl())
+        if (user.getAvatarPath() != null) {
+            Glide.with(requireContext()).load(user.getAvatarPath())
                     .error(R.drawable.circle_user_profile).into(icon);
         }
 

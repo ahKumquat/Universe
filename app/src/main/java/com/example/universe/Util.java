@@ -1,10 +1,14 @@
 package com.example.universe;
 
+import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.bumptech.glide.Glide;
 import com.example.universe.Models.Chat;
 import com.example.universe.Models.Event;
 import com.example.universe.Models.Message;
@@ -52,7 +56,7 @@ public class Util {
     public static final String MESSAGES_COLLECTION_NAME = "messages";
     private static final long CUT_OFF_TIME_MILLISECONDS = 1000 * 60 * 60 * 24 * 3;
     public static final double DEFAULT_RADIUS =  50 * 1000;
-    public static final SimpleDateFormat EVENT_TIME_FORMAT = new SimpleDateFormat("yyyy/MM/dd, HH:mm");
+    public static final SimpleDateFormat EVENT_TIME_FORMAT = new SimpleDateFormat("yyyy/MM/dd,HH:mm");
     private static String currentTask = ""; //used for test printout
     private static Util util;
     private FirebaseAuth mAuth;
@@ -947,6 +951,39 @@ public class Util {
         transaction.update(otherUserRef, User.KEY_UNREAD_COUNT, FieldValue.increment(1));
     }
 
+//    /**
+//     * Load image with path.
+//     * @param context
+//     * @param path
+//     * @param view
+//     */
+//    public void loadImageWithPath(Context context, String path, ImageView view, int onErrorDrawable){
+//        currentTask = "loadImageWithPath";
+//        Log.d(TAG, "loadImageWithPath: " + path);
+//        storage.getReference().child(path).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//            @Override
+//            public void onSuccess(Uri uri) {
+//                Glide.with(context)
+//                        .load(uri)
+//                        .error(onErrorDrawable)
+//                        .centerCrop()
+//                        .into(view);
+//            }
+//        }).addOnFailureListener(DEFAULT_F_LISTENER);
+//    }
+
+    public void getDownloadUrlFromPath(String path, OnSuccessListener<Uri> sListener, OnFailureListener fListerner){
+        if (path == null || path == ""){
+            return;
+        }
+        currentTask = "loadImageWithPath";
+        storage.getReference()
+                .child(path)
+                .getDownloadUrl()
+                .addOnSuccessListener(sListener)
+                .addOnFailureListener(fListerner);
+    }
+
     /**
      * Group ids in the list by 10 and return a list of id list groups.
      * This is used for querying with WhereIn method, which has a limit of 10 ids per query.
@@ -955,6 +992,9 @@ public class Util {
      * @return List<List<String>> a list of sub id list, each sub id list contains a maximum of 10 ids.
      */
     public List<List<String>> splitIDList(List<String> idList){
+        if (idList ==null){
+            return new ArrayList<>();
+        }
         int size = idList.size();
         List<List<String>> list = new ArrayList<>();
         for (int i = 0; i < (size + 9)/10; i++){

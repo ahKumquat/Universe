@@ -27,7 +27,7 @@ public class Event implements Serializable {
     public static final String KEY_GEO_HASH = "geoHash";
     public static final String KEY_CAPACITY = "capacity";
     public static final String KEY_DESCRIPTION = "description";
-    public static final String KEY_IMAGE_URL = "imageURL";
+    public static final String KEY_IMAGE_PATH = "imagePath";
     public static final String KEY_PARTICIPANTS = "participants";
     public static final String KEY_CANDIDATES = "candidates";
     public static final String[] UNITS = {"min", "hour", "day", "month"};
@@ -47,14 +47,14 @@ public class Event implements Serializable {
     private String geoHash;
     private int capacity;
     private String description;
-    private String imageURL;
+    private String imagePath;
     private List<String> participants;
     private List<String> candidates;
 
     public Event() {
     }
 
-    public Event(String uid, FirebaseUser user, String title,Timestamp time, double duration, String durationUnit, String address, GeoPoint geoPoint, int capacity, String description, String imageURL) {
+    public Event(String uid, FirebaseUser user, String title,Timestamp time, double duration, String durationUnit, String address, GeoPoint geoPoint, int capacity, String description, String imagePath) {
         this.uid = uid;
         this.hostId = user.getUid();
         this.hostName = user.getDisplayName();
@@ -67,7 +67,7 @@ public class Event implements Serializable {
         this.geoHash = GeoFireUtils.getGeoHashForLocation(new GeoLocation(geoPoint.getLatitude(), geoPoint.getLongitude()));
         this.capacity = capacity;
         this.description = description;
-        this.imageURL = imageURL;
+        this.imagePath = imagePath;
         this.participants = new ArrayList<>();
         this.candidates = new ArrayList<>();
     }
@@ -233,12 +233,12 @@ public class Event implements Serializable {
         this.description = description;
     }
 
-    public String getImageURL() {
-        return imageURL;
+    public String getImagePath() {
+        return imagePath;
     }
 
-    public void setImageURL(String imageURL) {
-        this.imageURL = imageURL;
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
     public List<String> getParticipants() {
@@ -277,7 +277,7 @@ public class Event implements Serializable {
                 ", address='" + address + '\'' +
                 ", geoPoint=" + geoPoint +
                 ", capacity=" + capacity +
-                ", imageURL='" + imageURL + '\'' +
+                ", imageURL='" + imagePath + '\'' +
                 ", participants=" + participants +
                 ", candidates=" + candidates +
                 '}';
