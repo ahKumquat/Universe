@@ -371,6 +371,76 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         Toast.makeText(MainActivity.this, "Upload successful!", Toast.LENGTH_SHORT).show();
                         progressBar.setVisibility(View.GONE);
+                        int count = getSupportFragmentManager().getBackStackEntryCount();
+//                    Log.d(TAG, "count of current fragments: " + count);
+//                    Log.d(TAG, "current fragments: " + getSupportFragmentManager().getFragments().toString());
+                        String name = getSupportFragmentManager().getBackStackEntryAt(count - 3).getName();
+                        Log.d(TAG, "last fragment name: " + getSupportFragmentManager().getBackStackEntryAt(count - 1).getName());
+                        Log.d(TAG, "second last fragment name: " + name);
+                        Log.d(TAG, "third last fragment name: " + getSupportFragmentManager().getBackStackEntryAt(count - 3).getName());
+                        if (name.equals("post")) {
+                            //TODO: implement upload the event pic and save path in Post Fragment
+                            PostFragment p = (PostFragment) getSupportFragmentManager().findFragmentByTag("FragmentPost");
+                            p.setPostPicPath(storageReference.getPath());
+
+                            if (takePhotoNotFromGallery) {
+                                getSupportFragmentManager().popBackStack();
+                                getSupportFragmentManager().popBackStack();
+                            } else {
+                                getSupportFragmentManager().popBackStack();
+                                getSupportFragmentManager().popBackStack();
+                                getSupportFragmentManager().popBackStack();
+                            }
+                            takePhotoNotFromGallery = true;
+                        } else if (name.equals("profile") ||name.equals("settings")) {
+                            Setting s = (Setting) getSupportFragmentManager().findFragmentByTag("FragmentSetting");
+                            s.setNewAvatarPath(storageReference.getPath());
+                            Log.d(TAG, "onSuccess: new avatar path " + storageReference.getPath());
+                            //TODO update user avatar path when user hits "Save Changes", not here
+//                            String currentUserID = util.getCurrentUser().getUid();
+//                            util.getUser(currentUserID, new OnSuccessListener<User>() {
+//                                @Override
+//                                public void onSuccess(User user) {
+//                                    util.updateProfile(storageReference.getPath(), user.getAbout(),
+//                                            new OnSuccessListener<Void>() {
+//                                                @Override
+//                                                public void onSuccess(Void unused) {
+//                                                    Log.d(TAG, "onSuccess: updated avatar path");
+//                                                }
+//                                            }, new OnFailureListener() {
+//                                                @Override
+//                                                public void onFailure(@NonNull Exception e) {
+//                                                    Log.w(TAG, "fail to update avatar path at db", e);
+//                                                }
+//                                            });
+//                                }
+//                            }, Util.DEFAULT_F_LISTENER);
+
+                            if (takePhotoNotFromGallery) {
+                                getSupportFragmentManager().popBackStack();
+                                getSupportFragmentManager().popBackStack();
+                            } else {
+                                getSupportFragmentManager().popBackStack();
+                                getSupportFragmentManager().popBackStack();
+                                getSupportFragmentManager().popBackStack();
+                            }
+                            takePhotoNotFromGallery = true;
+                        } else if (name.equals("chatroom")) {
+                            ChatRoom fragment = (ChatRoom) getSupportFragmentManager().findFragmentByTag("chatFragment");
+                            fragment.sendImage(storageReference.getPath());
+                            if (takePhotoNotFromGallery) {
+                                getSupportFragmentManager().popBackStack();
+                                getSupportFragmentManager().popBackStack();
+                            } else {
+                                getSupportFragmentManager().popBackStack();
+                                getSupportFragmentManager().popBackStack();
+                                getSupportFragmentManager().popBackStack();
+                            }
+                            takePhotoNotFromGallery = true;
+                        } else {
+                            Log.d(TAG, "did not define back method for fragment: " + name);
+                            getSupportFragmentManager().popBackStack();
+                        }
                     }
                 })
                 .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
@@ -381,76 +451,75 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
                         progressBar.setProgress((int) progress);
                     }
                 });
-
-        Task<Uri> urlTask = uploadImage.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-            @Override
-            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                if (!task.isSuccessful()) {
-                    throw task.getException();
-                }
-                // Continue with the task to get the download URL
-                return storageReference.getDownloadUrl();
-            }
-        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-            @Override
-            public void onComplete(@NonNull Task<Uri> task) {
-                if (task.isSuccessful()) {
-                    Uri downloadUri = task.getResult();
-
-                    int count = getSupportFragmentManager().getBackStackEntryCount();
-//                    Log.d(TAG, "count of current fragments: " + count);
-//                    Log.d(TAG, "current fragments: " + getSupportFragmentManager().getFragments().toString());
-                    String name = getSupportFragmentManager().getBackStackEntryAt(count - 3).getName();
-                    Log.d(TAG, "last fragment name: " + getSupportFragmentManager().getBackStackEntryAt(count - 1).getName());
-                    Log.d(TAG, "second last fragment name: " + name);
-                    Log.d(TAG, "third last fragment name: " + getSupportFragmentManager().getBackStackEntryAt(count - 3).getName());
-                    if (name.equals("post")) {
-                        //TODO: implement upload the event pic and save path in Post Fragment
-                        if (takePhotoNotFromGallery) {
-                            getSupportFragmentManager().popBackStack();
-                            getSupportFragmentManager().popBackStack();
-                        } else {
-                            getSupportFragmentManager().popBackStack();
-                            getSupportFragmentManager().popBackStack();
-                            getSupportFragmentManager().popBackStack();
-                        }
-                        takePhotoNotFromGallery = true;
-                    } else if (name.equals("profile") ||name.equals("settings")) {
-                        //TODO: implement updating user avatar in the database
-//                        db.collection("users").document(currentUser.getEmail())
-//                                .update("profilePhotoUri", downloadUri);
-                        Log.d(TAG, "download avatar url: " + downloadUri);
-                        if (takePhotoNotFromGallery) {
-                            getSupportFragmentManager().popBackStack();
-                            getSupportFragmentManager().popBackStack();
-                        } else {
-                            getSupportFragmentManager().popBackStack();
-                            getSupportFragmentManager().popBackStack();
-                            getSupportFragmentManager().popBackStack();
-                        }
-                        takePhotoNotFromGallery = true;
-                    } else if (name.equals("chatroom")) {
-                        ChatRoom fragment = (ChatRoom) getSupportFragmentManager().findFragmentByTag("chatFragment");
-                        fragment.sendImage(storageReference.getPath());
-                        if (takePhotoNotFromGallery) {
-                            getSupportFragmentManager().popBackStack();
-                            getSupportFragmentManager().popBackStack();
-                        } else {
-                            getSupportFragmentManager().popBackStack();
-                            getSupportFragmentManager().popBackStack();
-                            getSupportFragmentManager().popBackStack();
-                        }
-                        takePhotoNotFromGallery = true;
-                    } else {
-                        Log.d(TAG, "did not define back method for fragment: " + name);
-                        getSupportFragmentManager().popBackStack();
-                    }
-
-                } else {
-                    Log.d(TAG, "Error getting download Url");
-                }
-            }
-        });
+//No longer need downloadURI since we are storing the storageReference
+//        Task<Uri> urlTask = uploadImage.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+//            @Override
+//            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+//                if (!task.isSuccessful()) {
+//                    throw task.getException();
+//                }
+//                // Continue with the task to get the download URL
+//                return storageReference.getDownloadUrl();
+//            }
+//        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+//            @Override
+//            public void onComplete(@NonNull Task<Uri> task) {
+//                if (task.isSuccessful()) {
+//                    Uri downloadUri = task.getResult();
+//
+//                    int count = getSupportFragmentManager().getBackStackEntryCount();
+////                    Log.d(TAG, "count of current fragments: " + count);
+////                    Log.d(TAG, "current fragments: " + getSupportFragmentManager().getFragments().toString());
+//                    String name = getSupportFragmentManager().getBackStackEntryAt(count - 3).getName();
+//                    Log.d(TAG, "last fragment name: " + getSupportFragmentManager().getBackStackEntryAt(count - 1).getName());
+//                    Log.d(TAG, "second last fragment name: " + name);
+//                    Log.d(TAG, "third last fragment name: " + getSupportFragmentManager().getBackStackEntryAt(count - 3).getName());
+//                    if (name.equals("post")) {
+//                        //TODO: implement upload the event pic and save path in Post Fragment
+//                        if (takePhotoNotFromGallery) {
+//                            getSupportFragmentManager().popBackStack();
+//                            getSupportFragmentManager().popBackStack();
+//                        } else {
+//                            getSupportFragmentManager().popBackStack();
+//                            getSupportFragmentManager().popBackStack();
+//                            getSupportFragmentManager().popBackStack();
+//                        }
+//                        takePhotoNotFromGallery = true;
+//                    } else if (name.equals("profile") ||name.equals("settings")) {
+//                        //TODO: implement updating user avatar in the database
+////                        db.collection("users").document(currentUser.getEmail())
+////                                .update("profilePhotoUri", downloadUri);
+//                        Log.d(TAG, "download avatar url: " + downloadUri);
+//                        if (takePhotoNotFromGallery) {
+//                            getSupportFragmentManager().popBackStack();
+//                            getSupportFragmentManager().popBackStack();
+//                        } else {
+//                            getSupportFragmentManager().popBackStack();
+//                            getSupportFragmentManager().popBackStack();
+//                            getSupportFragmentManager().popBackStack();
+//                        }
+//                        takePhotoNotFromGallery = true;
+//                    } else if (name.equals("chatroom")) {
+//                        ChatRoom fragment = (ChatRoom) getSupportFragmentManager().findFragmentByTag("chatFragment");
+//                        fragment.sendImage(storageReference.getPath());
+//                        if (takePhotoNotFromGallery) {
+//                            getSupportFragmentManager().popBackStack();
+//                            getSupportFragmentManager().popBackStack();
+//                        } else {
+//                            getSupportFragmentManager().popBackStack();
+//                            getSupportFragmentManager().popBackStack();
+//                            getSupportFragmentManager().popBackStack();
+//                        }
+//                        takePhotoNotFromGallery = true;
+//                    } else {
+//                        Log.d(TAG, "did not define back method for fragment: " + name);
+//                        getSupportFragmentManager().popBackStack();
+//                    }
+//                } else {
+//                    Log.d(TAG, "Error getting download Url");
+//                }
+            //}
+        //});
     }
 
 

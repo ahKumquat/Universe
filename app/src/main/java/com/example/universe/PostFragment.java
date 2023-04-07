@@ -32,6 +32,7 @@ public class PostFragment extends Fragment {
     private EditText editTextLocation;
     private EditText editTextDescription;
     private ImageButton eventPic;
+    private String postPicPath;
     private IPostFragmentAction mListener;
 
     private ArrayAdapter<String> adapterHour;
@@ -118,6 +119,10 @@ public class PostFragment extends Fragment {
         }else{
             throw new RuntimeException(context + "must implement Setting Fragment Action");
         }
+    }
+
+    public void setPostPicPath(String path) {
+        postPicPath = path;
     }
 
     public interface IPostFragmentAction {
