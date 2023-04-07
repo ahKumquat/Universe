@@ -382,7 +382,6 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
                             //TODO: implement upload the event pic and save path in Post Fragment
                             PostFragment p = (PostFragment) getSupportFragmentManager().findFragmentByTag("FragmentPost");
                             p.setPostPicPath(storageReference.getPath());
-
                             if (takePhotoNotFromGallery) {
                                 getSupportFragmentManager().popBackStack();
                                 getSupportFragmentManager().popBackStack();
