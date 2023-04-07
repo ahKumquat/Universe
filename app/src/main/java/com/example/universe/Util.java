@@ -968,8 +968,13 @@ public class Util {
         transaction.update(otherUserRef, User.KEY_UNREAD_COUNT, FieldValue.increment(1));
     }
 
-    public void updateProfile(String avatarPath, String about, OnSuccessListener<Void> sListener, OnFailureListener fListener) {
+    public void updateProfile(String avatarPath, String about, String email, String password,OnSuccessListener<Void> sListener, OnFailureListener fListener) {
         DocumentReference userRef = db.collection(USERS_COLLECTION_NAME).document(mAuth.getUid());
+        if (!mAuth.getCurrentUser().getEmail().equalsIgnoreCase(email)){
+            mAuth.getCurrentUser().updateEmail(email);
+        }
+        mAuth.getCurrentUser().updatePassword(password).addOnFailureListener(DEFAULT_F_LISTENER);
+        //mAuth.getCurrentUser().updatePassword(password);
         db.runTransaction(new Transaction.Function<Void>() {
                     @Nullable
                     @Override
