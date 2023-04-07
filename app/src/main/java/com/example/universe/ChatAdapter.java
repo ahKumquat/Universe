@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.universe.Models.Chat;
@@ -76,7 +77,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>{
             holder.getTextViewLastMessage().setText("");
         }
 
-        holder.getTextViewUserName().setOnClickListener(new View.OnClickListener() {
+        holder.getCardView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mListener.chatClickedFromRecyclerView(chat);
@@ -94,6 +95,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>{
         private TextView textViewUserName;
         private TextView textViewLastMessage;
         private ImageView imageViewDotForUnreadMessage;
+        private CardView cardView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -101,6 +103,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>{
             textViewUserName = itemView.findViewById(R.id.recyclerChatList_textView_userName);
             textViewLastMessage = itemView.findViewById(R.id.recyclerChatList_textView_lastMessage);
             imageViewDotForUnreadMessage = itemView.findViewById(R.id.chatManager_imageView_dotForNewMessage);
+            cardView = itemView.findViewById(R.id.chatroom_cardView);
         }
 
         public ImageView getImageViewUserAvatar() {
@@ -117,6 +120,9 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>{
 
         public ImageView getImageViewDotForUnreadMessage() {
             return imageViewDotForUnreadMessage;
+        }
+        public CardView getCardView() {
+            return cardView;
         }
     }
 
