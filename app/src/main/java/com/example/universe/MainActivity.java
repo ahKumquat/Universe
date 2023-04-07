@@ -411,9 +411,6 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
                             getSupportFragmentManager().popBackStack();
                         }
                         takePhotoNotFromGallery = true;
-//                        getSupportFragmentManager().popBackStack("chatroom",
-//                                getSupportFragmentManager().POP_BACK_STACK_INCLUSIVE);
-                        //startChatPage(otherUserId);
                     } else {
                         Log.d(TAG, "did not define back method for fragment: " + name);
                         getSupportFragmentManager().popBackStack();
@@ -552,7 +549,8 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
                     Uri downloadUri = task.getResult();
                         ChatRoom fragment = (ChatRoom) getSupportFragmentManager().findFragmentByTag("chatFragment");
                         fragment.sendFile(downloadUri);
-                        startChatPage(otherUserId);
+                        getSupportFragmentManager().popBackStack();
+                        getSupportFragmentManager().popBackStack();
                     } else {
                         Log.d(TAG, "error sending file");
                     }
