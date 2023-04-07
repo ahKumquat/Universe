@@ -102,26 +102,40 @@ public class MessageAdapter extends RecyclerView.Adapter {
             viewHolder.getTextViewTimeOfMessage().setText(message.getSimpleTime());
         } else {
             ReceiverViewHolder viewHolder = (ReceiverViewHolder) holder;
+            viewHolder.getTextViewMessage().setText(message.getText());
+            viewHolder.getTextViewTimeOfMessage().setText(message.getSimpleTime());
             //load user avatar
             util.getUser(message.getUserId(), new OnSuccessListener<User>() {
                 @Override
                 public void onSuccess(User user) {
                     if (user.getAvatarPath() != null) {
-                        Glide.with(context).load(Uri.parse(user.getAvatarPath()))
-                                .centerCrop()
-                                .into(viewHolder.getImageViewUserAvatar());
+                        util.getDownloadUrlFromPath(user.getAvatarPath(), new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                Glide.with(context)
+                                        .load(uri)
+                                        .centerCrop()
+                                        .into(viewHolder.getImageViewUserAvatar());
+                            }
+                        }, Util.DEFAULT_F_LISTENER);
                     }
                 }
             }, Util.DEFAULT_F_LISTENER);
 
-            viewHolder.getTextViewMessage().setText(message.getText());
-            viewHolder.getTextViewTimeOfMessage().setText(message.getSimpleTime());
+
             if (message.getImagePath()!=null) {
                 viewHolder.getImageViewPhoto().setVisibility(View.VISIBLE);
                 viewHolder.getTextViewTimeOfMessage().setVisibility(View.INVISIBLE);
-                Glide.with(context).load(Uri.parse(message.getImagePath()))
-                        .centerCrop().override(500,500)
-                        .into(viewHolder.getImageViewPhoto());
+                util.getDownloadUrlFromPath(message.getImagePath(), new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Glide.with(context)
+                                .load(uri)
+                                .centerCrop()
+                                .override(500,500)
+                                .into(viewHolder.getImageViewPhoto());
+                    }
+                }, Util.DEFAULT_F_LISTENER);
             }
             if (message.getFileURL()!=null) {
 
