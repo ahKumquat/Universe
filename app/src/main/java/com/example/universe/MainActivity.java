@@ -1,5 +1,7 @@
 package com.example.universe;
 
+import static androidx.core.content.ContextCompat.getSystemService;
+
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -11,6 +13,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.Manifest;
+import android.app.SearchManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -21,6 +24,8 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.universe.Models.Chat;
+import com.example.universe.Models.Event;
+import com.example.universe.Models.User;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -46,7 +51,8 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
         ChatManager.IchatManagerFragmentAction, Register.IRegisterFragmentAction,
         Profile.IProfileFragmentAction, Setting.ISettingFragmentAction,
         FragmentCameraController.DisplayTakenPhoto, FragmentDisplayImage.IdisplayImageAction,
-        ChatRoom.IchatFragmentButtonAction, FragmentDisplayFile.IdisplayFileAction {
+        ChatRoom.IchatFragmentButtonAction, FragmentDisplayFile.IdisplayFileAction,
+        HomeEventAdapter.IEventListRecyclerAction {
     private String TAG = Util.TAG;
     private Util util;
     private FirebaseUser currentUser;
@@ -59,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
     private static final int PERMISSIONS_CODE_PROFILE = 0x200;
     private static final int PERMISSIONS_CODE_CHATROOM= 0x300;
     private static final int PERMISSIONS_CODE_FILE = 0x400;
+    private static final int PERMISSIONS_CODE_HOME = 0x500;
 
     private GoogleSignInClient googleSignInClient;
 
@@ -112,6 +119,23 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
         readAllowed = ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
         writeAllowed = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
 
+        Boolean coarseLocationAllowed = ContextCompat.checkSelfPermission(this,
+                android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+
+
+//        if(cameraAllowed && readAllowed && writeAllowed && videoAllowed && locationAllowed && coarseLocationAllowed){
+//            Toast.makeText(this, "All permissions granted!", Toast.LENGTH_SHORT).show();
+//        }else{
+//            requestPermissions(new String[]{
+//                    Manifest.permission.CAMERA,
+//                    Manifest.permission.READ_EXTERNAL_STORAGE,
+//                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+//                    Manifest.permission.RECORD_AUDIO,
+//                    Manifest.permission.ACCESS_FINE_LOCATION,
+//                    Manifest.permission.ACCESS_COARSE_LOCATION
+//
+//            }, PERMISSIONS_CODE_HOME);
+//        }
         util = Util.getInstance();
 //        Log.d(TAG, "onCreate Activity: " + mAuth.getCurrentUser().getEmail());
         //TODO: comment this out when testing is not needed
@@ -173,9 +197,9 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
     }
 
     @Override
-    public void openProfile() {
+    public void openProfile(User user) {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.containerMain, Profile.newInstance(), "FragmentProfile")
+                .replace(R.id.containerMain, Profile.newInstance(user), "FragmentProfile")
                 .addToBackStack("profile").commit();
     }
 
@@ -229,9 +253,9 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
     }
 
     @Override
-    public void populateSettingFragment() {
+    public void populateSettingFragment(User user) {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.containerMain, Setting.newInstance(), "FragmentSetting")
+                .replace(R.id.containerMain, Setting.newInstance(user), "FragmentSetting")
                 .addToBackStack("settings").commit();
     }
 
@@ -519,5 +543,12 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
                     }
             }
         });
+    }
+
+    @Override
+    public void eventClickedFromRecyclerView(Event event) {
+      getSupportFragmentManager().beginTransaction()
+              .replace(R.id.containerMain, EventFragment.newInstance(event))
+              .addToBackStack("FragmentHome").commit();
     }
 }

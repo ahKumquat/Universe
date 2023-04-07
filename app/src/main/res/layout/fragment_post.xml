@@ -84,29 +84,36 @@
 
                 <Spinner
                     android:id="@+id/post_spinner_timeHour"
-                    android:layout_width="64dp"
-                    android:layout_height="25dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/post_textView_time"
-                    app:layout_constraintStart_toStartOf="@+id/post_editText_location"
-                    app:layout_constraintTop_toTopOf="@+id/post_textView_time" />
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="55dp"
+                    android:layout_marginTop="14dp"
+                    android:layout_marginBottom="2dp"
+                    app:layout_constraintBottom_toTopOf="@+id/post_editText_duration"
+                    app:layout_constraintStart_toEndOf="@+id/post_textView_time"
+                    app:layout_constraintTop_toBottomOf="@+id/post_editText_date" />
 
                 <Spinner
                     android:id="@+id/post_spinner_timeMinute"
-                    android:layout_width="64dp"
-                    android:layout_height="25dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/post_textView_time"
-                    app:layout_constraintEnd_toStartOf="@+id/post_spinner_timeAMPM"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="14dp"
+                    android:layout_marginBottom="2dp"
+                    app:layout_constraintBottom_toTopOf="@+id/post_editText_duration"
                     app:layout_constraintStart_toEndOf="@+id/post_spinner_timeHour"
-                    app:layout_constraintTop_toTopOf="@+id/post_textView_time"
-                    app:layout_constraintVertical_bias="1.0" />
+                    app:layout_constraintTop_toBottomOf="@+id/post_editText_date" />
 
                 <Spinner
                     android:id="@+id/post_spinner_timeAMPM"
-                    android:layout_width="64dp"
-                    android:layout_height="25dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/post_textView_time"
-                    app:layout_constraintEnd_toEndOf="@+id/post_editText_location"
-                    app:layout_constraintTop_toTopOf="@+id/post_textView_time" />
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="14dp"
+                    android:layout_marginBottom="2dp"
+                    app:layout_constraintBottom_toTopOf="@+id/post_editText_duration"
+                    app:layout_constraintStart_toEndOf="@+id/post_spinner_timeMinute"
+                    app:layout_constraintTop_toBottomOf="@+id/post_editText_date" />
 
                 <TextView
                     android:id="@+id/post_textView_duration"
@@ -123,22 +130,24 @@
                     android:id="@+id/post_editText_duration"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
                     android:ems="10"
                     android:hint="xx.x"
                     android:inputType="time"
                     app:layout_constraintBottom_toBottomOf="@+id/post_textView_duration"
-                    app:layout_constraintEnd_toEndOf="@+id/post_spinner_timeMinute"
-                    app:layout_constraintStart_toStartOf="@+id/post_editText_location"
-                    app:layout_constraintTop_toTopOf="@+id/post_textView_duration" />
+                    app:layout_constraintEnd_toStartOf="@+id/post_spinner_timeUnit"
+                    app:layout_constraintStart_toStartOf="@+id/post_editText_location" />
 
                 <Spinner
                     android:id="@+id/post_spinner_timeUnit"
-                    android:layout_width="64dp"
-                    android:layout_height="25dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/post_textView_duration"
-                    app:layout_constraintEnd_toEndOf="@+id/post_editText_location"
-                    app:layout_constraintStart_toStartOf="@+id/post_spinner_timeAMPM"
-                    app:layout_constraintTop_toTopOf="@+id/post_textView_duration" />
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="154dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="121dp"
+                    app:layout_constraintBottom_toTopOf="@+id/post_editText_description"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/post_textView_location"
