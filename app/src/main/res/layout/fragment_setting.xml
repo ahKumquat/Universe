@@ -45,7 +45,7 @@
     </androidx.appcompat.widget.Toolbar>
 
     <ImageView
-        android:id="@+id/setting_imageview_edit"
+        android:id="@+id/setting_imageview_avatar"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginStart="155dp"
@@ -82,7 +82,7 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/setting_imageview_edit" />
+        app:layout_constraintTop_toBottomOf="@+id/setting_imageview_avatar" />
 
     <EditText
         android:id="@+id/setting_editText_email"

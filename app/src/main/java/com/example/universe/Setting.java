@@ -1,6 +1,7 @@
 package com.example.universe;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,7 +15,9 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.example.universe.Models.User;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 public class Setting extends Fragment {
 
@@ -22,7 +25,7 @@ public class Setting extends Fragment {
     private static final String ARG_USER = "user";
     private User user;
 
-    private ImageView imageViewEdit;
+    private ImageView imageViewAvatar;
 
     private EditText editTextName;
 
@@ -39,6 +42,8 @@ public class Setting extends Fragment {
 
     private Util util;
     private ImageView imageViewEditAvatar;
+    String newAvatarPath;
+
 
 
     public Setting() {
@@ -56,6 +61,7 @@ public class Setting extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        util = Util.getInstance();
         if (getArguments() != null) {
             user = (User) getArguments().getSerializable(ARG_USER);
         }
@@ -67,7 +73,19 @@ public class Setting extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_setting, container, false);
         imageButtonBack = view.findViewById(R.id.setting_imagebutton_backbutton);
-        imageViewEdit = view.findViewById(R.id.setting_imageview_edit);
+        imageViewAvatar = view.findViewById(R.id.setting_imageview_avatar);
+        if (user.getAvatarPath()!=null || !user.getAvatarPath().equals("")) {
+            util.getDownloadUrlFromPath(user.getAvatarPath(), new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Glide.with(getContext())
+                            .load(uri)
+                            .centerCrop()
+                            .into(imageViewAvatar);
+                }
+            }, Util.DEFAULT_F_LISTENER);
+        }
+
         editTextName = view.findViewById(R.id.setting_editText_name);
         editTextAbout = view.findViewById(R.id.setting_editText_about);
         editTextEmail = view.findViewById(R.id.setting_editText_email);
@@ -79,6 +97,7 @@ public class Setting extends Fragment {
         imageButtonBack.setOnClickListener(v -> mListener.populateProfileFragment());
         imageButtonLogOut.setOnClickListener(v -> mListener.logOut());
         imageViewEditAvatar.setOnClickListener(v -> mListener.setAvatar());
+        imageViewAvatar.setOnClickListener(v -> mListener.setAvatar());
 
         editTextName.setText(user.getUserName());
         editTextEmail.setText(user.getEmail());
@@ -91,7 +110,7 @@ public class Setting extends Fragment {
             }
         });
 
-        imageViewEdit.setOnClickListener(new View.OnClickListener() {
+        imageViewAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -110,6 +129,10 @@ public class Setting extends Fragment {
         }else{
             throw new RuntimeException(context + "must implement Setting Fragment Action");
         }
+    }
+
+    public void setNewAvatarPath(String path) {
+        newAvatarPath = path;
     }
 
     public interface ISettingFragmentAction {
