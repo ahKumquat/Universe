@@ -272,7 +272,7 @@ public class Test extends Thread{
         //createUserWithEmailAndPassword(3);
         loginUserWithEmailAndPassword(2, authResult -> {
             Log.d(TAG, "on Login Success: " + util.getmAuth().getUid());
-            util.updateProfile("/images/113", "About me!", Util.DEFAULT_VOID_S_LISTENER, Util.DEFAULT_F_LISTENER);
+            //util.updateProfile("/images/113", "About me!", Util.DEFAULT_VOID_S_LISTENER, Util.DEFAULT_F_LISTENER);
         });
             //getFollowingEvents();
             //getFollowing(util.getmAuth().getUid());
