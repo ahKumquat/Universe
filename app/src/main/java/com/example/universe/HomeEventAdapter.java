@@ -51,8 +51,10 @@ public class HomeEventAdapter extends RecyclerView.Adapter<HomeEventAdapter.View
     public void onBindViewHolder(@NonNull HomeEventAdapter.ViewHolder holder, int position) {
         Event event = this.getEventList().get(position);
         holder.getTextViewTitle().setText(event.getTitle());
-        if (!event.getImageURL().equals("")) {
-            Glide.with(context).load(event.getImageURL()).error(R.drawable.image_not_found).into(holder.imageButtonEventPic);
+        if (event.getImageURL()!= null) {
+            if (!event.getImageURL().equals("")) {
+                Glide.with(context).load(event.getImageURL()).error(R.drawable.image_not_found).into(holder.imageButtonEventPic);
+            }
         }
         holder.getImageButtonEventPic().setOnClickListener(v -> mListener.eventClickedFromRecyclerView(event));
     }
