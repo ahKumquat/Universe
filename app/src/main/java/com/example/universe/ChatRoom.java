@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.universe.Models.Chat;
@@ -54,6 +55,7 @@ public class ChatRoom extends Fragment {
     private String otherUserId;
     private User otherUser;
     private IchatFragmentButtonAction mListener;
+    private TextView textViewTitle;
 
     public ChatRoom() {
         // Required empty public constructor
@@ -77,7 +79,7 @@ public class ChatRoom extends Fragment {
                 public void onSuccess(User user) {
                     otherUser = user;
                     otherUserName = user.getUserName();
-                    getActivity().setTitle(otherUserName);
+                    textViewTitle.setText(otherUserName);
                     Log.d(TAG, "onCreate: otherUserId " + otherUserId + "otherUserName " + otherUserName);
                 }
             }, DEFAULT_F_LISTENER);
@@ -101,6 +103,8 @@ public class ChatRoom extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_chat_room, container, false);
 
+        textViewTitle = view.findViewById(R.id.chatRoom_title);
+        textViewTitle.setText(otherUserName);
         editTextMessage = view.findViewById(R.id.chatRoom_editText_message);
         buttonSendMessage = view.findViewById(R.id.chatRoom_button_send);
         imageButtonCamera = view.findViewById(R.id.chatRoom_imageButton_camera);

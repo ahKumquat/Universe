@@ -138,7 +138,6 @@ public class FragmentCameraController extends Fragment implements View.OnClickLi
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 contentValues).build();
 
-
         imageCapture.takePicture(outputFileOptions,
                 ContextCompat.getMainExecutor(getContext()),
                 new ImageCapture.OnImageSavedCallback() {

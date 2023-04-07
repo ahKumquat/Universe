@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
     private static final int PERMISSIONS_CODE_CHATROOM= 0x300;
     private static final int PERMISSIONS_CODE_FILE = 0x400;
     private static final int PERMISSIONS_CODE_HOME = 0x500;
+    private boolean takePhotoNotFromGallery;
 
     private GoogleSignInClient googleSignInClient;
 
@@ -106,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
+        takePhotoNotFromGallery = true;
 
         //For Google sign in
         GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -234,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.containerMain, ChatRoom.newInstance().getClass(),
                         bundle,"chatFragment")
-                .addToBackStack("chatroom")
+                .addToBackStack("chatroom") //TODO
                 .commit();
         Log.d(TAG, "startChatPage: success");
     }
@@ -271,7 +273,7 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
     public void onTakePhoto(Uri imageUri) {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.containerMain, FragmentDisplayImage.newInstance(imageUri),"displayFragment")
-                .addToBackStack("camera").commit();
+                .addToBackStack("displayImage").commit();
     }
 
     @Override
@@ -311,7 +313,7 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
                         Uri selectedImageUri = data.getData();
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.containerMain, FragmentDisplayImage.newInstance(selectedImageUri),"displayFragment")
-                                .addToBackStack("gallery").commit();
+                                .addToBackStack("displayImage").commit();
                     }
                 }
             }
@@ -319,6 +321,7 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
 
     @Override
     public void onOpenGalleryPressed() {
+        takePhotoNotFromGallery = false;
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
         String[] mimeTypes = {"image/jpeg", "image/png"};
@@ -330,7 +333,7 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
     public void onRetakePressed() {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.containerMain, FragmentCameraController.newInstance(), "cameraFragment")
-                .addToBackStack("display").commit();
+                .addToBackStack("camera").commit();
     }
 
     @Override
@@ -349,7 +352,7 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Toast.makeText(MainActivity.this, "Upload successful! Check Firestore", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Upload successful!", Toast.LENGTH_SHORT).show();
                         progressBar.setVisibility(View.GONE);
                     }
                 })
@@ -398,10 +401,19 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
 //                                .commit();
                     } else if (name.equals("chatroom")) {
                         ChatRoom fragment = (ChatRoom) getSupportFragmentManager().findFragmentByTag("chatFragment");
-                        fragment.sendImage(storageReference.getPath());
-                        startChatPage(otherUserId);
+                        fragment.sendImage(downloadUri);
+                        if (takePhotoNotFromGallery) {
+                            getSupportFragmentManager().popBackStack();
+                            getSupportFragmentManager().popBackStack();
+                        } else {
+                            getSupportFragmentManager().popBackStack();
+                            getSupportFragmentManager().popBackStack();
+                            getSupportFragmentManager().popBackStack();
+                        }
+                        takePhotoNotFromGallery = true;
                     } else {
                         Log.d(TAG, "did not define back method for fragment: " + name);
+                        getSupportFragmentManager().popBackStack();
                     }
 
                 } else {
@@ -537,7 +549,8 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
                     Uri downloadUri = task.getResult();
                         ChatRoom fragment = (ChatRoom) getSupportFragmentManager().findFragmentByTag("chatFragment");
                         fragment.sendFile(downloadUri);
-                        startChatPage(otherUserId);
+                        getSupportFragmentManager().popBackStack();
+                        getSupportFragmentManager().popBackStack();
                     } else {
                         Log.d(TAG, "error sending file");
                     }
