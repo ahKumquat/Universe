@@ -401,7 +401,7 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
 //                                .commit();
                     } else if (name.equals("chatroom")) {
                         ChatRoom fragment = (ChatRoom) getSupportFragmentManager().findFragmentByTag("chatFragment");
-                        fragment.sendImage(downloadUri);
+                        fragment.sendImage(storageReference.getPath());
                         if (takePhotoNotFromGallery) {
                             getSupportFragmentManager().popBackStack();
                             getSupportFragmentManager().popBackStack();
