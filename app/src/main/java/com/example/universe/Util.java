@@ -968,13 +968,25 @@ public class Util {
         transaction.update(otherUserRef, User.KEY_UNREAD_COUNT, FieldValue.increment(1));
     }
 
+    /**
+     * Update the profile.
+     *
+     * @param avatarPath avatar path
+     * @param about about
+     * @param email email, pass null to disable reset email.
+     * @param password pass word, pass null to disable reset email.
+     * @param sListener OnSuccessListener<Void>
+     * @param fListener OnFailureListener
+     */
     public void updateProfile(String avatarPath, String about, String email, String password,OnSuccessListener<Void> sListener, OnFailureListener fListener) {
-        DocumentReference userRef = db.collection(USERS_COLLECTION_NAME).document(mAuth.getUid());
-        if (!mAuth.getCurrentUser().getEmail().equalsIgnoreCase(email)){
-            mAuth.getCurrentUser().updateEmail(email);
+        if (email != null && !mAuth.getCurrentUser().getEmail().equalsIgnoreCase(email)){
+            mAuth.getCurrentUser().updateEmail(email).addOnFailureListener(fListener);
         }
-        mAuth.getCurrentUser().updatePassword(password).addOnFailureListener(DEFAULT_F_LISTENER);
-        //mAuth.getCurrentUser().updatePassword(password);
+        if (password != null && password.length() > 0){
+            mAuth.getCurrentUser().updatePassword(password).addOnFailureListener(fListener);
+        }
+
+        DocumentReference userRef = db.collection(USERS_COLLECTION_NAME).document(mAuth.getUid());
         db.runTransaction(new Transaction.Function<Void>() {
                     @Nullable
                     @Override
