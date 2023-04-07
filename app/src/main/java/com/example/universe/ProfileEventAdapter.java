@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -51,8 +50,8 @@ public class ProfileEventAdapter extends RecyclerView.Adapter<ProfileEventAdapte
     public void onBindViewHolder(@NonNull ProfileEventAdapter.ViewHolder holder, int position) {
         Event event = this.getEventList().get(position);
         holder.getTextViewTitle().setText(event.getTitle());
-        if (!event.getImageURL().equals("")) {
-            Glide.with(context).load(event.getImageURL()).error(R.drawable.image_not_found).into(holder.getImageViewEventPic());
+        if (!event.getImagePath().equals("")) {
+            Glide.with(context).load(event.getImagePath()).error(R.drawable.image_not_found).into(holder.getImageViewEventPic());
         }
         holder.getImageViewEventPic().setOnClickListener(v -> mListener.eventClickedFromRecyclerView(event));
     }

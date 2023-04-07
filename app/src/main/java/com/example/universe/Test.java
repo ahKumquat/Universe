@@ -12,6 +12,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -26,6 +27,9 @@ public class Test extends Thread{
             "05PF5OxNMWYdHKw5Upj4kU5tnAK2",
             "p17DVqKKhSMrtSmap9lj2tD77x13"
     };
+
+    private static GeoPoint boston = new GeoPoint(42.34139354184174, -71.09022116162349);
+
     private static Util util;
 
     public Test(){
@@ -228,15 +232,10 @@ public class Test extends Thread{
     }
 
     public void prepopulateEvents(GeoPoint startPoint, double stepDist,  int step) throws ParseException {
+        SimpleDateFormat format = new SimpleDateFormat("MM-dd,HH:mm");
         double lat = startPoint.getLatitude();
         double lon = startPoint.getLongitude();
-        String uid = "testRange_" + 0 + "_" + lat + "_" + lon;
-        Event event = new Event(uid, util.getCurrentUser(), "", new Timestamp(Util.EVENT_TIME_FORMAT.parse("2023/04/01" + ", " + "00:00")),
-                1, Event.UNIT_HOUR, "", new GeoPoint(lat, lon),
-                1, "", "");
-        util.postEvent(event, Util.DEFAULT_VOID_S_LISTENER, Util.DEFAULT_F_LISTENER);
-
-        util.postEvent(event, Util.DEFAULT_VOID_S_LISTENER, Util.DEFAULT_F_LISTENER);
+        Event event;
         for (int i = 0; i <step; i++){
             lat = lat + stepDist;
             if (lat > 90){
@@ -245,10 +244,12 @@ public class Test extends Thread{
             lon = startPoint.getLongitude();
             for (int j = 0; j < step; j++){
                 lon = (lon + stepDist) % 180;
-                uid = "testRange_" + i + "_" + j + "_" + lat + "_" + lon;
-                    event = new Event(uid, util.getCurrentUser(), "", new Timestamp(Util.EVENT_TIME_FORMAT.parse("2023/04/0" + (i%9 + 1) + ", " + "00:00")),
+                GeoPoint loc = new GeoPoint(lat, lon);
+                Timestamp time = new Timestamp(new Date(System.currentTimeMillis() + +3600000L * 6 *(i*step + j)));
+                String uid = "lat="+ Math.round(lat*10)/10.0 + ",lon=" + Math.round(lon*10)/10.0 +",t="+ format.format(time.toDate());
+                    event = new Event(uid, util.getCurrentUser(), "", time,
                             i+1, Event.UNIT_HOUR, "", new GeoPoint(lat, lon),
-                            i + 1, "", "");
+                            i + 1, "", null);
                 util.postEvent(event, Util.DEFAULT_VOID_S_LISTENER, Util.DEFAULT_F_LISTENER);
             }
         }
@@ -271,7 +272,9 @@ public class Test extends Thread{
         //createUserWithEmailAndPassword(3);
         loginUserWithEmailAndPassword(0, authResult -> {
             Log.d(TAG, "on Login Success: " + util.getmAuth().getUid());
-            //getChat(TEST_USER_IDS[0]);
+            for (String id: TEST_USER_IDS){
+                followUser(id);
+            }
         });
             //getFollowingEvents();
             //getFollowing(util.getmAuth().getUid());

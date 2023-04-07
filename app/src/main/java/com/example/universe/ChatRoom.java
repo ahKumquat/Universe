@@ -183,8 +183,8 @@ public class ChatRoom extends Fragment {
         messageAdaptor.notifyDataSetChanged();
     }
 
-    public void sendImage(Uri downloadUri) {
-        Message message = new Message(util.getCurrentUser(), null, downloadUri.toString(), null);
+    public void sendImage(String path) {
+        Message message = new Message(util.getCurrentUser(), null, path, null);
         util.sendMessage(otherUserId, message, new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {

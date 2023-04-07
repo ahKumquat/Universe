@@ -21,28 +21,28 @@ public class Message {
     private String userName;
     private Timestamp timestamp;
     private String text;
-    private String imageURL;
+    private String imagePath;
     private String fileURL;
 
     public Message() {
     }
 
-    public Message(FirebaseUser user, String text, String imageURL, String fileURL) {
+    public Message(FirebaseUser user, String text, String imagePath, String fileURL) {
         this.messageUid = Util.createUid();
         this.userId = user.getUid();
         this.userName = user.getDisplayName();
         this.text = text;
-        this.imageURL = imageURL;
+        this.imagePath = imagePath;
         this.fileURL = fileURL;
         this.timestamp = new Timestamp(new Date());
     }
 
     public boolean typeIsImage(){
-        return imageURL != null;
+        return imagePath != null;
     }
 
     public boolean typeIsText(){
-        return imageURL == null;
+        return imagePath == null;
     }
 
     public String getUserId() {
@@ -66,8 +66,8 @@ public class Message {
         return text;
     }
 
-    public String getImageURL() {
-        return imageURL;
+    public String getImagePath() {
+        return imagePath;
     }
 
     @Override
@@ -77,7 +77,7 @@ public class Message {
                 ", userId='" + userId + '\'' +
                 ", timestamp=" + Util.timeStampToEventTimeString(timestamp) +
                 ", text='" + text + '\'' +
-                ", imageURL='" + imageURL + '\'' +
+                ", imageURL='" + imagePath + '\'' +
                 ", fileURL='" + fileURL + '\'' +
                 '}';
     }
@@ -106,8 +106,8 @@ public class Message {
         this.text = text;
     }
 
-    public void setImageURL(String imageURL) {
-        this.imageURL = imageURL;
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
     public String getFileURL() {
