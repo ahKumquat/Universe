@@ -270,11 +270,9 @@ public class Test extends Thread{
     @Override
     public void run() {
         //createUserWithEmailAndPassword(3);
-        loginUserWithEmailAndPassword(0, authResult -> {
+        loginUserWithEmailAndPassword(2, authResult -> {
             Log.d(TAG, "on Login Success: " + util.getmAuth().getUid());
-            for (String id: TEST_USER_IDS){
-                followUser(id);
-            }
+            util.updateProfile("/images/113", "About me!", Util.DEFAULT_VOID_S_LISTENER, Util.DEFAULT_F_LISTENER);
         });
             //getFollowingEvents();
             //getFollowing(util.getmAuth().getUid());
