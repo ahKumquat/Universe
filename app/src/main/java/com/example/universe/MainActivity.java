@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
     private static final int PERMISSIONS_CODE_CHATROOM= 0x300;
     private static final int PERMISSIONS_CODE_FILE = 0x400;
     private static final int PERMISSIONS_CODE_HOME = 0x500;
+    private boolean takePhotoNotFromGallery;
 
     private GoogleSignInClient googleSignInClient;
 
@@ -106,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
+        takePhotoNotFromGallery = true;
 
         //For Google sign in
         GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -319,6 +321,7 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
 
     @Override
     public void onOpenGalleryPressed() {
+        takePhotoNotFromGallery = false;
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
         String[] mimeTypes = {"image/jpeg", "image/png"};
@@ -399,8 +402,15 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
                     } else if (name.equals("chatroom")) {
                         ChatRoom fragment = (ChatRoom) getSupportFragmentManager().findFragmentByTag("chatFragment");
                         fragment.sendImage(downloadUri);
-                        getSupportFragmentManager().popBackStack();
-                        getSupportFragmentManager().popBackStack();
+                        if (takePhotoNotFromGallery) {
+                            getSupportFragmentManager().popBackStack();
+                            getSupportFragmentManager().popBackStack();
+                        } else {
+                            getSupportFragmentManager().popBackStack();
+                            getSupportFragmentManager().popBackStack();
+                            getSupportFragmentManager().popBackStack();
+                        }
+                        takePhotoNotFromGallery = true;
 //                        getSupportFragmentManager().popBackStack("chatroom",
 //                                getSupportFragmentManager().POP_BACK_STACK_INCLUSIVE);
                         //startChatPage(otherUserId);
