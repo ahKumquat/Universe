@@ -10,29 +10,44 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+
+import com.example.universe.Models.User;
 
 public class Setting extends Fragment {
 
     private ImageButton imageButtonBack;
+    private static final String ARG_USER = "user";
+    private User user;
 
     private ImageView imageViewEdit;
+
+    private EditText editTextName;
+
+    private EditText editTextEmail;
+
+    private EditText editTextPassword;
+
+    private EditText editTextAbout;
 
     private Button buttonSave;
     private ImageButton imageButtonLogOut;
 
     private ISettingFragmentAction mListener;
 
+    private Util util;
+
 
     public Setting() {
         // Required empty public constructor
     }
 
-    public static Setting newInstance() {
+    public static Setting newInstance(User user) {
         Setting fragment = new Setting();
         Bundle args = new Bundle();
-
+        args.putSerializable(ARG_USER, user);
         fragment.setArguments(args);
         return fragment;
     }
@@ -41,7 +56,7 @@ public class Setting extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-
+            user = (User) getArguments().getSerializable(ARG_USER);
         }
     }
 
@@ -52,11 +67,19 @@ public class Setting extends Fragment {
         View view = inflater.inflate(R.layout.fragment_setting, container, false);
         imageButtonBack = view.findViewById(R.id.setting_imagebutton_backbutton);
         imageViewEdit = view.findViewById(R.id.setting_imageview_edit);
+        editTextName = view.findViewById(R.id.setting_editText_name);
+        editTextAbout = view.findViewById(R.id.setting_editText_about);
+        editTextEmail = view.findViewById(R.id.setting_editText_email);
+        editTextPassword = view.findViewById(R.id.setting_editText_password);
         buttonSave = view.findViewById(R.id.setting_button_save);
         imageButtonLogOut = view.findViewById(R.id.setting_imageButton_logout);
 
         imageButtonBack.setOnClickListener(v -> mListener.populateProfileFragment());
         imageButtonLogOut.setOnClickListener(v -> mListener.logOut());
+
+        editTextName.setText(user.getUserName());
+        editTextEmail.setText(user.getEmail());
+        editTextAbout.setText(user.getAbout());
 
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,7 +105,7 @@ public class Setting extends Fragment {
         if (context instanceof ISettingFragmentAction){
             this.mListener = (ISettingFragmentAction) context;
         }else{
-            throw new RuntimeException(context + "must implement profile Fragment Action");
+            throw new RuntimeException(context + "must implement Setting Fragment Action");
         }
     }
 

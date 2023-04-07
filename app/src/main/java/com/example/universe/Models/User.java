@@ -1,5 +1,6 @@
 package com.example.universe.Models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.List;
 /**
  * This class represents a user.
  */
-public class User {
+public class User implements Serializable {
     public static final String KEY_UID = "uid";
     public static final String KEY_USERNAME = "userName";
     public static final String KEY_EMAIL = "email";

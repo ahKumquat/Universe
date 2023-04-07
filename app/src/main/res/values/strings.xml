@@ -6,6 +6,8 @@
     <string name="chatRoom_button_send">Send</string>
     <string name="homePage_textView_nearby">Nearby</string>
     <string name="homePage_textView_follow">Follow</string>
+    <string name="homePage_textView_explore">Explore</string>
+    <string name="homePage_searchView_hint">Type your keyword here!</string>
     <string name="postPage_textView_title">Title</string>
     <string name="postPage_textView_date">Date:</string>
     <string name="postPage_textView_time">Time:</string>

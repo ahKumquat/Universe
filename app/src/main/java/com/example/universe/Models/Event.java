@@ -1,5 +1,6 @@
 package com.example.universe.Models;
 
+
 import com.example.universe.Util;
 import com.firebase.geofire.GeoFireUtils;
 import com.firebase.geofire.GeoLocation;
@@ -7,13 +8,14 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.GeoPoint;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * The Event class represents an event.
  */
-public class Event {
+public class Event implements Serializable {
     public static final String KEY_UID = "uid";
     public static final String KEY_HOST_ID = "hostId";
     public static final String KEY_TITLE = "title";
@@ -37,11 +39,11 @@ public class Event {
     private String title;
     private String hostId;
     private String hostName;
-    private Timestamp time;
+    private transient Timestamp time; // For implementing Serializable
     private double duration;
     private String durationUnit;
     private String address;
-    private GeoPoint geoPoint;
+    private transient GeoPoint geoPoint; // For implementing Serializable
     private String geoHash;
     private int capacity;
     private String description;
