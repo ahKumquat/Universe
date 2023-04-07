@@ -98,28 +98,6 @@ public class Login extends Fragment {
                             Toast.makeText(getContext(), "Login Failed!"+e.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     });
-//                    //sign in the account
-//                    util.getmAuth().signInWithEmailAndPassword(userEmail,password)
-//                            .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-//                                @Override
-//                                public void onSuccess(AuthResult authResult) {
-//                                    Toast.makeText(getContext(), "Login Successful!", Toast.LENGTH_SHORT).show();
-//                                }
-//                            })
-//                            .addOnFailureListener(new OnFailureListener() {
-//                                @Override
-//                                public void onFailure(@NonNull Exception e) {
-//                                    Toast.makeText(getContext(), "Login Failed!"+e.getMessage(), Toast.LENGTH_LONG).show();
-//                                }
-//                            })
-//                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-//                                @Override
-//                                public void onComplete(@NonNull Task<AuthResult> task) {
-//                                    if(task.isSuccessful()){
-//                                        mListener.populateMainFragment(util.getCurrentUser());
-//                                    }
-//                                }
-//                            });
                 }
             }
         });

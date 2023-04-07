@@ -102,12 +102,12 @@ public class HomeFragment extends Fragment {
         callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                mListener.logOut();
+//                mListener.logOut();
+                //TODO: just quit the app instead of logging out
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
         util = Util.getInstance();
-
     }
 
     @Override
