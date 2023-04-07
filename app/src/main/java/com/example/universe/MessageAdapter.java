@@ -83,7 +83,8 @@ public class MessageAdapter extends RecyclerView.Adapter {
 
             if (message.getImagePath()!=null) {
                 viewHolder.getImageViewPhoto().setVisibility(View.VISIBLE);
-                viewHolder.getTextViewTimeOfMessage().setVisibility(View.INVISIBLE);
+                viewHolder.getTextViewTimeOfMessage().setVisibility(View.GONE);
+                viewHolder.getTextViewMessage().setVisibility(View.GONE);
                 util.getDownloadUrlFromPath(message.getImagePath(), new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
@@ -94,16 +95,15 @@ public class MessageAdapter extends RecyclerView.Adapter {
                                 .into(viewHolder.getImageViewPhoto());
                     }
                 }, Util.DEFAULT_F_LISTENER);
+            }else if (message.getFileURL()!=null) {
+                viewHolder.getTextViewTimeOfMessage().setVisibility(View.GONE);
+                viewHolder.getTextViewMessage().setVisibility(View.GONE);
+            } else {
+                viewHolder.getTextViewMessage().setText(message.getText());
+                viewHolder.getTextViewTimeOfMessage().setText(message.getSimpleTime());
             }
-            if (message.getFileURL()!=null) {
-                viewHolder.getTextViewMessage().setText("A file has been sent");
-            }
-            viewHolder.getTextViewMessage().setText(message.getText());
-            viewHolder.getTextViewTimeOfMessage().setText(message.getSimpleTime());
         } else {
             ReceiverViewHolder viewHolder = (ReceiverViewHolder) holder;
-            viewHolder.getTextViewMessage().setText(message.getText());
-            viewHolder.getTextViewTimeOfMessage().setText(message.getSimpleTime());
             //load user avatar
             util.getUser(message.getUserId(), new OnSuccessListener<User>() {
                 @Override
@@ -122,10 +122,10 @@ public class MessageAdapter extends RecyclerView.Adapter {
                 }
             }, Util.DEFAULT_F_LISTENER);
 
-
             if (message.getImagePath()!=null) {
                 viewHolder.getImageViewPhoto().setVisibility(View.VISIBLE);
-                viewHolder.getTextViewTimeOfMessage().setVisibility(View.INVISIBLE);
+                viewHolder.getTextViewTimeOfMessage().setVisibility(View.GONE);
+                viewHolder.getTextViewMessage().setVisibility(View.GONE);
                 util.getDownloadUrlFromPath(message.getImagePath(), new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
@@ -136,9 +136,12 @@ public class MessageAdapter extends RecyclerView.Adapter {
                                 .into(viewHolder.getImageViewPhoto());
                     }
                 }, Util.DEFAULT_F_LISTENER);
-            }
-            if (message.getFileURL()!=null) {
-
+            } else if (message.getFileURL()!=null) {
+                viewHolder.getTextViewTimeOfMessage().setVisibility(View.GONE);
+                viewHolder.getTextViewMessage().setVisibility(View.GONE);
+            } else {
+                viewHolder.getTextViewMessage().setText(message.getText());
+                viewHolder.getTextViewTimeOfMessage().setText(message.getSimpleTime());
             }
         }
     }
