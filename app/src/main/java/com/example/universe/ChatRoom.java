@@ -6,6 +6,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -53,6 +54,7 @@ public class ChatRoom extends Fragment {
     private User otherUser;
     private IchatFragmentButtonAction mListener;
     private TextView textViewTitle;
+    private OnBackPressedCallback callback;
 
     public ChatRoom() {
         // Required empty public constructor
@@ -80,8 +82,13 @@ public class ChatRoom extends Fragment {
                     Log.d(TAG, "onCreate: otherUserId " + otherUserId + "otherUserName " + otherUserName);
                 }
             }, DEFAULT_F_LISTENER);
-            loadData();
         }
+        callback = new OnBackPressedCallback(true) {
+            public void handleOnBackPressed() {
+                mListener.populateChatManagerFragment();
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
     @Override
@@ -169,6 +176,12 @@ public class ChatRoom extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadData();
+    }
+
     private void loadData() {
         util.getMessages(otherUserId, new OnSuccessListener<List<Message>>() {
             @Override
@@ -209,5 +222,6 @@ public class ChatRoom extends Fragment {
     public interface IchatFragmentButtonAction {
         void sendImage();
         void sendFile();
+        void populateChatManagerFragment();
     }
 }

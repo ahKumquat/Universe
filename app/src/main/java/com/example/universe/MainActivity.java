@@ -398,7 +398,10 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
 //        ProgressBar.......
         progressBar.setVisibility(View.VISIBLE);
 //        Upload an image from local file....
-        StorageReference storageReference = util.getStorage().getReference().child("images/"+imageUri.getLastPathSegment());
+        List<String> arrayList = Arrays.stream(imageUri.getPath().split("/")).collect(Collectors.toList());
+
+        StorageReference storageReference = util.getStorage().getReference().child("images/"
+                + arrayList.get(arrayList.size() - 1));
         UploadTask uploadImage = storageReference.putFile(imageUri);
         uploadImage.addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -413,20 +416,21 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
                         progressBar.setVisibility(View.GONE);
                         int count = getSupportFragmentManager().getBackStackEntryCount();
                         String name = getSupportFragmentManager().getBackStackEntryAt(count - 2).getName();
-                        switch (Objects.requireNonNull(name)) {
-                            case POST_FRAGMENT:
-                                //TODO: implement upload the event pic and save path in Post Fragment
-                                PostFragment p = (PostFragment) getSupportFragmentManager().findFragmentByTag(POST_FRAGMENT);
-                                p.setPostPicPath(storageReference.getPath());
-                                getSupportFragmentManager().beginTransaction()
-                                        .replace(R.id.containerMain, p)
-                                        .addToBackStack(null).commit();
-                                break;
-                            case SETTING_FRAGMENT:
-                                Setting s = (Setting) getSupportFragmentManager().findFragmentByTag(SETTING_FRAGMENT);
-                                s.setNewAvatarPath(storageReference.getPath());
+                        if (name != null) {
+                            switch (name) {
+                                case POST_FRAGMENT:
+                                    //TODO: implement upload the event pic and save path in Post Fragment
+                                    PostFragment p = (PostFragment) getSupportFragmentManager().findFragmentByTag(POST_FRAGMENT);
+                                    p.setPostPicPath(storageReference.getPath());
+                                    getSupportFragmentManager().beginTransaction()
+                                            .replace(R.id.containerMain, p)
+                                            .addToBackStack(null).commit();
+                                    break;
+                                case SETTING_FRAGMENT:
+                                    Setting s = (Setting) getSupportFragmentManager().findFragmentByTag(SETTING_FRAGMENT);
+                                    s.setNewAvatarPath(storageReference.getPath());
 
-                                //TODO update user avatar path when user hits "Save Changes", not here
+                                    //TODO update user avatar path when user hits "Save Changes", not here
 //                            String currentUserID = util.getCurrentUser().getUid();
 //                            util.getUser(currentUserID, new OnSuccessListener<User>() {
 //                                @Override
@@ -447,21 +451,45 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
 //                            }, Util.DEFAULT_F_LISTENER);
 
 //
-                                getSupportFragmentManager().beginTransaction()
-                                        .replace(R.id.containerMain, s)
-                                        .addToBackStack(null).commit();
-                                break;
-                            case CHAT_FRAGMENT:
-                                ChatRoom fragment = (ChatRoom) getSupportFragmentManager().findFragmentByTag(CHAT_FRAGMENT);
-                                fragment.sendImage(imageUri.toString());
-                                getSupportFragmentManager().beginTransaction()
-                                        .replace(R.id.containerMain, fragment)
-                                        .addToBackStack(null).commit();
-                                break;
-                            default:
-                                Log.d(TAG, "did not define back method for fragment: " + name);
-                                getSupportFragmentManager().popBackStack();
-                                break;
+                                    getSupportFragmentManager().beginTransaction()
+                                            .replace(R.id.containerMain, s)
+                                            .addToBackStack(null).commit();
+                                    break;
+                                case CHAT_FRAGMENT:
+                                    ChatRoom fragment = (ChatRoom) getSupportFragmentManager().findFragmentByTag(CHAT_FRAGMENT);
+                                    fragment.sendImage(storageReference.getPath());
+                                    getSupportFragmentManager().beginTransaction()
+                                            .replace(R.id.containerMain, fragment)
+                                            .addToBackStack(null).commit();
+                                    break;
+                            }
+                        } else {
+                            String otherName = getSupportFragmentManager().getBackStackEntryAt(count - 3).getName();
+                            switch (otherName) {
+                                case POST_FRAGMENT:
+                                    //TODO: implement upload the event pic and save path in Post Fragment
+                                    PostFragment p = (PostFragment) getSupportFragmentManager().findFragmentByTag(POST_FRAGMENT);
+                                    p.setPostPicPath(storageReference.getPath());
+                                    getSupportFragmentManager().beginTransaction()
+                                            .replace(R.id.containerMain, p)
+                                            .addToBackStack(null).commit();
+                                    break;
+                                case SETTING_FRAGMENT:
+                                    Setting s = (Setting) getSupportFragmentManager().findFragmentByTag(SETTING_FRAGMENT);
+                                    s.setNewAvatarPath(storageReference.getPath());
+                                    getSupportFragmentManager().beginTransaction()
+                                            .replace(R.id.containerMain, s)
+                                            .addToBackStack(null).commit();
+                                    break;
+                                case CHAT_FRAGMENT:
+                                    ChatRoom fragment = (ChatRoom) getSupportFragmentManager().findFragmentByTag(CHAT_FRAGMENT);
+                                    fragment.sendImage(storageReference.getPath());
+                                    getSupportFragmentManager().beginTransaction()
+                                            .replace(R.id.containerMain, fragment)
+                                            .addToBackStack(null).commit();
+                                    break;
+                            }
+
                         }
                     }
                 })
@@ -600,6 +628,14 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
         else {
             selectFile();
         }
+    }
+
+    @Override
+    public void populateChatManagerFragment() {
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(CHAT_MANAGER_FRAGMENT);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.containerMain, Objects.requireNonNull(fragment))
+                .addToBackStack(null).commit();
     }
 
 
