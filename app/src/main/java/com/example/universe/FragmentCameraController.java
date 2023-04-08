@@ -129,9 +129,7 @@ public class FragmentCameraController extends Fragment implements View.OnClickLi
         ContentValues contentValues = new ContentValues();
         contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, timestamp);
         contentValues.put(MediaStore.MediaColumns.MIME_TYPE,"image/jpeg");
-        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.P){
-            contentValues.put(MediaStore.Images.Media.RELATIVE_PATH,"Pictures/CameraX-Image");
-        }
+        contentValues.put(MediaStore.Images.Media.RELATIVE_PATH,"Pictures/CameraX-Image");
 
         ImageCapture.OutputFileOptions outputFileOptions = new ImageCapture.OutputFileOptions
                 .Builder(getContext().getContentResolver(),

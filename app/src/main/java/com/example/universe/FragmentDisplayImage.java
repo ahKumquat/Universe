@@ -74,7 +74,6 @@ public class FragmentDisplayImage extends Fragment {
 
         Glide.with(view)
                 .load(imageUri)
-                .centerCrop()
                 .into(imageViewPhoto);
 
         buttonRetake.setOnClickListener(new View.OnClickListener() {
