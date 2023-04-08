@@ -19,6 +19,8 @@ import com.bumptech.glide.Glide;
 import com.example.universe.Models.User;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import java.util.Objects;
+
 public class Setting extends Fragment {
 
     private ImageButton imageButtonBack;
@@ -74,16 +76,11 @@ public class Setting extends Fragment {
         View view = inflater.inflate(R.layout.fragment_setting, container, false);
         imageButtonBack = view.findViewById(R.id.setting_imagebutton_backbutton);
         imageViewAvatar = view.findViewById(R.id.setting_imageview_avatar);
-        if (user.getAvatarPath()!=null || !user.getAvatarPath().equals("")) {
-            util.getDownloadUrlFromPath(user.getAvatarPath(), new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    Glide.with(getContext())
-                            .load(uri)
-                            .centerCrop()
-                            .into(imageViewAvatar);
-                }
-            }, Util.DEFAULT_F_LISTENER);
+        if (user.getAvatarPath()!=null && !user.getAvatarPath().equals("")) {
+            util.getDownloadUrlFromPath(user.getAvatarPath(), uri -> Glide.with(requireContext())
+                    .load(uri)
+                    .centerCrop()
+                    .into(imageViewAvatar), Util.DEFAULT_F_LISTENER);
         }
 
         editTextName = view.findViewById(R.id.setting_editText_name);
@@ -122,6 +119,17 @@ public class Setting extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (newAvatarPath != null) {
+            user.setAvatarPath(newAvatarPath);
+            util.getDownloadUrlFromPath(newAvatarPath, uri -> Glide.with(requireContext())
+                    .load(uri)
+                    .into(imageViewAvatar), Util.DEFAULT_F_LISTENER);
+        }
+    }
+
+    @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if (context instanceof ISettingFragmentAction){
@@ -137,6 +145,7 @@ public class Setting extends Fragment {
 
     public interface ISettingFragmentAction {
         void populateProfileFragment();
+        void backToPrevious();
         void logOut();
         void setAvatar();
     }

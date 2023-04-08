@@ -50,7 +50,7 @@
             tools:layout_editor_absoluteX="16dp"
             tools:layout_editor_absoluteY="6dp">
 
-            <EditText
+            <com.example.universe.RichEditText
                 android:id="@+id/chatRoom_editText_message"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -59,7 +59,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/chatRoom_button_send"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"></EditText>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <Button
                 android:id="@+id/chatRoom_button_send"

@@ -98,30 +98,23 @@ public class EventFragment extends Fragment {
 
         title.setText(event.getTitle());
 
-        if (!event.getImagePath().equals("")) {
-            util.getDownloadUrlFromPath(event.getImagePath(), new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    Glide.with(requireContext())
-                            .load(uri)
-                            .error(R.drawable.image_not_found)
-                            .into(eventPic);
-                }
-            }, Util.DEFAULT_F_LISTENER);
+        if (event.getImagePath() != null) {
+            util.getDownloadUrlFromPath(event.getImagePath(), uri -> Glide.with(requireContext())
+                    .load(uri)
+                    .error(R.drawable.image_not_found)
+                    .into(eventPic), Util.DEFAULT_F_LISTENER);
         }
 
         util.getUser(event.getHostId(), user -> {
             if (user.getAvatarPath() != null) {
-                util.getDownloadUrlFromPath(user.getAvatarPath(), new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        Glide.with(requireContext()).load(uri)
-                                .into(hostAvatar);
-                    }
-                }, Util.DEFAULT_F_LISTENER);
-
+                util.getDownloadUrlFromPath(user.getAvatarPath(), uri -> Glide.with(requireContext())
+                        .load(uri)
+                        .error(R.drawable.circle_user_avatar)
+                        .into(hostAvatar), Util.DEFAULT_F_LISTENER);
             }
         }, Util.DEFAULT_F_LISTENER);
+
+        hostName.setText(event.getHostName());
 
         date.setText(new SimpleDateFormat("MMM dd").format(event.getTime().toDate()));
 

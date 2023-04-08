@@ -5,9 +5,7 @@ import static android.content.Intent.getIntent;
 
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -16,14 +14,11 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
-import androidx.cursoradapter.widget.CursorAdapter;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.provider.SearchRecentSuggestions;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -102,8 +97,7 @@ public class HomeFragment extends Fragment {
         callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-//                mListener.logOut();
-                //TODO: just quit the app instead of logging out
+                requireActivity().finish();
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
@@ -267,6 +261,5 @@ public class HomeFragment extends Fragment {
         void openChatManager();
         void openProfile(User user);
         void openPost();
-        void logOut();
     }
 }
