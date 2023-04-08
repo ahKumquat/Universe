@@ -24,53 +24,33 @@
                 android:id="@+id/followers_textView_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center" />
+                android:layout_gravity="center"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
         </androidx.appcompat.widget.Toolbar>
 
-
-
-        <LinearLayout
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/followers_tablayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:background="@color/universe_yellow"
+            app:tabGravity="fill"
+            app:tabIndicatorColor="@color/universe_grey"
+            app:tabTextAppearance="@style/CustomTabText"
+            app:tabTextColor="@color/black">
 
-            <TextView
-                android:id="@+id/followers_textView_followerNumber"
+            <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="50dp"
-                android:text="xx"
-                android:textSize="@dimen/textSize_secondTitle"
-                android:textStyle="bold" />
+                android:text="@string/profile_textview_follower" />
 
-            <TextView
-                android:id="@+id/followers_textView_followers"
+            <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:text="Followers"
-                android:textSize="@dimen/textSize_secondTitle"
-                android:textStyle="bold" />
+                android:text="@string/profile_textview_following" />
 
-            <TextView
-                android:id="@+id/followers_textView_followingNumber"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="50dp"
-                android:text="xx"
-                android:textSize="@dimen/textSize_secondTitle"
-                android:textStyle="bold" />
+        </com.google.android.material.tabs.TabLayout>
 
-            <TextView
-                android:id="@+id/followers_textView_following"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:text="Following"
-                android:textSize="@dimen/textSize_secondTitle"
-                android:textStyle="bold" />
-
-        </LinearLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -79,6 +59,15 @@
         android:layout_width="409dp"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <ProgressBar
+        android:id="@+id/followers_progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center"
+        android:indeterminateTint="@color/universe_orange"
+        android:visibility="gone" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

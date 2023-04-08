@@ -1,7 +1,6 @@
 package com.example.universe;
 
 import static com.example.universe.Util.DEFAULT_F_LISTENER;
-import static com.example.universe.Util.DEFAULT_VOID_S_LISTENER;
 
 import android.content.Context;
 import android.net.Uri;
@@ -18,12 +17,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.universe.Models.Chat;
 import com.example.universe.Models.Message;
 import com.example.universe.Models.User;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -31,17 +28,17 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
-import org.checkerframework.checker.units.qual.A;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 public class ChatRoom extends Fragment {
     private static Util util;
     private String TAG = Util.TAG;
-    private EditText editTextMessage;
+    private RichEditText editTextMessage;
     private Button buttonSendMessage;
     private String otherUserName;
     private String enteredMessage;
@@ -120,6 +117,8 @@ public class ChatRoom extends Fragment {
         messageRecyclerView.setLayoutManager(linearLayoutManager);
         messageAdaptor = new MessageAdapter(getContext(), messageList);
         messageRecyclerView.setAdapter(messageAdaptor);
+
+        editTextMessage.setKeyBoardInputCallbackListener((inputContentInfo, flags, opts) -> sendImage(Objects.requireNonNull(inputContentInfo.getLinkUri()).toString()));
 
         buttonSendMessage.setOnClickListener(new View.OnClickListener() {
             @Override

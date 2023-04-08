@@ -85,16 +85,24 @@ public class MessageAdapter extends RecyclerView.Adapter {
                 viewHolder.getImageViewPhoto().setVisibility(View.VISIBLE);
                 viewHolder.getTextViewTimeOfMessage().setVisibility(View.GONE);
                 viewHolder.getTextViewMessage().setVisibility(View.GONE);
-                util.getDownloadUrlFromPath(message.getImagePath(), new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        Glide.with(context)
-                                .load(uri)
-                                .centerCrop()
-                                .override(500,500)
-                                .into(viewHolder.getImageViewPhoto());
-                    }
-                }, Util.DEFAULT_F_LISTENER);
+
+                if (!message.getImagePath().startsWith("https")) {
+                    util.getDownloadUrlFromPath(message.getImagePath(), new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Glide.with(context)
+                                    .load(uri)
+                                    .override(500, 500)
+                                    .into(viewHolder.getImageViewPhoto());
+                        }
+                    }, Util.DEFAULT_F_LISTENER);
+                } else {
+                    Glide.with(context)
+                            .load(message.getImagePath())
+                            .override(500, 500)
+                            .into(viewHolder.getImageViewPhoto());
+                }
+
             }else if (message.getFileURL()!=null) {
                 viewHolder.getTextViewTimeOfMessage().setVisibility(View.GONE);
                 viewHolder.getTextViewMessage().setVisibility(View.GONE);

@@ -1,9 +1,11 @@
 package com.example.universe;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,6 +22,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.universe.Models.Event;
 import com.example.universe.Models.User;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.List;
@@ -50,6 +53,10 @@ public class Profile extends Fragment {
     private TabLayout tabLayout;
     private ProgressBar progressBar;
 
+    private CardView cardViewFollower;
+
+    private CardView cardViewFollowing;
+
     private List<Event> postEvents;
 
     private List<Event> joinedEvents;
@@ -68,6 +75,8 @@ public class Profile extends Fragment {
     private User user;
 
     private boolean isClick;
+
+    private int tabNum;
 
     public Profile() {
         // Required empty public constructor
@@ -91,6 +100,7 @@ public class Profile extends Fragment {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -107,6 +117,10 @@ public class Profile extends Fragment {
         tabLayout = view.findViewById(R.id.profile_tablayout);
         recyclerView = view.findViewById(R.id.profile_recyclerview);
         progressBar = view.findViewById(R.id.profile_progressBar);
+        cardViewFollower = view.findViewById(R.id.profile_cardview_follower);
+        cardViewFollowing = view.findViewById(R.id.profile_cardview_following);
+
+
         recyclerViewLayoutManager = new LinearLayoutManager(requireContext());
         recyclerView.setLayoutManager(recyclerViewLayoutManager);
 
@@ -121,18 +135,58 @@ public class Profile extends Fragment {
         } else {
             imageButtonSetting.setVisibility(View.INVISIBLE);
             tabLayout.getTouchables().get(2).setEnabled(false);
-
+            if (user.getFollowersIdList().contains(util.getCurrentUser().getUid())) {
+                followButton.setText("Following");
+                followButton.setOnClickListener(v -> {
+                    if (!isClick) {
+                        util.unfollowUser(user.getUid(), unused -> {
+                            followButton.setText("Follow");
+                            user.getFollowersIdList().remove(util.getCurrentUser().getUid());
+                            followerNum.setText(String.valueOf(user.getFollowersIdList().size()));
+                        }, Util.DEFAULT_F_LISTENER);
+                    } else {
+                       util.followUser(user.getUid(), unused -> {
+                           followButton.setText("Following");
+                           user.getFollowersIdList().add(util.getCurrentUser().getUid());
+                           followerNum.setText(String.valueOf(user.getFollowersIdList().size()));
+                       }, Util.DEFAULT_F_LISTENER);
+                    }
+                    isClick = !isClick;
+                });
+            } else {
+                followButton.setText("Follow");
+                followButton.setOnClickListener(v -> {
+                    if (!isClick) {
+                        util.followUser(user.getUid(), unused -> {
+                            followButton.setText("Following");
+                            user.getFollowersIdList().add(util.getCurrentUser().getUid());
+                            followerNum.setText(String.valueOf(user.getFollowersIdList().size()));
+                        }, Util.DEFAULT_F_LISTENER);
+                    } else {
+                        util.unfollowUser(user.getUid(), unused -> {
+                            followButton.setText("Follow");
+                            user.getFollowersIdList().remove(util.getCurrentUser().getUid());
+                            followerNum.setText(String.valueOf(user.getFollowersIdList().size()));
+                        }, Util.DEFAULT_F_LISTENER);
+                    }
+                    isClick = !isClick;
+                });
+            }
         }
 
         if (user.getAvatarPath() != null) {
-            Glide.with(requireContext()).load(user.getAvatarPath())
-                    .error(R.drawable.circle_user_profile).into(icon);
+            util.getDownloadUrlFromPath(user.getAvatarPath(),
+                    uri -> Glide.with(requireContext()).load(uri)
+                    .error(R.drawable.circle_user_profile).into(icon),Util.DEFAULT_F_LISTENER);
         }
 
         name.setText(user.getUserName());
         about.setText(user.getAbout());
         followerNum.setText(String.valueOf(user.getFollowersIdList().size()));
         followingNum.setText(String.valueOf(user.getFollowingIdList().size()));
+
+        cardViewFollowing.setOnClickListener(v -> mListener.populateFollowerFragment(user));
+        cardViewFollower.setOnClickListener(v -> mListener.populateFollowerFragment(user));
 
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -141,14 +195,17 @@ public class Profile extends Fragment {
                 switch (tab.getPosition()) {
                     case 0:
                         loadPostEvent();
+                        tabNum = 0;
                     break;
 
                     case 1:
                         loadJoinedEvent();
+                        tabNum = 1;
                     break;
 
                     case 2:
                         loadFavEvent();
+                        tabNum = 2;
                     break;
                 }
             }
@@ -164,7 +221,6 @@ public class Profile extends Fragment {
             }
         });
 
-
         imageButtonBack.setOnClickListener(v -> mListener.populateHomeFragment());
 
         return view;
@@ -173,7 +229,29 @@ public class Profile extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        loadPostEvent();
+        if (postEventAdapter == null) {
+            loadPostEvent();
+        } else {
+            updateMyEventList();
+        }
+    }
+
+    private void updateMyEventList() {
+        recyclerView.setAdapter(null);
+        progressBar.setVisibility(View.VISIBLE);
+        switch (tabNum) {
+            case 0:
+                loadPostEvent();
+            break;
+
+            case 1:
+                loadJoinedEvent();
+            break;
+
+            case 2:
+                loadFavEvent();
+            break;
+        }
     }
 
     private void loadPostEvent(){
@@ -218,7 +296,9 @@ public class Profile extends Fragment {
 
 
     public interface IProfileFragmentAction {
+        void backToPrevious();
         void populateHomeFragment();
         void populateSettingFragment(User user);
+        void populateFollowerFragment(User user);
     }
 }

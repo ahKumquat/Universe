@@ -74,8 +74,8 @@ public class HomeEventAdapter extends RecyclerView.Adapter<HomeEventAdapter.View
 
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView textViewTitle;
-        private ImageButton imageButtonEventPic;
+        private final TextView textViewTitle;
+        private final ImageButton imageButtonEventPic;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewTitle = itemView.findViewById(R.id.homeEvents_textView_eventTitle);

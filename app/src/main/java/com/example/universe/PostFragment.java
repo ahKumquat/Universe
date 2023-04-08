@@ -1,23 +1,22 @@
 package com.example.universe;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
-import android.widget.TextView;
 
-import java.util.Arrays;
+import com.bumptech.glide.Glide;
+
 import java.util.stream.Stream;
 
 
@@ -34,6 +33,10 @@ public class PostFragment extends Fragment {
     private ImageButton eventPic;
     private String postPicPath;
     private IPostFragmentAction mListener;
+
+    private Util util;
+
+    private OnBackPressedCallback callback;
 
     private ArrayAdapter<String> adapterHour;
     private ArrayAdapter<String> adapterMin;
@@ -56,7 +59,14 @@ public class PostFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                mListener.populateHomeFragment();
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
+        util = Util.getInstance();
     }
 
     @Override
@@ -75,6 +85,12 @@ public class PostFragment extends Fragment {
         editTextDuration = view.findViewById(R.id.post_editText_duration);
         eventPic = view.findViewById(R.id.post_imageButton_eventPic);
         eventPic.setOnClickListener(v -> mListener.setEventPic());
+
+        if (postPicPath != null) {
+            util.getDownloadUrlFromPath(postPicPath, uri -> Glide.with(requireContext())
+                    .load(uri).override(350,200).into(eventPic), Util.DEFAULT_F_LISTENER);
+
+        }
 
         String[] ampm = {"AM","PM"};
         adapterAMPM = new ArrayAdapter<>(requireActivity(),
@@ -96,17 +112,6 @@ public class PostFragment extends Fragment {
                 androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, mins);
         spinnerMin.setAdapter(adapterMin);
 
-        spinnerAMPM.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
 
         return view;
     }
@@ -127,5 +132,6 @@ public class PostFragment extends Fragment {
 
     public interface IPostFragmentAction {
         void setEventPic();
+        void populateHomeFragment();
     }
 }
