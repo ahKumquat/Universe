@@ -1,9 +1,14 @@
 package com.example.universe;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,6 +22,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.universe.Models.Event;
+import com.example.universe.Models.User;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -31,7 +37,9 @@ import java.text.SimpleDateFormat;
 public class EventFragment extends Fragment {
 
     private static final String ARG_EVENT = "event";
+    private static final String ARG_USER = "user";
 
+    private IEventFragmentAction mListener;
     private Event event;
 
     private TextView title;
@@ -51,16 +59,19 @@ public class EventFragment extends Fragment {
     private ImageButton postButton;
     private static Util util;
 
+    private User me;
+
     private RecyclerView.LayoutManager recyclerViewLayoutManager;
 
     public EventFragment() {
         // Required empty public constructor
     }
 
-    public static EventFragment newInstance(Event event) {
+    public static EventFragment newInstance(Event event, User user) {
         EventFragment fragment = new EventFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_EVENT, event);
+        args.putSerializable(ARG_USER, user);
         fragment.setArguments(args);
         return fragment;
     }
@@ -70,7 +81,9 @@ public class EventFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             event = (Event) getArguments().getSerializable(ARG_EVENT);
+            me = (User) getArguments().getSerializable(ARG_USER);
         }
+        //TODO need to finish backpressed()
         util = Util.getInstance();
     }
 
@@ -130,6 +143,48 @@ public class EventFragment extends Fragment {
 
         recyclerViewLayoutManager = new LinearLayoutManager(getContext());
 
+        if (me.getJoinedEventsIdList().contains(event.getUid())) {
+            signUpButton.setImageIcon(Icon.createWithResource(requireContext(), R.drawable.check));
+        }
+
+        signUpButton.setOnClickListener(v -> {
+            if (!me.getJoinedEventsIdList().contains(event.getUid())) {
+                util.joinEvent(event.getUid(), unused -> {
+                        signUpButton.setImageIcon(Icon.createWithResource(requireContext(), R.drawable.check));
+                        me.getJoinedEventsIdList().add(event.getUid());
+                }, Util.DEFAULT_F_LISTENER);
+            } else {
+                util.quitEvent(event.getUid(), unused -> {
+                    signUpButton.setImageIcon(Icon.createWithResource(requireContext(), R.drawable.baseline_check_24));
+                    me.getJoinedEventsIdList().remove(event.getUid());
+                }, Util.DEFAULT_F_LISTENER);
+            }
+        });
+
+        if (me.getFavouritesIdList().contains(event.getUid())) {
+            favouriteButton.setImageTintList(ColorStateList.valueOf(Color.parseColor("#FF934D")));
+        }
+        favouriteButton.setOnClickListener(v -> {
+            if (!me.getFavouritesIdList().contains(event.getUid())) {
+                util.addFavouriteEvent(event.getUid(), unused -> {
+                    favouriteButton.setImageTintList(ColorStateList.valueOf(Color.parseColor("#FF934D")));
+                    me.getFavouritesIdList().add(event.getUid());
+                    }, Util.DEFAULT_F_LISTENER);
+            } else {
+                util.removeFavouriteEvent(event.getUid(), unused -> {
+                    favouriteButton.setImageTintList(null);
+                    me.getFavouritesIdList().remove(event.getUid());
+                }, Util.DEFAULT_F_LISTENER);
+            }
+        });
+
+        if (!event.getHostId().equals(util.getCurrentUser().getUid())) {
+            postButton.setOnClickListener(v -> mListener.startChatPageFromEvent(event.getHostId()));
+        } else {
+            postButton.setVisibility(View.INVISIBLE);
+            signUpButton.setVisibility(View.INVISIBLE);
+        }
+
 
         return view;
     }
@@ -143,5 +198,21 @@ public class EventFragment extends Fragment {
             googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
             googleMap.getUiSettings().setAllGesturesEnabled(false);
         });
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof IEventFragmentAction){
+            this.mListener = (IEventFragmentAction) context;
+        }else{
+            throw new RuntimeException(context + "must implement IEventFragmentAction");
+        }
+    }
+
+    public interface IEventFragmentAction {
+        void backToPrevious();
+        void populateHomeFragment();
+        void startChatPageFromEvent(String otherUserId);
     }
 }

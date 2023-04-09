@@ -1,8 +1,11 @@
 package com.example.universe;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,6 +31,8 @@ import java.util.stream.Collectors;
 public class Followers extends Fragment implements FollowerAdapter.IFollowerListRecyclerActionToFragment {
 
     private static final String ARG_USER = "user";
+
+    private IFollowerFragmentAction mListener;
 
     private TextView textViewTitle;
 
@@ -60,6 +65,8 @@ public class Followers extends Fragment implements FollowerAdapter.IFollowerList
 
     private int tabNum;
 
+    private OnBackPressedCallback callback;
+
     public Followers() {
         // Required empty public constructor
     }
@@ -82,6 +89,12 @@ public class Followers extends Fragment implements FollowerAdapter.IFollowerList
             followerUIDs = me.getFollowersIdList();
             followingUIDs = me.getFollowingIdList();
         }
+        callback = new OnBackPressedCallback(true) {
+            public void handleOnBackPressed() {
+                mListener.populateProfileFragment();
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
     @SuppressLint("SetTextI18n")
@@ -210,5 +223,18 @@ public class Followers extends Fragment implements FollowerAdapter.IFollowerList
         textViewFollowing.setText(me.getFollowingIdList().size()
                 + "  "
                 + "Following");
+    }
+
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof IFollowerFragmentAction){
+            this.mListener = (IFollowerFragmentAction) context;
+        }else{
+            throw new RuntimeException(context + "must implement IFollowerFragmentAction");
+        }
+    }
+    public interface IFollowerFragmentAction {
+        //void backToPrevious();
+        void populateProfileFragment();
     }
 }

@@ -2,8 +2,12 @@ package com.example.universe;
 
 import static com.example.universe.Util.TAG;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -30,6 +34,8 @@ public class ChatManager extends Fragment {
     private RecyclerView recyclerView;
     private TextView title;
     private RecyclerView.LayoutManager recyclerViewLayoutManager;
+    private OnBackPressedCallback callback;
+    private IchatManagerFragmentAction mListener;
 
 
     public ChatManager() {
@@ -39,8 +45,6 @@ public class ChatManager extends Fragment {
     public static ChatManager newInstance() {
         ChatManager fragment = new ChatManager();
         Bundle args = new Bundle();
-//        args.putString(ARG_PARAM1, param1);
-//        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -49,14 +53,13 @@ public class ChatManager extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         util = Util.getInstance();
-        //getActivity().setTitle();
-        chatList = new ArrayList<Chat>();
-        loadData();
-        if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-//            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-
+        chatList = new ArrayList<>();
+        callback = new OnBackPressedCallback(true) {
+            public void handleOnBackPressed() {
+                mListener.populateHomeFragment();
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
     @Override
@@ -76,30 +79,42 @@ public class ChatManager extends Fragment {
         chatAdapter = new ChatAdapter(getContext(), chatList);
         recyclerView.setLayoutManager(recyclerViewLayoutManager);
         recyclerView.setAdapter(chatAdapter);
-        Log.d(TAG, "onCreateView: set up recycler view");
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadData();
     }
 
     private void loadData() {
         ArrayList<Chat> chatlist = new ArrayList<>();
-        util.getChats(new OnSuccessListener<List<Chat>>() {
-            @Override
-            public void onSuccess(List<Chat> chats) {
-                for (Chat chat: chats) {
-                    chatlist.add(chat);
-                }
-                updateRecyclerView(chatlist);
-            }
+        util.getChats(chats -> {
+            chatlist.addAll(chats);
+            updateRecyclerView(chatlist);
         }, Util.DEFAULT_F_LISTENER);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void updateRecyclerView(ArrayList<Chat> chats) {
         this.chatList = chats;
         chatAdapter.setChats(chats);
         chatAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if(context instanceof IchatManagerFragmentAction){
+            mListener = (IchatManagerFragmentAction) context;
+        }else{
+            throw new RuntimeException(context + "must implement IchatManagerFragmentAction");
+        }
+    }
+
     public interface IchatManagerFragmentAction {
         void startChatPage(String otherUserId);
+        void populateHomeFragment();
     }
 }

@@ -11,6 +11,7 @@ import com.google.firebase.firestore.GeoPoint;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * The Event class represents an event.
@@ -281,5 +282,18 @@ public class Event implements Serializable {
                 ", participants=" + participants +
                 ", candidates=" + candidates +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Event event = (Event) o;
+        return Double.compare(event.getDuration(), getDuration()) == 0 && getCapacity() == event.getCapacity() && Objects.equals(getUid(), event.getUid()) && Objects.equals(getTitle(), event.getTitle()) && Objects.equals(getHostId(), event.getHostId()) && Objects.equals(getHostName(), event.getHostName()) && Objects.equals(getTime(), event.getTime()) && Objects.equals(getDurationUnit(), event.getDurationUnit()) && Objects.equals(getAddress(), event.getAddress()) && Objects.equals(getGeoPoint(), event.getGeoPoint()) && Objects.equals(getGeoHash(), event.getGeoHash()) && Objects.equals(getDescription(), event.getDescription()) && Objects.equals(getImagePath(), event.getImagePath()) && Objects.equals(getParticipants(), event.getParticipants()) && Objects.equals(getCandidates(), event.getCandidates());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getUid(), getTitle(), getHostId(), getHostName(), getTime(), getDuration(), getDurationUnit(), getAddress(), getGeoPoint(), getGeoHash(), getCapacity(), getDescription(), getImagePath(), getParticipants(), getCandidates());
     }
 }

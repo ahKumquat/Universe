@@ -48,4 +48,6 @@
     <string name="open_gallery">open gallery</string>
     <string name="take_photo">take photo</string>
     <string name="displayFile_button_reselect">Reselect</string>
+    <string name="search_tabitem_events">Events</string>
+    <string name="search_tabitem_users">Users</string>
 </resources>

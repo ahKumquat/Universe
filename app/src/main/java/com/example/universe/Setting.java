@@ -1,9 +1,9 @@
 package com.example.universe;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
@@ -17,9 +17,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.example.universe.Models.User;
-import com.google.android.gms.tasks.OnSuccessListener;
 
-import java.util.Objects;
 
 public class Setting extends Fragment {
 
@@ -44,7 +42,8 @@ public class Setting extends Fragment {
 
     private Util util;
     private ImageView imageViewEditAvatar;
-    String newAvatarPath;
+    private String newAvatarPath;
+    private OnBackPressedCallback callback;
 
 
 
@@ -67,6 +66,14 @@ public class Setting extends Fragment {
         if (getArguments() != null) {
             user = (User) getArguments().getSerializable(ARG_USER);
         }
+        callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+               mListener.populateProfileFragment();
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
+        util = Util.getInstance();
     }
 
     @Override
@@ -92,6 +99,7 @@ public class Setting extends Fragment {
         imageViewEditAvatar = view.findViewById(R.id.setting_imageView_editAvatar);
 
         imageButtonBack.setOnClickListener(v -> mListener.populateProfileFragment());
+
         imageButtonLogOut.setOnClickListener(v -> mListener.logOut());
         imageViewEditAvatar.setOnClickListener(v -> mListener.setAvatar());
         imageViewAvatar.setOnClickListener(v -> mListener.setAvatar());
@@ -140,12 +148,11 @@ public class Setting extends Fragment {
     }
 
     public void setNewAvatarPath(String path) {
-        newAvatarPath = path;
+        this.newAvatarPath = path;
     }
 
     public interface ISettingFragmentAction {
         void populateProfileFragment();
-        void backToPrevious();
         void logOut();
         void setAvatar();
     }

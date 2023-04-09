@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.universe.Models.Event;
+import com.example.universe.Models.User;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.List;
@@ -23,10 +24,12 @@ public class HomeEventAdapter extends RecyclerView.Adapter<HomeEventAdapter.View
     private IEventListRecyclerAction mListener;
     private static Util util;
     private Context context;
+    private User user;
 
-    public HomeEventAdapter(Context context, List<Event> eventList){
+    public HomeEventAdapter(Context context, List<Event> eventList, User user){
         this.eventList = eventList;
         this.context = context;
+        this.user = user;
         util = Util.getInstance();
         if(context instanceof IEventListRecyclerAction){
             mListener = (IEventListRecyclerAction) context;
@@ -54,17 +57,12 @@ public class HomeEventAdapter extends RecyclerView.Adapter<HomeEventAdapter.View
         Event event = this.getEventList().get(position);
         holder.getTextViewTitle().setText(event.getTitle());
         if (!"".equals(event.getImagePath())) {
-            util.getDownloadUrlFromPath(event.getImagePath(), new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    Glide.with(context)
-                            .load(uri)
-                            .error(R.drawable.image_not_found)
-                            .into(holder.imageButtonEventPic);
-                }
-            }, Util.DEFAULT_F_LISTENER);
+            util.getDownloadUrlFromPath(event.getImagePath(), uri -> Glide.with(context)
+                    .load(uri)
+                    .error(R.drawable.image_not_found)
+                    .into(holder.imageButtonEventPic), Util.DEFAULT_F_LISTENER);
         }
-        holder.getImageButtonEventPic().setOnClickListener(v -> mListener.eventClickedFromRecyclerView(event));
+        holder.getImageButtonEventPic().setOnClickListener(v -> mListener.eventClickedFromRecyclerView(event, user));
     }
 
     @Override
@@ -91,7 +89,8 @@ public class HomeEventAdapter extends RecyclerView.Adapter<HomeEventAdapter.View
         }
     }
 
+
     public interface IEventListRecyclerAction {
-        void eventClickedFromRecyclerView(Event event);
+        void eventClickedFromRecyclerView(Event event, User user);
     }
 }

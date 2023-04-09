@@ -167,7 +167,7 @@ public class PostFragment extends Fragment {
     }
 
     public void setPostPicPath(String path) {
-        postPicPath = path;
+        this.postPicPath = path;
     }
 
     public interface IPostFragmentAction {
