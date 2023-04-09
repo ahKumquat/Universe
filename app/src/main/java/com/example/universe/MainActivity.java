@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.Manifest;
 import android.content.Intent;
@@ -53,7 +54,8 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
         FragmentCameraController.DisplayTakenPhoto, FragmentDisplayImage.IdisplayImageAction,
         ChatRoom.IchatFragmentButtonAction, FragmentDisplayFile.IdisplayFileAction,
         HomeEventAdapter.IEventListRecyclerAction, PostFragment.IPostFragmentAction,
-        FollowerAdapter.IFollowerListRecyclerAction {
+        FollowerAdapter.IFollowerListRecyclerAction, SearchFragment.ISearchFragmentAction,
+        EventFragment.IEventFragmentAction, Followers.IFollowerFragmentAction {
     private String TAG = Util.TAG;
     private Util util;
     private FirebaseUser currentUser;
@@ -70,19 +72,20 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
 
     private static final String HOME_FRAGMENT = "FragmentHome";
     private static final String PROFILE_FRAGMENT = "FragmentProfile";
+    private static final String OTHER_PROFILE_FRAGMENT = "FragmentOtherProfile";
     private static final String LOGIN_FRAGMENT = "FragmentLogin";
     private static final String CHAT_FRAGMENT = "FragmentChat";
+    private static final String EVENT_FRAGMENT = "FragmentEvent";
     private static final String CHAT_MANAGER_FRAGMENT = "FragmentChatManager";
     private static final String FOLLOWERS_FRAGMENT = "FragmentFollowers";
     private static final String REGISTER_FRAGMENT = "FragmentRegister";
     private static final String SETTING_FRAGMENT = "FragmentSetting";
-    private static final String EVENT_FRAGMENT = "FragmentEvent";
+    private static final String SEARCH_FRAGMENT = "FragmentSearch";
     private static final String CAMERA_FRAGMENT = "FragmentCamera";
     private static final String DISPLAY_FILE_FRAGMENT = "FragmentDisplayFile";
     private static final String DISPLAY_IMAGE_FRAGMENT = "FragmentDisplayImage";
     private static final String POST_FRAGMENT = "FragmentPost";
 
-//    private boolean takePhotoNotFromGallery;
 
     private GoogleSignInClient googleSignInClient;
 
@@ -172,7 +175,10 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
     protected void onStart() {
         super.onStart();
         currentUser = mAuth.getCurrentUser();
-        populateScreen();
+        int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
+        if (backStackCount < 2) {
+            populateScreen();
+        }
     }
 
     private void populateScreen() {
@@ -229,6 +235,13 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
     }
 
     @Override
+    public void showResult(String query, User user) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.containerMain, SearchFragment.newInstance(query,user), SEARCH_FRAGMENT)
+                .addToBackStack(HOME_FRAGMENT).commit();
+    }
+
+    @Override
     public void logOut() {
         mAuth.signOut();
         populateScreen();
@@ -269,9 +282,8 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.containerMain, ChatRoom.newInstance().getClass(),
                         bundle,CHAT_FRAGMENT)
-                .addToBackStack(CHAT_MANAGER_FRAGMENT) //TODO
+                .addToBackStack(CHAT_MANAGER_FRAGMENT)
                 .commit();
-        Log.d(TAG, "startChatPage: success");
     }
 
     public void signWithGoogle() {
@@ -299,6 +311,18 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
     }
 
     @Override
+    public void startChatPageFromEvent(String otherUserId) {
+        Bundle bundle = new Bundle();
+        this.otherUserId = otherUserId;
+        bundle.putString("otherUserId", otherUserId);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.containerMain, ChatRoom.newInstance().getClass(),
+                        bundle,CHAT_FRAGMENT)
+                .addToBackStack(EVENT_FRAGMENT)
+                .commit();
+    }
+
+    @Override
     public void populateSettingFragment(User user) {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.containerMain, Setting.newInstance(user), SETTING_FRAGMENT)
@@ -313,11 +337,24 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
     }
 
     @Override
+    public void startChatPageFromProfile(String otherUserId) {
+        Bundle bundle = new Bundle();
+        this.otherUserId = otherUserId;
+        bundle.putString("otherUserId", otherUserId);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.containerMain, ChatRoom.newInstance().getClass(),
+                        bundle,CHAT_FRAGMENT)
+                .addToBackStack(PROFILE_FRAGMENT)
+                .commit();
+    }
+
+    @Override
     public void populateProfileFragment() {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(PROFILE_FRAGMENT);
+        getSupportFragmentManager().popBackStack(DISPLAY_IMAGE_FRAGMENT, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.containerMain, Objects.requireNonNull(fragment))
-                .addToBackStack(null).commit();
+                .addToBackStack(SETTING_FRAGMENT).commit();
     }
 
     @Override
@@ -359,17 +396,14 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
     //Retrieving an image from gallery....
     ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if(result.getResultCode()==RESULT_OK){
-                        Intent data = result.getData();
-                        Uri selectedImageUri = data.getData();
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.containerMain,
-                                        FragmentDisplayImage.newInstance(selectedImageUri),DISPLAY_IMAGE_FRAGMENT)
-                                .addToBackStack(null).commit();
-                    }
+            result -> {
+                if(result.getData()!=null){
+                    Intent data = result.getData();
+                    Uri selectedImageUri = data.getData();
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.containerMain,
+                                    FragmentDisplayImage.newInstance(selectedImageUri),DISPLAY_IMAGE_FRAGMENT)
+                            .addToBackStack(null).commit();
                 }
             }
     );
@@ -377,7 +411,7 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
     @Override
     public void onOpenGalleryPressed() {
 //        takePhotoNotFromGallery = false;
-        Intent intent = new Intent(Intent.ACTION_PICK);
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
         String[] mimeTypes = {"image/jpeg", "image/png"};
         intent.putExtra(Intent.EXTRA_MIME_TYPES,mimeTypes);
@@ -464,7 +498,6 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
                             String otherName = getSupportFragmentManager().getBackStackEntryAt(count - 3).getName();
                             switch (otherName) {
                                 case POST_FRAGMENT:
-                                    //TODO: implement upload the event pic and save path in Post Fragment
                                     PostFragment p = (PostFragment) getSupportFragmentManager().findFragmentByTag(POST_FRAGMENT);
                                     p.setPostPicPath(storageReference.getPath());
                                     getSupportFragmentManager().beginTransaction()
@@ -489,83 +522,11 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
                         }
                     }
                 })
-                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-                        double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
-                        Log.d(TAG, "onProgress: "+progress);
-                        progressBar.setProgress((int) progress);
-                    }
+                .addOnProgressListener(snapshot -> {
+                    double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
+                    Log.d(TAG, "onProgress: "+progress);
+                    progressBar.setProgress((int) progress);
                 });
-//No longer need downloadURI since we are storing the storageReference
-//        Task<Uri> urlTask = uploadImage.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-//            @Override
-//            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-//                if (!task.isSuccessful()) {
-//                    throw task.getException();
-//                }
-//                // Continue with the task to get the download URL
-//                return storageReference.getDownloadUrl();
-//            }
-//        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-//            @Override
-//            public void onComplete(@NonNull Task<Uri> task) {
-//                if (task.isSuccessful()) {
-//                    Uri downloadUri = task.getResult();
-//
-//                    int count = getSupportFragmentManager().getBackStackEntryCount();
-////                    Log.d(TAG, "count of current fragments: " + count);
-////                    Log.d(TAG, "current fragments: " + getSupportFragmentManager().getFragments().toString());
-//                    String name = getSupportFragmentManager().getBackStackEntryAt(count - 3).getName();
-//                    Log.d(TAG, "last fragment name: " + getSupportFragmentManager().getBackStackEntryAt(count - 1).getName());
-//                    Log.d(TAG, "second last fragment name: " + name);
-//                    Log.d(TAG, "third last fragment name: " + getSupportFragmentManager().getBackStackEntryAt(count - 3).getName());
-//                    if (name.equals("post")) {
-//                        //TODO: implement upload the event pic and save path in Post Fragment
-//                        if (takePhotoNotFromGallery) {
-//                            getSupportFragmentManager().popBackStack();
-//                            getSupportFragmentManager().popBackStack();
-//                        } else {
-//                            getSupportFragmentManager().popBackStack();
-//                            getSupportFragmentManager().popBackStack();
-//                            getSupportFragmentManager().popBackStack();
-//                        }
-//                        takePhotoNotFromGallery = true;
-//                    } else if (name.equals("profile") ||name.equals("settings")) {
-//                        //TODO: implement updating user avatar in the database
-////                        db.collection("users").document(currentUser.getEmail())
-////                                .update("profilePhotoUri", downloadUri);
-//                        Log.d(TAG, "download avatar url: " + downloadUri);
-//                        if (takePhotoNotFromGallery) {
-//                            getSupportFragmentManager().popBackStack();
-//                            getSupportFragmentManager().popBackStack();
-//                        } else {
-//                            getSupportFragmentManager().popBackStack();
-//                            getSupportFragmentManager().popBackStack();
-//                            getSupportFragmentManager().popBackStack();
-//                        }
-//                        takePhotoNotFromGallery = true;
-//                    } else if (name.equals("chatroom")) {
-//                        ChatRoom fragment = (ChatRoom) getSupportFragmentManager().findFragmentByTag("chatFragment");
-//                        fragment.sendImage(storageReference.getPath());
-//                        if (takePhotoNotFromGallery) {
-//                            getSupportFragmentManager().popBackStack();
-//                            getSupportFragmentManager().popBackStack();
-//                        } else {
-//                            getSupportFragmentManager().popBackStack();
-//                            getSupportFragmentManager().popBackStack();
-//                            getSupportFragmentManager().popBackStack();
-//                        }
-//                        takePhotoNotFromGallery = true;
-//                    } else {
-//                        Log.d(TAG, "did not define back method for fragment: " + name);
-//                        getSupportFragmentManager().popBackStack();
-//                    }
-//                } else {
-//                    Log.d(TAG, "Error getting download Url");
-//                }
-            //}
-        //});
     }
 
 
@@ -601,7 +562,6 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
                                 .replace(R.id.containerMain, FragmentDisplayFile.newInstance(fileUri, filePath), DISPLAY_FILE_FRAGMENT)
                                 .addToBackStack(null).commit();
                     }
-
                 }
             }
     );
@@ -628,15 +588,30 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
 
     @Override
     public void populateChatManagerFragment() {
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(CHAT_MANAGER_FRAGMENT);
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.containerMain, Objects.requireNonNull(fragment))
-                .addToBackStack(null).commit();
+        Fragment fragmentChat = getSupportFragmentManager().findFragmentByTag(CHAT_MANAGER_FRAGMENT);
+        Fragment fragmentEvent = getSupportFragmentManager().findFragmentByTag(EVENT_FRAGMENT);
+        Fragment fragmentProfile = getSupportFragmentManager().findFragmentByTag(OTHER_PROFILE_FRAGMENT);
+        if (fragmentChat != null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.containerMain, fragmentChat)
+                    .addToBackStack(null).commit();
+        } else if (fragmentEvent != null){
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.containerMain, fragmentEvent)
+                    .addToBackStack(null).commit();
+        } else if (fragmentProfile != null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.containerMain, fragmentProfile)
+                    .addToBackStack(null).commit();
+        } else {
+            backToPrevious();
+        }
+
+
     }
 
 
-    private void selectFile()
-    {
+    private void selectFile() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("application/*");
         String[] mimeTypes = {"application/pdf",
@@ -645,15 +620,6 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
         intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
         fileLauncher.launch(intent);
 
-//        Intent intent = new Intent(Intent.ACTION_PICK);
-//        intent.setType("application/*");
-//        String[] mimeTypes = {"application/pdf", "application/docx"};
-//        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
-//        fileLauncher.launch(intent);
-
-//        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-//        intent.setType("application/pdf");
-//        resultLauncher.launch(intent);
     }
 
     @Override
@@ -721,9 +687,9 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
     }
 
     @Override
-    public void eventClickedFromRecyclerView(Event event) {
+    public void eventClickedFromRecyclerView(Event event, User user) {
       getSupportFragmentManager().beginTransaction()
-              .replace(R.id.containerMain, EventFragment.newInstance(event))
+              .replace(R.id.containerMain, EventFragment.newInstance(event, user), EVENT_FRAGMENT)
               .addToBackStack(HOME_FRAGMENT).commit();
     }
 
@@ -749,7 +715,7 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
     @Override
     public void followerClickedFromRecyclerView(User user) {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.containerMain, Profile.newInstance(user))
+                .replace(R.id.containerMain, Profile.newInstance(user),OTHER_PROFILE_FRAGMENT)
                 .addToBackStack(FOLLOWERS_FRAGMENT).commit();
     }
 

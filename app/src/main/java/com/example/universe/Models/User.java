@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This class represents a user.
@@ -170,5 +171,18 @@ public class User implements Serializable {
 
     public void setUnreadCount(int unreadCount) {
         this.unreadCount = unreadCount;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return getUnreadCount() == user.getUnreadCount() && Objects.equals(getUid(), user.getUid()) && Objects.equals(getUserName(), user.getUserName()) && Objects.equals(getEmail(), user.getEmail()) && Objects.equals(getAvatarPath(), user.getAvatarPath()) && Objects.equals(getAbout(), user.getAbout()) && Objects.equals(getDraftEvent(), user.getDraftEvent()) && Objects.equals(getFollowersIdList(), user.getFollowersIdList()) && Objects.equals(getFollowingIdList(), user.getFollowingIdList()) && Objects.equals(getFavouritesIdList(), user.getFavouritesIdList()) && Objects.equals(getPostsIdList(), user.getPostsIdList()) && Objects.equals(getJoinedEventsIdList(), user.getJoinedEventsIdList()) && Objects.equals(getChatsMap(), user.getChatsMap());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getUid(), getUserName(), getEmail(), getAvatarPath(), getAbout(), getDraftEvent(), getFollowersIdList(), getFollowingIdList(), getFavouritesIdList(), getPostsIdList(), getJoinedEventsIdList(), getChatsMap(), getUnreadCount());
     }
 }

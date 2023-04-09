@@ -208,7 +208,7 @@
                 android:layout_height="@dimen/Icon_Size"
                 android:backgroundTint="@color/universe_orange"
                 android:scaleType="centerCrop"
-                android:src="?android:attr/textCheckMark"
+                android:src="@drawable/baseline_check_24"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/event_imageButton_favourite"
                 app:layout_constraintStart_toEndOf="@+id/event_imageButton_share"

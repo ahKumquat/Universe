@@ -1,9 +1,6 @@
 package com.example.universe;
 
 
-import static android.content.Intent.getIntent;
-
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -39,7 +36,6 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 
-// need to design searchView
 public class HomeFragment extends Fragment {
     private ImageButton imageButtonChat;
     private IhomeFragmentAction mListener;
@@ -170,6 +166,23 @@ public class HomeFragment extends Fragment {
         });
 
 
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if (!query.equals("")){
+                    mListener.showResult(query, me);
+                    return true;
+                }
+               return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+
         return view;
     }
 
@@ -177,7 +190,6 @@ public class HomeFragment extends Fragment {
     public void onResume() {
         super.onResume();
         getAllEvents();
-        getAllUsers();
     }
 
     private void getAllEvents() {
@@ -189,9 +201,8 @@ public class HomeFragment extends Fragment {
                     .collect(Collectors.toCollection(ArrayList::new));
 
             util.getEventsByIdList(eventUIDs, events -> {
-                homeEventAdapter = new HomeEventAdapter(requireContext(), events);
-                recyclerView.setAdapter(homeEventAdapter);
-                progressBar.setVisibility(View.INVISIBLE);
+                homeEventAdapter = new HomeEventAdapter(requireContext(), events,me);
+                getAllUsers();
             }, Util.DEFAULT_F_LISTENER);
         });
     }
@@ -208,6 +219,9 @@ public class HomeFragment extends Fragment {
                 me = allUsers.stream().filter(user -> user.getUid()
                                 .equals(util.getCurrentUser().getUid()))
                         .collect(Collectors.toList()).get(0);
+                homeEventAdapter = new HomeEventAdapter(requireContext(),homeEventAdapter.getEventList(),me);
+                recyclerView.setAdapter(homeEventAdapter);
+                progressBar.setVisibility(View.INVISIBLE);
             }, Util.DEFAULT_F_LISTENER);
         });
     }
@@ -215,7 +229,7 @@ public class HomeFragment extends Fragment {
     private void Refresh() {
         allEvents = homeEventAdapter.getEventList();
         Collections.shuffle(allEvents, new Random(System.currentTimeMillis()));
-        homeEventAdapter = new HomeEventAdapter(requireContext(), allEvents);
+        homeEventAdapter = new HomeEventAdapter(requireContext(), allEvents, me);
         recyclerView.setAdapter(homeEventAdapter);
     }
 
@@ -223,7 +237,7 @@ public class HomeFragment extends Fragment {
         progressBar.setVisibility(View.VISIBLE);
         util.getFriendEvents(events -> {
             followedEvent = events;
-            followedEventAdapter = new HomeEventAdapter(requireContext(), followedEvent);
+            followedEventAdapter = new HomeEventAdapter(requireContext(), followedEvent, me);
             recyclerView.setAdapter(followedEventAdapter);
             progressBar.setVisibility(View.INVISIBLE);
         }, Util.DEFAULT_F_LISTENER);
@@ -239,7 +253,7 @@ public class HomeFragment extends Fragment {
         Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         util.getNearByEvents(new GeoPoint(location.getLatitude(), location.getLongitude()), 5 ,events -> {
             nearByEvent = events;
-            nearbyEventAdapter = new HomeEventAdapter(requireContext(), nearByEvent);
+            nearbyEventAdapter = new HomeEventAdapter(requireContext(), nearByEvent, me);
             recyclerView.setAdapter(nearbyEventAdapter);
             progressBar.setVisibility(View.INVISIBLE);
         }, Util.DEFAULT_F_LISTENER);
@@ -261,5 +275,6 @@ public class HomeFragment extends Fragment {
         void openChatManager();
         void openProfile(User user);
         void openPost();
+        void showResult(String query, User user);
     }
 }

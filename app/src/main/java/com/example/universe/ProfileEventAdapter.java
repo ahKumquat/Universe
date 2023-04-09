@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.universe.Models.Event;
+import com.example.universe.Models.User;
 
 import java.util.List;
 
@@ -23,9 +24,12 @@ public class ProfileEventAdapter extends RecyclerView.Adapter<ProfileEventAdapte
     private static Util util;
     private Context context;
 
-    public ProfileEventAdapter(Context context, List<Event> eventList){
+    private User me;
+
+    public ProfileEventAdapter(Context context, List<Event> eventList, User user){
         this.eventList = eventList;
         this.context = context;
+        me = user;
         util = Util.getInstance();
         if(context instanceof HomeEventAdapter.IEventListRecyclerAction){
             mListener = (HomeEventAdapter.IEventListRecyclerAction) context;
@@ -56,7 +60,7 @@ public class ProfileEventAdapter extends RecyclerView.Adapter<ProfileEventAdapte
                             .into(holder.getImageViewEventPic()),
                     Util.DEFAULT_F_LISTENER);
         }
-        holder.getImageViewEventPic().setOnClickListener(v -> mListener.eventClickedFromRecyclerView(event));
+        holder.getImageViewEventPic().setOnClickListener(v -> mListener.eventClickedFromRecyclerView(event, me));
     }
 
     @Override

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,6 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.universe.Models.Chat;
 import com.example.universe.Models.Event;
 import com.example.universe.Models.User;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -100,7 +102,7 @@ public class Profile extends Fragment {
         }
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n"})
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -119,7 +121,6 @@ public class Profile extends Fragment {
         progressBar = view.findViewById(R.id.profile_progressBar);
         cardViewFollower = view.findViewById(R.id.profile_cardview_follower);
         cardViewFollowing = view.findViewById(R.id.profile_cardview_following);
-
 
         recyclerViewLayoutManager = new LinearLayoutManager(requireContext());
         recyclerView.setLayoutManager(recyclerViewLayoutManager);
@@ -172,6 +173,8 @@ public class Profile extends Fragment {
                     isClick = !isClick;
                 });
             }
+
+            chatButton.setOnClickListener(v -> mListener.startChatPageFromProfile(user.getUid()));
         }
 
         if (user.getAvatarPath() != null) {
@@ -221,7 +224,15 @@ public class Profile extends Fragment {
             }
         });
 
-        imageButtonBack.setOnClickListener(v -> mListener.populateHomeFragment());
+        imageButtonBack.setOnClickListener(v -> {
+            Fragment fragment = requireActivity().getSupportFragmentManager().findFragmentByTag("FragmentFollowers");
+            if (fragment != null && !user.getUid().equals(util.getCurrentUser().getUid())) {
+                requireActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.containerMain,fragment).addToBackStack(null).commit();
+            } else {
+                mListener.populateHomeFragment();
+            }
+        });
 
         return view;
     }
@@ -258,7 +269,7 @@ public class Profile extends Fragment {
         progressBar.setVisibility(View.VISIBLE);
         util.getPostEvents(user.getUid(), events -> {
             postEvents = events;
-            postEventAdapter = new ProfileEventAdapter(requireContext(), postEvents);
+            postEventAdapter = new ProfileEventAdapter(requireContext(), postEvents, user);
             recyclerView.setAdapter(postEventAdapter);
             progressBar.setVisibility(View.INVISIBLE);
         }, Util.DEFAULT_F_LISTENER);
@@ -268,7 +279,7 @@ public class Profile extends Fragment {
         progressBar.setVisibility(View.VISIBLE);
         util.getJoinEvents(user.getUid(), events -> {
             joinedEvents = events;
-            joinedEventAdapter = new ProfileEventAdapter(requireContext(), joinedEvents);
+            joinedEventAdapter = new ProfileEventAdapter(requireContext(), joinedEvents, user);
             recyclerView.setAdapter(joinedEventAdapter);
             progressBar.setVisibility(View.INVISIBLE);
         }, Util.DEFAULT_F_LISTENER);
@@ -278,7 +289,7 @@ public class Profile extends Fragment {
         progressBar.setVisibility(View.VISIBLE);
         util.getFavouriteEvents(user.getUid(), events -> {
             favEvents = events;
-            favEventAdapter = new ProfileEventAdapter(requireContext(), favEvents);
+            favEventAdapter = new ProfileEventAdapter(requireContext(), favEvents, user);
             recyclerView.setAdapter(favEventAdapter);
             progressBar.setVisibility(View.INVISIBLE);
         }, Util.DEFAULT_F_LISTENER);
@@ -300,5 +311,6 @@ public class Profile extends Fragment {
         void populateHomeFragment();
         void populateSettingFragment(User user);
         void populateFollowerFragment(User user);
+        void startChatPageFromProfile(String otherUserId);
     }
 }
