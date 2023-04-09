@@ -11,11 +11,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 
 import com.bumptech.glide.Glide;
+import com.example.universe.Models.Event;
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.GeoPoint;
 
 import java.util.stream.Stream;
 
@@ -33,6 +37,17 @@ public class PostFragment extends Fragment {
     private ImageButton eventPic;
     private String postPicPath;
     private IPostFragmentAction mListener;
+    private Event event;
+    private Button buttonSave;
+    private Button buttonPost;
+    private String title;
+    private Timestamp time;
+    private double duration;
+    private String durationUnit;
+    private String address;
+    private GeoPoint geoPoint;
+    private int capacity;
+    private String description;
 
     private Util util;
 
@@ -85,6 +100,31 @@ public class PostFragment extends Fragment {
         editTextDuration = view.findViewById(R.id.post_editText_duration);
         eventPic = view.findViewById(R.id.post_imageButton_eventPic);
         eventPic.setOnClickListener(v -> mListener.setEventPic());
+        buttonSave = view.findViewById(R.id.post_button_save);
+        buttonPost = view.findViewById(R.id.post_button_postNow);
+        buttonSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                title = editTextTitle.getText().toString();
+//                //time =
+//                duration = Double.parseDouble(editTextDuration.getText().toString());
+//                //durationUnit =
+//                address = editTextLocation.getText().toString();
+//                //geoPoint =
+//                //capacity =
+//                description = editTextDescription.getText().toString();
+                //TODO: make a new event with above content and pass it over to below method
+                mListener.saveEvent(event);
+            }
+        });
+
+        buttonPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO: make a new event with above content and pass it over to below method
+                mListener.postEvent(event);
+            }
+        });
 
         if (postPicPath != null) {
             util.getDownloadUrlFromPath(postPicPath, uri -> Glide.with(requireContext())
@@ -133,5 +173,7 @@ public class PostFragment extends Fragment {
     public interface IPostFragmentAction {
         void setEventPic();
         void populateHomeFragment();
+        void saveEvent(Event event);
+        void postEvent(Event event);
     }
 }

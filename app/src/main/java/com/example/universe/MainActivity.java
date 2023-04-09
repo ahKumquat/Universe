@@ -82,9 +82,7 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
     private static final String DISPLAY_IMAGE_FRAGMENT = "FragmentDisplayImage";
     private static final String POST_FRAGMENT = "FragmentPost";
 
-
-
-    private boolean takePhotoNotFromGallery;
+//    private boolean takePhotoNotFromGallery;
 
     private GoogleSignInClient googleSignInClient;
 
@@ -125,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
-        takePhotoNotFromGallery = true;
+//        takePhotoNotFromGallery = true;
 
         //For Google sign in
         GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -378,7 +376,7 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
 
     @Override
     public void onOpenGalleryPressed() {
-        takePhotoNotFromGallery = false;
+//        takePhotoNotFromGallery = false;
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
         String[] mimeTypes = {"image/jpeg", "image/png"};
@@ -449,7 +447,6 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
 //                                            });
 //                                }
 //                            }, Util.DEFAULT_F_LISTENER);
-
 //
                                     getSupportFragmentManager().beginTransaction()
                                             .replace(R.id.containerMain, s)
@@ -489,7 +486,6 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
                                             .addToBackStack(null).commit();
                                     break;
                             }
-
                         }
                     }
                 })
@@ -755,5 +751,31 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.containerMain, Profile.newInstance(user))
                 .addToBackStack(FOLLOWERS_FRAGMENT).commit();
+    }
+
+    @Override
+    public void saveEvent(Event event) {
+        if (event != null) {
+            util.saveDraftEvent(event, new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void unused) {
+                    Toast.makeText(MainActivity.this,"Event draft saved!",Toast.LENGTH_SHORT).show();
+                    getSupportFragmentManager().popBackStack();
+                }
+            }, Util.DEFAULT_F_LISTENER);
+        }
+    }
+
+    @Override
+    public void postEvent(Event event) {
+        if (event != null) {
+            util.postEvent(event, new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void unused) {
+                    Toast.makeText(MainActivity.this,"Event posted!",Toast.LENGTH_SHORT).show();
+                    getSupportFragmentManager().popBackStack();
+                }
+            }, Util.DEFAULT_F_LISTENER);
+        }
     }
 }
