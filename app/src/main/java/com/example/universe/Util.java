@@ -980,7 +980,7 @@ public class Util {
      * @param sListener OnSuccessListener<Void>
      * @param fListener OnFailureListener
      */
-    public void updateProfile(String avatarPath, String about, String email, String password,OnSuccessListener<Void> sListener, OnFailureListener fListener) {
+    public void updateProfile(String userName,String avatarPath, String about, String email, String password,OnSuccessListener<Void> sListener, OnFailureListener fListener) {
         if (email != null && !mAuth.getCurrentUser().getEmail().equalsIgnoreCase(email)){
             mAuth.getCurrentUser().updateEmail(email).addOnFailureListener(fListener);
         }
@@ -992,8 +992,10 @@ public class Util {
         db.runTransaction(new Transaction.Function<Void>() {
                     @Nullable
                     @Override
-                    public Void apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
+                    public Void apply(@NonNull Transaction transaction) {
                         transaction.update(userRef, User.KEY_AVATAR_Path, avatarPath);
+                        transaction.update(userRef,User.KEY_EMAIL,email);
+                        transaction.update(userRef, User.KEY_USERNAME,userName);
                         transaction.update(userRef, User.KEY_ABOUT, about);
                         return null;
                     }

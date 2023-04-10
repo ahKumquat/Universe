@@ -188,8 +188,8 @@ public class Profile extends Fragment {
         followerNum.setText(String.valueOf(user.getFollowersIdList().size()));
         followingNum.setText(String.valueOf(user.getFollowingIdList().size()));
 
-        cardViewFollowing.setOnClickListener(v -> mListener.populateFollowerFragment(user));
-        cardViewFollower.setOnClickListener(v -> mListener.populateFollowerFragment(user));
+        cardViewFollowing.setOnClickListener(v -> mListener.populateFollowerFragment(user,1));
+        cardViewFollower.setOnClickListener(v -> mListener.populateFollowerFragment(user,0));
 
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -225,13 +225,7 @@ public class Profile extends Fragment {
         });
 
         imageButtonBack.setOnClickListener(v -> {
-            Fragment fragment = requireActivity().getSupportFragmentManager().findFragmentByTag("FragmentFollowers");
-            if (fragment != null && !user.getUid().equals(util.getCurrentUser().getUid())) {
-                requireActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.containerMain,fragment).addToBackStack(null).commit();
-            } else {
-                mListener.populateHomeFragment();
-            }
+            mListener.backToPrevious();
         });
 
         return view;
@@ -308,9 +302,8 @@ public class Profile extends Fragment {
 
     public interface IProfileFragmentAction {
         void backToPrevious();
-        void populateHomeFragment();
         void populateSettingFragment(User user);
-        void populateFollowerFragment(User user);
+        void populateFollowerFragment(User user, int tabNum);
         void startChatPageFromProfile(String otherUserId);
     }
 }

@@ -56,7 +56,7 @@ public class ChatManager extends Fragment {
         chatList = new ArrayList<>();
         callback = new OnBackPressedCallback(true) {
             public void handleOnBackPressed() {
-                mListener.populateHomeFragment();
+                mListener.backToPrevious();
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
@@ -115,6 +115,7 @@ public class ChatManager extends Fragment {
 
     public interface IchatManagerFragmentAction {
         void startChatPage(String otherUserId);
-        void populateHomeFragment();
+        //void populateHomeFragment();
+        void backToPrevious();
     }
 }

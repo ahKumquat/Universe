@@ -44,8 +44,6 @@ public class Login extends Fragment {
     public static Login newInstance() {
         Login fragment = new Login();
         Bundle args = new Bundle();
-//        args.putString(ARG_PARAM1, param1);
-//        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -54,10 +52,6 @@ public class Login extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         util = Util.getInstance();
-        if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-//            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -73,32 +67,20 @@ public class Login extends Fragment {
 
 
 
-        buttonLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "onClick: Login");
-                userEmail = editTextUserEmail.getText().toString().trim();
-                password = editTextPassword.getText().toString().trim();
-                if(userEmail.equals("")){
-                    editTextUserEmail.setError("Must input user name!");
-                }
-                if(password.equals("")){
-                    editTextPassword.setError("Password must not be empty!");
-                }
-                if(!userEmail.equals("") && !password.equals("")){
-                    util.loginUserWithEmailAndPassword(userEmail, password, new OnSuccessListener<AuthResult>() {
-                        @Override
-                        public void onSuccess(AuthResult authResult) {
-                            Toast.makeText(getContext(), "Login Successful!", Toast.LENGTH_SHORT).show();
-                            mListener.populateMainFragment(util.getCurrentUser());
-                        }
-                    }, new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getContext(), "Login Failed!"+e.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    });
-                }
+        buttonLogin.setOnClickListener(view1 -> {
+            userEmail = editTextUserEmail.getText().toString().trim();
+            password = editTextPassword.getText().toString().trim();
+            if(userEmail.equals("")){
+                editTextUserEmail.setError("Must input user name!");
+            }
+            if(password.equals("")){
+                editTextPassword.setError("Password must not be empty!");
+            }
+            if(!userEmail.equals("") && !password.equals("")){
+                util.loginUserWithEmailAndPassword(userEmail, password, authResult -> {
+                    Toast.makeText(getContext(), "Login Successful!", Toast.LENGTH_SHORT).show();
+                    mListener.populateMainFragment(util.getCurrentUser());
+                }, e -> Toast.makeText(getContext(), "Login Failed!"+e.getMessage(), Toast.LENGTH_LONG).show());
             }
         });
 
@@ -109,12 +91,7 @@ public class Login extends Fragment {
             }
         });
 
-        buttonLoginWithGoogle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.signWithGoogle();
-            }
-        });
+        buttonLoginWithGoogle.setOnClickListener(v -> mListener.signWithGoogle());
 
         return view;
     }

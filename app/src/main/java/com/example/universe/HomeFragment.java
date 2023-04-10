@@ -16,26 +16,21 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
-import android.widget.Toolbar;
+import android.widget.Toast;
 
 import com.example.universe.Models.Event;
 import com.example.universe.Models.User;
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.GeoPoint;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
-
 
 public class HomeFragment extends Fragment {
     private ImageButton imageButtonChat;
@@ -45,7 +40,6 @@ public class HomeFragment extends Fragment {
 
     private TabLayout tabLayout;
 
-    private Toolbar toolbar;
 
     private ProgressBar progressBar;
 
@@ -59,23 +53,20 @@ public class HomeFragment extends Fragment {
 
     private SwipeRefreshLayout swipeRefreshLayout;
 
-    private HomeEventAdapter homeEventAdapter;
     private HomeEventAdapter followedEventAdapter;
     private HomeEventAdapter nearbyEventAdapter;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager recyclerViewLayoutManager;
-    private ArrayList<String> eventUIDs;
-    private ArrayList<String> userUIDs;
     private List<Event> allEvents;
 
     private List<Event> followedEvent;
     private List<Event> nearByEvent;
-    private List<User> allUsers;
     private static Util util;
 
     private User me;
 
     private LocationManager lm;
+    private int tabNum;
 
 
     public HomeFragment() {
@@ -119,14 +110,6 @@ public class HomeFragment extends Fragment {
         progressBar = view.findViewById(R.id.home_progressBar);
 
 
-        imageButtonProfile.setOnClickListener(v -> mListener.openProfile(me));
-
-        imageButtonPost.setOnClickListener(v -> mListener.openPost());
-
-        imageButtonChat.setOnClickListener(view1 -> mListener.openChatManager());
-
-        imageButtonHome.setOnClickListener(v -> Refresh());
-
         swipeRefreshLayout.setOnRefreshListener(() -> {
             swipeRefreshLayout.setRefreshing(false);
             Refresh();
@@ -138,10 +121,12 @@ public class HomeFragment extends Fragment {
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()) {
                     case 0:
+                        tabNum = 0;
                         loadFollowedEvent();
                     break;
 
                     case 1:
+                        tabNum = 1;
                         loadNearByEvent();
                     break;
                 }
@@ -154,15 +139,7 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-                switch (tab.getPosition()) {
-                    case 0:
-                        loadFollowedEvent();
-                        break;
 
-                    case 1:
-                        loadNearByEvent();
-                        break;
-                }
             }
         });
 
@@ -190,48 +167,50 @@ public class HomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        getAllEvents();
+        if (me == null) {
+            imageButtonProfile.setOnClickListener(v -> Toast.makeText(requireContext(),
+                    "Loading data!", Toast.LENGTH_SHORT).show());
+
+            imageButtonPost.setOnClickListener(v -> Toast.makeText(requireContext(),
+                    "Loading data!", Toast.LENGTH_SHORT).show());
+
+            imageButtonChat.setOnClickListener(view1 -> Toast.makeText(requireContext(),
+                    "Loading data!", Toast.LENGTH_SHORT).show());
+        } else {
+            imageButtonProfile.setOnClickListener(v -> mListener.openProfile(me));
+            imageButtonPost.setOnClickListener(v -> mListener.openPost(me.getDraftEvent()));
+            imageButtonChat.setOnClickListener(view1 -> mListener.openChatManager());
+            imageButtonHome.setOnClickListener(v -> Refresh());
+        }
+        loadFollowedEvent();
     }
 
-    private void getAllEvents() {
-        progressBar.setVisibility(View.VISIBLE);
-        util.getDB().collection("events").get().addOnSuccessListener(queryDocumentSnapshots -> {
-            List<DocumentSnapshot> docList = queryDocumentSnapshots.getDocuments();
-            eventUIDs = docList.stream()
-                    .map(DocumentSnapshot::getId)
-                    .collect(Collectors.toCollection(ArrayList::new));
 
-            util.getEventsByIdList(eventUIDs, events -> {
-                homeEventAdapter = new HomeEventAdapter(requireContext(), events,me);
-                getAllUsers();
-            }, Util.DEFAULT_F_LISTENER);
-        });
-    }
-
-    private void getAllUsers() {
-        util.getDB().collection("users").get().addOnSuccessListener(queryDocumentSnapshots -> {
-            List<DocumentSnapshot> docList = queryDocumentSnapshots.getDocuments();
-            userUIDs = docList.stream()
-                    .map(DocumentSnapshot::getId)
-                    .collect(Collectors.toCollection(ArrayList::new));
-
-            util.getUsersByIdList(userUIDs, users -> {
-                allUsers = users;
-                me = allUsers.stream().filter(user -> user.getUid()
-                                .equals(util.getCurrentUser().getUid()))
-                        .collect(Collectors.toList()).get(0);
-                homeEventAdapter = new HomeEventAdapter(requireContext(),homeEventAdapter.getEventList(),me);
-                recyclerView.setAdapter(homeEventAdapter);
-                progressBar.setVisibility(View.INVISIBLE);
-            }, Util.DEFAULT_F_LISTENER);
-        });
+    private void loadMyData() {
+        util.getUser(util.getCurrentUser().getUid(), user -> {
+            if (me == null) {
+                imageButtonProfile.setOnClickListener(v -> mListener.openProfile(me));
+                imageButtonPost.setOnClickListener(v -> mListener.openPost(me.getDraftEvent()));
+                imageButtonChat.setOnClickListener(view1 -> mListener.openChatManager());
+                imageButtonHome.setOnClickListener(v -> Refresh());
+            }
+            me = user;
+            progressBar.setVisibility(View.INVISIBLE);
+        }, Util.DEFAULT_F_LISTENER);
     }
 
     private void Refresh() {
-        allEvents = homeEventAdapter.getEventList();
-        Collections.shuffle(allEvents, new Random(System.currentTimeMillis()));
-        homeEventAdapter = new HomeEventAdapter(requireContext(), allEvents, me);
-        recyclerView.setAdapter(homeEventAdapter);
+        if (tabNum == 0) {
+            allEvents = followedEventAdapter.getEventList();
+            Collections.shuffle(allEvents, new Random(System.currentTimeMillis()));
+            followedEventAdapter = new HomeEventAdapter(requireContext(), allEvents, me);
+            recyclerView.setAdapter(followedEventAdapter);
+        } else {
+            allEvents = nearbyEventAdapter.getEventList();
+            Collections.shuffle(allEvents, new Random(System.currentTimeMillis()));
+            nearbyEventAdapter = new HomeEventAdapter(requireContext(), allEvents, me);
+            recyclerView.setAdapter(nearbyEventAdapter);
+        }
     }
 
     private void loadFollowedEvent() {
@@ -240,6 +219,7 @@ public class HomeFragment extends Fragment {
             followedEvent = events;
             followedEventAdapter = new HomeEventAdapter(requireContext(), followedEvent, me);
             recyclerView.setAdapter(followedEventAdapter);
+            loadMyData();
             progressBar.setVisibility(View.INVISIBLE);
         }, Util.DEFAULT_F_LISTENER);
     }
@@ -275,7 +255,7 @@ public class HomeFragment extends Fragment {
     public interface IhomeFragmentAction {
         void openChatManager();
         void openProfile(User user);
-        void openPost();
+        void openPost(Event event);
         void showResult(String query, User user);
     }
 }

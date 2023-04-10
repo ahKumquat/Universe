@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.universe.Models.Event;
 import com.example.universe.Models.User;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.tabs.TabLayout;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 public class Followers extends Fragment implements FollowerAdapter.IFollowerListRecyclerActionToFragment {
 
     private static final String ARG_USER = "user";
+    private static final String ARG_TAB = "tabNum";
 
     private IFollowerFragmentAction mListener;
 
@@ -72,10 +74,11 @@ public class Followers extends Fragment implements FollowerAdapter.IFollowerList
     }
 
 
-    public static Followers newInstance(User user) {
+    public static Followers newInstance(User user, int tabNum) {
         Followers fragment = new Followers();
         Bundle args = new Bundle();
         args.putSerializable(ARG_USER, user);
+        args.putInt(ARG_TAB, tabNum);
         fragment.setArguments(args);
         return fragment;
     }
@@ -86,8 +89,9 @@ public class Followers extends Fragment implements FollowerAdapter.IFollowerList
         util = Util.getInstance();
         if (getArguments() != null) {
              me = (User) getArguments().getSerializable(ARG_USER);
-            followerUIDs = me.getFollowersIdList();
-            followingUIDs = me.getFollowingIdList();
+             tabNum = getArguments().getInt(ARG_TAB);
+             followerUIDs = me.getFollowersIdList();
+             followingUIDs = me.getFollowingIdList();
         }
         callback = new OnBackPressedCallback(true) {
             public void handleOnBackPressed() {
@@ -165,7 +169,18 @@ public class Followers extends Fragment implements FollowerAdapter.IFollowerList
     public void onResume() {
         super.onResume();
         if (followerAdapter == null) {
-            getAllFollowers(followerUIDs);
+            Objects.requireNonNull(tabLayout.getTabAt(tabNum)).select();
+            switch (tabNum) {
+                case 0:
+                    getAllFollowers(followerUIDs);
+                break;
+
+                case 1:
+
+                    getAllFollowings(followingUIDs);
+                break;
+            }
+
         } else {
             updateMyList();
         }
