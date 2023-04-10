@@ -881,6 +881,7 @@ public class Util {
 
             tasks.add(q.get());
         }
+        currentTask = "getNearByEvents";
         Tasks.whenAllComplete(tasks).addOnSuccessListener(new OnSuccessListener<List<Task<?>>>() {
                     @Override
                     public void onSuccess(List<Task<?>> t) {
@@ -907,7 +908,7 @@ public class Util {
             public void onSuccess(List<User> users) {
                 ArrayList<String> eventIds = new ArrayList<>();
                 for (User user : users) {
-                    eventIds.addAll(user.getPostsIdList());
+                    if (user.getPostsIdList() != null) eventIds.addAll(user.getPostsIdList());
                 }
                 List<Task<QuerySnapshot>> tasks = new ArrayList<>();
                 //Timestamp cutOffTime = new Timestamp(new Date(System.currentTimeMillis() - CUT_OFF_TIME_MILLISECONDS));
@@ -916,6 +917,7 @@ public class Util {
                     Task<QuerySnapshot> task = db.collection(EVENTS_COLLECTION_NAME).whereIn(FieldPath.documentId(), ids).get();
                     tasks.add(task);
                 }
+                currentTask = "getFriendEvents";
                 Tasks.whenAllComplete(tasks).addOnSuccessListener(new OnSuccessListener<List<Task<?>>>() {
                             @Override
                             public void onSuccess(List<Task<?>> t) {
