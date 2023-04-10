@@ -148,9 +148,13 @@ public class MessageAdapter extends RecyclerView.Adapter {
                     }
                 }, Util.DEFAULT_F_LISTENER);
             } else if (message.getFileURL()!=null) {
+                //TODO
                 viewHolder.getTextViewTimeOfMessage().setVisibility(View.GONE);
                 viewHolder.getTextViewMessage().setVisibility(View.GONE);
             } else {
+                viewHolder.getImageViewPhoto().setVisibility(View.GONE);
+                viewHolder.getTextViewTimeOfMessage().setVisibility(View.VISIBLE);
+                viewHolder.getTextViewMessage().setVisibility(View.VISIBLE);
                 viewHolder.getTextViewMessage().setText(message.getText());
                 viewHolder.getTextViewTimeOfMessage().setText(message.getSimpleTime());
             }

@@ -206,10 +206,12 @@ public class HomeFragment extends Fragment {
             followedEventAdapter = new HomeEventAdapter(requireContext(), allEvents, me);
             recyclerView.setAdapter(followedEventAdapter);
         } else {
-            allEvents = nearbyEventAdapter.getEventList();
-            Collections.shuffle(allEvents, new Random(System.currentTimeMillis()));
-            nearbyEventAdapter = new HomeEventAdapter(requireContext(), allEvents, me);
-            recyclerView.setAdapter(nearbyEventAdapter);
+            if (nearbyEventAdapter!=null) {
+                allEvents = nearbyEventAdapter.getEventList();
+                Collections.shuffle(allEvents, new Random(System.currentTimeMillis()));
+                nearbyEventAdapter = new HomeEventAdapter(requireContext(), allEvents, me);
+                recyclerView.setAdapter(nearbyEventAdapter);
+            }
         }
     }
 
