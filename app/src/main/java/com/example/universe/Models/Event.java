@@ -6,6 +6,7 @@ import com.firebase.geofire.GeoFireUtils;
 import com.firebase.geofire.GeoLocation;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.io.Serializable;
@@ -258,6 +259,7 @@ public class Event implements Serializable {
         this.candidates = candidates;
     }
 
+    @Exclude
     public List<String> getParticipantsAndCandidates(){
         ArrayList<String> list = new ArrayList<>(participants);
         list.addAll(candidates);

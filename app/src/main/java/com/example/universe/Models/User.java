@@ -1,5 +1,7 @@
 package com.example.universe.Models;
 
+import androidx.annotation.NonNull;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
