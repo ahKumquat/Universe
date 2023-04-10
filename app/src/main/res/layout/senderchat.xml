@@ -19,6 +19,8 @@
         android:id="@+id/layoutForReceiverMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/chatRoom_imageView_senderAvatar"
+        android:layout_marginTop="0dp"
         android:layout_marginEnd="9dp"
         android:layout_marginBottom="8dp"
         android:layout_toStartOf="@+id/chatRoom_imageView_senderAvatar"
