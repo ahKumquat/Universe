@@ -41,7 +41,20 @@
             android:textSize="24sp"
             android:textStyle="bold"
             tools:layout_editor_absoluteX="46dp"
-            tools:layout_editor_absoluteY="18dp" />>
+            tools:layout_editor_absoluteY="18dp" />
+
+        <ImageButton
+            android:id="@+id/setting_imageButton_logout"
+            android:layout_width="58dp"
+            android:layout_height="56dp"
+            android:layout_gravity="center|right"
+            android:backgroundTint="@color/universe_transparent"
+            android:src="@android:drawable/ic_lock_power_off"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:tint="@color/universe_drakblue"
+            tools:ignore="ContentDescription,RtlHardcoded,SpeakableTextPresentCheck" />
     </androidx.appcompat.widget.Toolbar>
 
     <ImageView
@@ -57,6 +70,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/setting_toolbar"
         tools:ignore="ContentDescription,ImageContrastCheck" />
+
 
     <ImageView
         android:id="@+id/setting_imageView_editAvatar"
@@ -166,12 +180,31 @@
         app:layout_constraintTop_toBottomOf="@+id/textView9"
         tools:ignore="Autofill,LabelFor,SpeakableTextPresentCheck" />
 
+    <EditText
+        android:id="@+id/setting_editText_about"
+        android:layout_width="350dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="25dp"
+        android:background="@color/universe_grey"
+        android:ems="10"
+        android:importantForAutofill="no"
+        android:inputType="textWebEmailAddress|textPersonName|text"
+        android:password="false"
+        android:singleLine="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView12"
+        tools:ignore="Deprecated,LabelFor,SpeakableTextPresentCheck" />
+
     <TextView
         android:id="@+id/textView12"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="37dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="313dp"
         android:singleLine="true"
         android:text="@string/setting_textview_about"
@@ -179,32 +212,16 @@
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/setting_editText_password" />
-
-    <EditText
-        android:id="@+id/setting_editText_about"
-        android:layout_width="350dp"
-        android:layout_height="52dp"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="19dp"
-        android:layout_marginEnd="25dp"
-        android:background="@color/universe_grey"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:password="true"
-        android:singleLine="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView12"
-        tools:ignore="Autofill,Deprecated,LabelFor,SpeakableTextPresentCheck,VisualLintBounds" />
 
     <Button
         android:id="@+id/setting_button_save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="130dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="131dp"
         android:backgroundTint="@color/universe_blue"
         android:text="@string/setting_button_save_changes"
@@ -213,21 +230,10 @@
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/setting_editText_about"
         tools:ignore="VisualLintBounds" />
-
-    <ImageButton
-        android:id="@+id/setting_imageButton_logout"
-        android:layout_width="58dp"
-        android:layout_height="56dp"
-        android:layout_marginBottom="32dp"
-        android:backgroundTint="@color/universe_transparent"
-        android:src="@android:drawable/ic_lock_power_off"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="SpeakableTextPresentCheck" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -14,9 +14,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.universe.Models.User;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 
 public class Setting extends Fragment {
@@ -86,7 +89,6 @@ public class Setting extends Fragment {
         if (user.getAvatarPath()!=null && !user.getAvatarPath().equals("")) {
             util.getDownloadUrlFromPath(user.getAvatarPath(), uri -> Glide.with(requireContext())
                     .load(uri)
-                    .centerCrop()
                     .into(imageViewAvatar), Util.DEFAULT_F_LISTENER);
         }
 
@@ -108,19 +110,53 @@ public class Setting extends Fragment {
         editTextEmail.setText(user.getEmail());
         editTextAbout.setText(user.getAbout());
 
-        buttonSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
+        buttonSave.setOnClickListener(v -> {
+           if (editTextName.getText().toString().equals("")) {
+               Toast.makeText(requireContext(),"Name cannot be empty", Toast.LENGTH_SHORT).show();
+           }  else if (editTextEmail.getText().toString().equals("")) {
+               Toast.makeText(requireContext(),"Empty cannot be empty", Toast.LENGTH_SHORT).show();
+           } else {
+               if (newAvatarPath == null) {
+                   newAvatarPath = user.getAvatarPath();
+               }
+               if (editTextPassword.getText().toString().equals("")) {
+                   util.updateProfile(
+                           editTextName.getText().toString(),
+                           newAvatarPath,
+                           editTextAbout.getText().toString(),
+                           editTextEmail.getText().toString(),
+                           null,
+                           unused -> {
+                               user.setAvatarPath(newAvatarPath);
+                               user.setUserName(editTextName.getText().toString());
+                               user.setEmail(editTextEmail.getText().toString());
+                               user.setAbout(editTextAbout.getText().toString());
+                               Toast.makeText(requireContext(),
+                                       "Update successful!",
+                                   Toast.LENGTH_SHORT).show();
+                       }, Util.DEFAULT_F_LISTENER);
+               } else {
+                   util.updateProfile(
+                           editTextName.getText().toString(),
+                           newAvatarPath,
+                           editTextAbout.getText().toString(),
+                           editTextEmail.getText().toString(),
+                           editTextPassword.getText().toString(),
+                           unused -> {
+                               user.setAvatarPath(newAvatarPath);
+                               user.setUserName(editTextName.getText().toString());
+                               user.setEmail(editTextEmail.getText().toString());
+                               user.setAbout(editTextAbout.getText().toString());
+                               Toast.makeText(requireContext(),
+                                       "Update successful!",
+                                       Toast.LENGTH_SHORT).show();
+                           }, e -> Toast.makeText(requireContext(),
+                                   "Update unsuccessful!",
+                                   Toast.LENGTH_SHORT).show());
+               }
+           }
         });
 
-        imageViewAvatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
 
 
         return view;
@@ -130,7 +166,6 @@ public class Setting extends Fragment {
     public void onResume() {
         super.onResume();
         if (newAvatarPath != null) {
-            user.setAvatarPath(newAvatarPath);
             util.getDownloadUrlFromPath(newAvatarPath, uri -> Glide.with(requireContext())
                     .load(uri)
                     .into(imageViewAvatar), Util.DEFAULT_F_LISTENER);

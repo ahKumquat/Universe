@@ -23,7 +23,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/post_textView_title"
@@ -44,9 +44,10 @@
                     android:ems="10"
                     android:hint="Title"
                     android:inputType="textPersonName"
+                    android:minHeight="48dp"
                     android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="@+id/post_textView_title"
-                    app:layout_constraintStart_toStartOf="@+id/post_editText_date"
+                    app:layout_constraintStart_toStartOf="@+id/post_textView_dateDisplay"
                     app:layout_constraintTop_toTopOf="@+id/post_textView_title" />
 
                 <TextView
@@ -60,17 +61,6 @@
                     app:layout_constraintStart_toStartOf="@+id/post_textView_title"
                     app:layout_constraintTop_toBottomOf="@+id/post_textView_title" />
 
-                <EditText
-                    android:id="@+id/post_editText_date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:hint="YY/MM/DD"
-                    android:inputType="date"
-                    app:layout_constraintBottom_toBottomOf="@+id/post_textView_date"
-                    app:layout_constraintStart_toStartOf="@+id/post_spinner_timeHour"
-                    app:layout_constraintTop_toTopOf="@+id/post_textView_date" />
-
                 <TextView
                     android:id="@+id/post_textView_time"
                     android:layout_width="wrap_content"
@@ -81,39 +71,6 @@
                     android:textSize="@dimen/textSize_secondTitle"
                     app:layout_constraintStart_toStartOf="@+id/post_textView_date"
                     app:layout_constraintTop_toBottomOf="@+id/post_textView_date" />
-
-                <Spinner
-                    android:id="@+id/post_spinner_timeHour"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="55dp"
-                    android:layout_marginTop="14dp"
-                    android:layout_marginBottom="2dp"
-                    app:layout_constraintBottom_toTopOf="@+id/post_editText_duration"
-                    app:layout_constraintStart_toEndOf="@+id/post_textView_time"
-                    app:layout_constraintTop_toBottomOf="@+id/post_editText_date" />
-
-                <Spinner
-                    android:id="@+id/post_spinner_timeMinute"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginTop="14dp"
-                    android:layout_marginBottom="2dp"
-                    app:layout_constraintBottom_toTopOf="@+id/post_editText_duration"
-                    app:layout_constraintStart_toEndOf="@+id/post_spinner_timeHour"
-                    app:layout_constraintTop_toBottomOf="@+id/post_editText_date" />
-
-                <Spinner
-                    android:id="@+id/post_spinner_timeAMPM"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="14dp"
-                    android:layout_marginBottom="2dp"
-                    app:layout_constraintBottom_toTopOf="@+id/post_editText_duration"
-                    app:layout_constraintStart_toEndOf="@+id/post_spinner_timeMinute"
-                    app:layout_constraintTop_toBottomOf="@+id/post_editText_date" />
 
                 <TextView
                     android:id="@+id/post_textView_duration"
@@ -130,71 +87,66 @@
                     android:id="@+id/post_editText_duration"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:ems="10"
+                    android:layout_marginBottom="25dp"
+                    android:ems="7"
                     android:hint="xx.x"
                     android:inputType="time"
-                    app:layout_constraintBottom_toBottomOf="@+id/post_textView_duration"
-                    app:layout_constraintEnd_toStartOf="@+id/post_spinner_timeUnit"
-                    app:layout_constraintStart_toStartOf="@+id/post_editText_location" />
-
-                <Spinner
-                    android:id="@+id/post_spinner_timeUnit"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="154dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="121dp"
-                    app:layout_constraintBottom_toTopOf="@+id/post_editText_description"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:minHeight="48dp"
+                    app:layout_constraintBottom_toTopOf="@+id/post_textView_location"
+                    app:layout_constraintStart_toStartOf="@+id/post_textview_location" />
 
                 <TextView
                     android:id="@+id/post_textView_location"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/post_vertical_margin"
+                    android:layout_marginTop="37dp"
                     android:text="@string/postPage_textView_location"
                     android:textColor="@color/black"
                     android:textSize="@dimen/textSize_secondTitle"
                     app:layout_constraintStart_toStartOf="@+id/post_textView_duration"
                     app:layout_constraintTop_toBottomOf="@+id/post_textView_duration" />
 
-                <EditText
-                    android:id="@+id/post_editText_location"
-                    android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/post_textview_location"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="32dp"
-                    android:ems="10"
-                    android:hint="Address"
-                    android:inputType="textPersonName"
-                    android:textSize="18sp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/common_google_signin_btn_text_light_normal_background"
+                    android:backgroundTint="@color/universe_grey"
+                    android:text="Type your address!"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="@+id/post_textView_location"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/post_textView_location"
-                    app:layout_constraintTop_toTopOf="@+id/post_textView_location" />
+                    app:layout_constraintTop_toBottomOf="@+id/post_spinner_timeUnit" />
 
                 <TextView
                     android:id="@+id/post_textView_Description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/post_vertical_margin"
+                    android:layout_marginTop="15dp"
                     android:text="@string/postPage_textView_Description"
                     android:textColor="@color/black"
                     android:textSize="@dimen/textSize_secondTitle"
-                    app:layout_constraintStart_toStartOf="@+id/post_textView_location"
-                    app:layout_constraintTop_toBottomOf="@+id/post_textView_location" />
+                    app:layout_constraintStart_toStartOf="@+id/post_textView_capacity"
+                    app:layout_constraintTop_toBottomOf="@+id/post_textView_capacity" />
 
                 <EditText
                     android:id="@+id/post_editText_description"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="12dp"
                     android:layout_marginEnd="16dp"
                     android:ems="10"
                     android:gravity="start|top"
                     android:hint="Describe your event..."
                     android:inputType="textMultiLine"
+                    android:minHeight="48dp"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="@+id/post_textView_Description"
                     app:layout_constraintTop_toBottomOf="@+id/post_textView_Description" />
 
@@ -202,7 +154,7 @@
                     android:id="@+id/post_textView_photo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="22dp"
                     android:text="@string/postPage_textView_photo"
                     android:textColor="@color/black"
                     android:textSize="@dimen/textSize_secondTitle"
@@ -213,12 +165,93 @@
                     android:id="@+id/post_imageButton_eventPic"
                     android:layout_width="0dp"
                     android:layout_height="200dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="10dp"
                     android:scaleType="center"
                     android:src="@android:drawable/ic_menu_gallery"
                     app:layout_constraintEnd_toEndOf="@+id/post_editText_description"
                     app:layout_constraintStart_toStartOf="@+id/post_editText_description"
-                    app:layout_constraintTop_toBottomOf="@+id/post_textView_photo" />
+                    app:layout_constraintTop_toBottomOf="@+id/post_textView_photo"
+                    tools:ignore="SpeakableTextPresentCheck" />
+
+                <TextView
+                    android:id="@+id/post_textView_timeDisplay"
+                    android:layout_width="150dp"
+                    android:layout_height="0dp"
+                    android:textSize="@dimen/textSize_secondTitle"
+                    app:layout_constraintBottom_toBottomOf="@+id/post_textView_time"
+                    app:layout_constraintStart_toStartOf="@+id/post_editText_duration"
+                    app:layout_constraintTop_toTopOf="@+id/post_textView_time" />
+
+                <TextView
+                    android:id="@+id/post_textView_dateDisplay"
+                    android:layout_width="150dp"
+                    android:layout_height="0dp"
+                    android:textSize="@dimen/textSize_secondTitle"
+                    app:layout_constraintBottom_toBottomOf="@+id/post_textView_date"
+                    app:layout_constraintStart_toStartOf="@+id/post_textView_timeDisplay"
+                    app:layout_constraintTop_toTopOf="@+id/post_textView_date" />
+
+                <Button
+                    android:id="@+id/post_button_dateSelector"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_marginEnd="68dp"
+                    android:backgroundTint="@color/universe_orange"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    app:icon="@drawable/baseline_calendar_today_24"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/post_editText_Title"
+                    tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+                <Button
+                    android:id="@+id/post_button_timeSelector"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_marginEnd="68dp"
+                    android:backgroundTint="@color/universe_orange"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    app:icon="@drawable/baseline_access_time_24"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/post_button_dateSelector"
+                    tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+                <Spinner
+                    android:id="@+id/post_spinner_timeUnit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="154dp"
+                    android:minHeight="48dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/post_editText_duration"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="SpeakableTextPresentCheck" />
+
+                <TextView
+                    android:id="@+id/post_textView_capacity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="22dp"
+                    android:text="Capacity:"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textSize_secondTitle"
+                    app:layout_constraintStart_toStartOf="@+id/post_textView_location"
+                    app:layout_constraintTop_toBottomOf="@+id/post_textView_location" />
+
+                <EditText
+                    android:id="@+id/post_editText_capacity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="28dp"
+                    android:ems="10"
+                    android:hint="Number of participants"
+                    android:inputType="textPersonName"
+                    android:minHeight="48dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/post_textView_capacity"
+                    app:layout_constraintStart_toEndOf="@+id/post_textView_capacity"
+                    app:layout_constraintTop_toTopOf="@+id/post_textView_capacity" />
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>

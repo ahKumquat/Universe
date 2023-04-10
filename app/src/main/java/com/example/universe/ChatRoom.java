@@ -85,7 +85,7 @@ public class ChatRoom extends Fragment {
         }
         callback = new OnBackPressedCallback(true) {
             public void handleOnBackPressed() {
-                mListener.populateChatManagerFragment();
+                mListener.backToPrevious();
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
@@ -222,6 +222,7 @@ public class ChatRoom extends Fragment {
     public interface IchatFragmentButtonAction {
         void sendImage();
         void sendFile();
-        void populateChatManagerFragment();
+        void backToPrevious();
+        //void populateChatManagerFragment();
     }
 }

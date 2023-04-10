@@ -8,6 +8,7 @@ import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -61,6 +62,8 @@ public class EventFragment extends Fragment {
 
     private User me;
 
+    private OnBackPressedCallback callback;
+
     private RecyclerView.LayoutManager recyclerViewLayoutManager;
 
     public EventFragment() {
@@ -83,8 +86,13 @@ public class EventFragment extends Fragment {
             event = (Event) getArguments().getSerializable(ARG_EVENT);
             me = (User) getArguments().getSerializable(ARG_USER);
         }
-        //TODO need to finish backpressed()
         util = Util.getInstance();
+        callback = new OnBackPressedCallback(true) {
+            public void handleOnBackPressed() {
+                mListener.backToPrevious();
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
     @SuppressLint({"SimpleDateFormat", "SetTextI18n"})

@@ -90,7 +90,7 @@ public class SearchFragment extends Fragment implements FollowerAdapter.IFollowe
 
         searchView.setQueryHint(query);
 
-        backButton.setOnClickListener(v -> mListener.populateHomeFragment());
+        backButton.setOnClickListener(v -> mListener.backToPrevious());
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -175,6 +175,7 @@ public class SearchFragment extends Fragment implements FollowerAdapter.IFollowe
     }
 
     public interface ISearchFragmentAction {
-        void populateHomeFragment();
+        //void populateHomeFragment();
+        void backToPrevious();
     }
 }
