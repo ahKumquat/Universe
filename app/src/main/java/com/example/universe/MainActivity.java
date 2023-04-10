@@ -146,23 +146,26 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
         readAllowed = ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
         writeAllowed = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
 
+        Boolean locationAllowed = ContextCompat.checkSelfPermission(this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+
         Boolean coarseLocationAllowed = ContextCompat.checkSelfPermission(this,
                 android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
 
 
-//        if(cameraAllowed && readAllowed && writeAllowed && videoAllowed && locationAllowed && coarseLocationAllowed){
-//            Toast.makeText(this, "All permissions granted!", Toast.LENGTH_SHORT).show();
-//        }else{
-//            requestPermissions(new String[]{
-//                    Manifest.permission.CAMERA,
-//                    Manifest.permission.READ_EXTERNAL_STORAGE,
-//                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-//                    Manifest.permission.RECORD_AUDIO,
-//                    Manifest.permission.ACCESS_FINE_LOCATION,
-//                    Manifest.permission.ACCESS_COARSE_LOCATION
-//
-//            }, PERMISSIONS_CODE_HOME);
-//        }
+        if(cameraAllowed && readAllowed && writeAllowed && locationAllowed && coarseLocationAllowed){
+            Toast.makeText(this, "All permissions granted!", Toast.LENGTH_SHORT).show();
+        }else{
+            requestPermissions(new String[]{
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.RECORD_AUDIO,
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+
+            }, PERMISSIONS_CODE_HOME);
+        }
         util = Util.getInstance();
 //        Log.d(TAG, "onCreate Activity: " + mAuth.getCurrentUser().getEmail());
         //TODO: comment this out when testing is not needed
@@ -391,7 +394,7 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
                 == PackageManager.PERMISSION_GRANTED) {
             selectFile();
         } else{
-            Toast.makeText(this, "You must allow Camera and Storage permissions!", Toast.LENGTH_LONG).show();
+            ///Toast.makeText(this, "You must allow Camera and Storage permissions!", Toast.LENGTH_LONG).show();
         }
     }
 
