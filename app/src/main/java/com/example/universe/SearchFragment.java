@@ -24,6 +24,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -50,6 +51,7 @@ public class SearchFragment extends Fragment implements FollowerAdapter.IFollowe
     private User me;
 
     private Util util;
+    private int tabNum;
 
     public SearchFragment() {
         // Required empty public constructor
@@ -97,10 +99,12 @@ public class SearchFragment extends Fragment implements FollowerAdapter.IFollowe
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (tab.getPosition()){
                     case 0:
+                        tabNum = 0;
                         loadResultForEvents();
                     break;
 
                     case 1:
+                        tabNum = 1;
                         loadResultForUsers();
                     break;
                 }
@@ -114,6 +118,27 @@ public class SearchFragment extends Fragment implements FollowerAdapter.IFollowe
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
 
+            }
+        });
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String q) {
+                if (!q.equals("")){
+                    query = q;
+                    if (tabNum == 0) {
+                        loadResultForEvents();
+                    } else {
+                        loadResultForUsers();
+                    }
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
             }
         });
 
