@@ -25,7 +25,9 @@
                 android:id="@+id/chatRoom_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center" />
+                android:layout_gravity="center"
+                android:textSize="20sp"
+                android:textStyle="bold" />
         </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -68,6 +70,7 @@
                 android:backgroundTint="@color/universe_grey"
                 android:text="@string/chatRoom_button_send"
                 android:textColor="@color/black"
+                app:cornerRadius="8dp"
                 app:layout_constraintBottom_toBottomOf="@+id/chatRoom_editText_message"
                 app:layout_constraintEnd_toStartOf="@+id/chatRoom_imageButton_camera" />
 

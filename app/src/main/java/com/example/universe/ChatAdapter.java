@@ -1,6 +1,7 @@
 package com.example.universe;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.universe.Models.Chat;
 import com.example.universe.Models.User;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -19,11 +21,13 @@ import java.util.ArrayList;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>{
     private ArrayList<Chat> chatList;
+    private Context context;
     private IchatListRecyclerAction mListener;
     private static Util util;
 
     public ChatAdapter(Context context, ArrayList<Chat> chatList) {
         this.chatList = chatList;
+        this.context = context;
         util = Util.getInstance();
         if(context instanceof IchatListRecyclerAction){
             mListener = (IchatListRecyclerAction) context;
@@ -57,6 +61,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>{
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Chat chat = this.getChats().get(position);
         String otherUserId = chat.getOtherUserId();
+        holder.getImageViewUserAvatar().setImageResource(R.drawable.circle_user_avatar);
 
         if (chat.getUnreadCount() > 0) {
             holder.getImageViewDotForUnreadMessage().setVisibility(View.VISIBLE);
@@ -69,6 +74,17 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>{
             public void onSuccess(User user) {
                 String name = user.getUserName();
                 holder.getTextViewUserName().setText(name);
+                String path = user.getAvatarPath();
+                util.getDownloadUrlFromPath(path, new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                            Glide.with(context)
+                                    .load(uri)
+                                    .centerCrop()
+                                    .override(500,500)
+                                    .into(holder.getImageViewUserAvatar());
+                    }
+                }, Util.DEFAULT_F_LISTENER);
             }
         }, Util.DEFAULT_F_LISTENER);
         if (chat.getLastMessage()!= null) {
