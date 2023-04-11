@@ -32,6 +32,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 //TODO Have to implement the four buttons
 
@@ -66,6 +67,8 @@ public class EventFragment extends Fragment {
     private OnBackPressedCallback callback;
 
     private RecyclerView.LayoutManager recyclerViewLayoutManager;
+
+    private ParticipantAdapter participantAdapter;
 
     public EventFragment() {
         // Required empty public constructor
@@ -154,6 +157,9 @@ public class EventFragment extends Fragment {
         showMap(event.getGeoPoint().getLatitude(), event.getGeoPoint().getLongitude());
 
         recyclerViewLayoutManager = new LinearLayoutManager(getContext());
+        recyclerViewParticipants.setLayoutManager(recyclerViewLayoutManager);
+
+        hostAvatar.setOnClickListener(v -> util.getUser(event.getHostId(), user -> mListener.openHostProfile(user), Util.DEFAULT_F_LISTENER));
 
         if (me != null) {
             if (me.getJoinedEventsIdList().contains(event.getUid())) {
@@ -200,7 +206,14 @@ public class EventFragment extends Fragment {
         }
 
 
+
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadUsers();
     }
 
     private void showMap(double lat, double lon) {
@@ -213,6 +226,14 @@ public class EventFragment extends Fragment {
             googleMap.getUiSettings().setAllGesturesEnabled(false);
         });
     }
+
+    private void loadUsers() {
+        util.getUsersByIdList(event.getParticipantsAndCandidates(), users -> {
+            participantAdapter = new ParticipantAdapter(requireContext(), users, event);
+            recyclerViewParticipants.setAdapter(participantAdapter);
+        },Util.DEFAULT_F_LISTENER);
+    }
+
 
     @Override
     public void onAttach(@NonNull Context context) {

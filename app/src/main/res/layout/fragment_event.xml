@@ -14,38 +14,33 @@
         android:background="@color/white"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
 
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/universe_yellow"
-            app:layout_collapseMode="pin">
-
-            <TextView
-                android:id="@+id/event_textView_toolbar_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center" />
-
-        </androidx.appcompat.widget.Toolbar>
+            android:layout_height="wrap_content"
+            app:contentScrim="@color/universe_grey"
+            app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"
+            app:titleEnabled="false">
 
 
-    </com.google.android.material.appbar.AppBarLayout>
+            <androidx.appcompat.widget.Toolbar
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/universe_yellow">
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/event_nestedScrolllView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+                <TextView
+                    android:id="@+id/event_textView_toolbar_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@color/black" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            </androidx.appcompat.widget.Toolbar>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="56dp">
 
                 <ImageView
                     android:id="@+id/event_imageView_event"
@@ -62,6 +57,7 @@
                     android:layout_width="@dimen/avatar_size_large"
                     android:layout_height="@dimen/avatar_size_large"
                     android:layout_marginStart="@dimen/horizontal_padding"
+                    android:layout_marginTop="30dp"
                     android:cropToPadding="false"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/event_imageView_event"
@@ -161,20 +157,33 @@
                     app:layout_constraintStart_toStartOf="@+id/event_mapView_map"
                     app:layout_constraintTop_toBottomOf="@+id/event_mapView_map" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/event_recyclerView_participants"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/horizontal_padding"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="@dimen/horizontal_padding"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/event_textView_going" />
-
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </LinearLayout>
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+
+
+
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/event_nestedScrolllView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/event_recyclerView_participants"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/horizontal_padding"
+            android:layout_marginEnd="@dimen/horizontal_padding"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/event_textView_going" />
     </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.bottomappbar.BottomAppBar
@@ -226,7 +235,8 @@
                 android:src="@android:drawable/ic_menu_send"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="SpeakableTextPresentCheck" />
 
             <ImageButton
                 android:id="@+id/event_imageButton_favourite"
@@ -239,7 +249,8 @@
                 app:layout_constraintEnd_toStartOf="@+id/event_imageButton_post"
                 app:layout_constraintStart_toEndOf="@+id/event_imageButton_signUp"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.541" />
+                app:layout_constraintVertical_bias="0.541"
+                tools:ignore="SpeakableTextPresentCheck" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.bottomappbar.BottomAppBar>
