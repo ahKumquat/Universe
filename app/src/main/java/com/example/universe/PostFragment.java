@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -25,7 +24,6 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.universe.Models.Event;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.GeoPoint;
 
@@ -155,17 +153,21 @@ public class PostFragment extends Fragment {
 
             @SuppressLint("SetTextI18n")
             TimePickerDialog timePickerDialog = new TimePickerDialog(requireContext(),
-                    (TimePickerDialog.OnTimeSetListener)
-                            (view13, hourOfDay, minute) -> {
-                                textViewTime.setText(hourOfDay + ":" + minute);
-                                selectedTime = textViewTime.getText().toString();
-                            }
+                    (view13, hourOfDay, minute) -> {
+                        textViewTime.setText(hourOfDay + ":" + minute);
+                        selectedTime = textViewTime.getText().toString();
+                    }
 
                     , mHour, mMinute, true);
             timePickerDialog.show();
         });
 
-        textViewLocation.setOnClickListener(v -> mListener.inputAddress());
+        textViewLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.inputAddress();
+            }
+        });
 
         buttonSave.setOnClickListener(view1 -> {
                 if (editTextTitle.getText().toString().equals("")) {
@@ -276,6 +278,7 @@ public class PostFragment extends Fragment {
             if (draft != null) {
                 try {
                     restoreFromDraft(draft);
+                    draft = null;
                 } catch (ParseException e) {
                     throw new RuntimeException(e);
                 }
@@ -310,6 +313,10 @@ public class PostFragment extends Fragment {
         String timeToRe = sdfReTime.format(Objects.requireNonNull(sdfToSaveTime.parse(timeSaved)));
 
         textViewTime.setText(timeToRe);
+
+        selectedDate = dateToRe;
+
+        selectedTime = timeToRe;
 
         textViewDate.setText(dateToRe);
 
