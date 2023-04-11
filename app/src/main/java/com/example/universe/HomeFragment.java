@@ -186,19 +186,6 @@ public class HomeFragment extends Fragment {
     }
 
 
-    private void loadMyData() {
-        util.getUser(util.getCurrentUser().getUid(), user -> {
-            if (me == null) {
-                imageButtonProfile.setOnClickListener(v -> mListener.openProfile(me));
-                imageButtonPost.setOnClickListener(v -> mListener.openPost(me.getDraftEvent()));
-                imageButtonChat.setOnClickListener(view1 -> mListener.openChatManager());
-                imageButtonHome.setOnClickListener(v -> Refresh());
-            }
-            me = user;
-            progressBar.setVisibility(View.INVISIBLE);
-        }, Util.DEFAULT_F_LISTENER);
-    }
-
     private void Refresh() {
         if (tabNum == 0) {
             allEvents = followedEventAdapter.getEventList();
@@ -215,12 +202,25 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    private void loadMyData() {
+        util.getUser(util.getCurrentUser().getUid(), user -> {
+            if (me == null) {
+                imageButtonProfile.setOnClickListener(v -> mListener.openProfile(user));
+                imageButtonPost.setOnClickListener(v -> mListener.openPost(user.getDraftEvent()));
+                imageButtonChat.setOnClickListener(view1 -> mListener.openChatManager());
+                imageButtonHome.setOnClickListener(v -> Refresh());
+            }
+            me = user;
+            followedEventAdapter = new HomeEventAdapter(requireContext(), followedEvent, me);
+            recyclerView.setAdapter(followedEventAdapter);
+            progressBar.setVisibility(View.INVISIBLE);
+        }, Util.DEFAULT_F_LISTENER);
+    }
+
     private void loadFollowedEvent() {
         progressBar.setVisibility(View.VISIBLE);
         util.getFriendEvents(events -> {
             followedEvent = events;
-            followedEventAdapter = new HomeEventAdapter(requireContext(), followedEvent, me);
-            recyclerView.setAdapter(followedEventAdapter);
             loadMyData();
             progressBar.setVisibility(View.INVISIBLE);
         }, Util.DEFAULT_F_LISTENER);
