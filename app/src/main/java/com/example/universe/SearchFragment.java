@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,7 +62,7 @@ public class SearchFragment extends Fragment implements FollowerAdapter.IFollowe
     public static SearchFragment newInstance(String query, User user) {
         SearchFragment fragment = new SearchFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_QUERY,query);
+        args.putString(ARG_QUERY, query);
         args.putSerializable(ARG_USER, user);
         fragment.setArguments(args);
         return fragment;
@@ -72,8 +73,8 @@ public class SearchFragment extends Fragment implements FollowerAdapter.IFollowe
         super.onCreate(savedInstanceState);
         util = Util.getInstance();
         if (getArguments() != null) {
-           query = getArguments().getString(ARG_QUERY);
-           me = (User) getArguments().getSerializable(ARG_USER);
+            query = getArguments().getString(ARG_QUERY);
+            me = (User) getArguments().getSerializable(ARG_USER);
         }
     }
 
@@ -88,7 +89,7 @@ public class SearchFragment extends Fragment implements FollowerAdapter.IFollowe
         progressBar = view.findViewById(R.id.search_progressBar);
         backButton = view.findViewById(R.id.search_imageButton);
         recyclerViewLayoutManagerUsers = new LinearLayoutManager(requireContext());
-        recyclerViewLayoutManagerEvents = new GridLayoutManager(requireContext(),2);
+        recyclerViewLayoutManagerEvents = new GridLayoutManager(requireContext(), 2);
 
         searchView.setQueryHint(query);
 
@@ -97,16 +98,16 @@ public class SearchFragment extends Fragment implements FollowerAdapter.IFollowe
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                switch (tab.getPosition()){
+                switch (tab.getPosition()) {
                     case 0:
                         tabNum = 0;
                         loadResultForEvents();
-                    break;
+                        break;
 
                     case 1:
                         tabNum = 1;
                         loadResultForUsers();
-                    break;
+                        break;
                 }
             }
 
@@ -124,7 +125,7 @@ public class SearchFragment extends Fragment implements FollowerAdapter.IFollowe
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String q) {
-                if (!q.equals("")){
+                if (!q.equals("")) {
                     query = q;
                     if (tabNum == 0) {
                         loadResultForEvents();
@@ -152,6 +153,7 @@ public class SearchFragment extends Fragment implements FollowerAdapter.IFollowe
     }
 
     public void loadResultForEvents() {
+        Log.d(Util.TAG, "loadResultForEvents: ");
         progressBar.setVisibility(View.VISIBLE);
         util.getDB()
                 .collection("events")
@@ -160,36 +162,45 @@ public class SearchFragment extends Fragment implements FollowerAdapter.IFollowe
                 .endAt(query + "\uf8ff")
                 .limit(101)
                 .get().addOnCompleteListener(task -> {
-                    homeEventAdapter = new HomeEventAdapter(requireContext(),task.getResult().toObjects(Event.class),me);
-                    recyclerView.setAdapter(homeEventAdapter);
-                    recyclerView.setLayoutManager(recyclerViewLayoutManagerEvents);
-                    progressBar.setVisibility(View.INVISIBLE);
+                    if (task.isSuccessful()) {
+                        homeEventAdapter = new HomeEventAdapter(requireContext(), task.getResult().toObjects(Event.class), me);
+                        recyclerView.setAdapter(homeEventAdapter);
+                        recyclerView.setLayoutManager(recyclerViewLayoutManagerEvents);
+                        progressBar.setVisibility(View.INVISIBLE);
+                    } else {
+                        Log.d("test", "loadResultForEvents: " + task.getException());
+                    }
                 });
     }
 
     public void loadResultForUsers() {
+        Log.d(Util.TAG, "loadResultForUsers: ");
         progressBar.setVisibility(View.VISIBLE);
         util.getDB()
-                .collection("users")
-                .orderBy("userName")
+                .collection(Util.USERS_COLLECTION_NAME)
+                .orderBy(User.KEY_USERNAME)
                 .startAt(query)
                 .endAt(query + "\uf8ff")
                 .limit(102)
                 .get().addOnCompleteListener(task -> {
-                    List<User> userList = task.getResult().toObjects(User.class);
-                    userList.remove(me);
-                    followerAdapter = new FollowerAdapter(requireContext(), userList ,me,this);
-                    recyclerView.setAdapter(followerAdapter);
-                    recyclerView.setLayoutManager(recyclerViewLayoutManagerUsers);
-                    progressBar.setVisibility(View.INVISIBLE);
+                    if (task.isSuccessful()) {
+                        List<User> userList = task.getResult().toObjects(User.class);
+                        userList.remove(me);
+                        followerAdapter = new FollowerAdapter(requireContext(), userList, me, this);
+                        recyclerView.setAdapter(followerAdapter);
+                        recyclerView.setLayoutManager(recyclerViewLayoutManagerUsers);
+                        progressBar.setVisibility(View.INVISIBLE);
+                    } else{
+                        Log.d(Util.TAG, "loadResultForUsers: " + task.getException());
+                    }
                 });
     }
 
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof ISearchFragmentAction){
+        if (context instanceof ISearchFragmentAction) {
             this.mListener = (ISearchFragmentAction) context;
-        }else{
+        } else {
             throw new RuntimeException(context + "must implement ISearchFragmentAction");
         }
     }
