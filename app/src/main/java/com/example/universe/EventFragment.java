@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.universe.Models.Event;
@@ -201,8 +202,17 @@ public class EventFragment extends Fragment {
         if (!event.getHostId().equals(util.getCurrentUser().getUid())) {
             postButton.setOnClickListener(v -> mListener.startChatPageFromEvent(event.getHostId()));
         } else {
-            postButton.setVisibility(View.INVISIBLE);
-            signUpButton.setVisibility(View.INVISIBLE);
+            postButton.setImageIcon(Icon.createWithResource(requireContext(),
+                    R.drawable.baseline_edit_24));
+            signUpButton.setImageIcon(Icon.createWithResource(requireContext(),
+                    R.drawable.baseline_delete_24));
+
+            postButton.setOnClickListener(v -> mListener.editPost(event));
+
+            signUpButton.setOnClickListener(v -> util.deleteEvent(event.getUid(), unused -> {
+                Toast.makeText(requireContext(), "Delete post successful!", Toast.LENGTH_LONG).show();
+                mListener.backToPrevious();
+            }, Util.DEFAULT_F_LISTENER));
         }
 
 
@@ -248,6 +258,7 @@ public class EventFragment extends Fragment {
     public interface IEventFragmentAction {
         void backToPrevious();
         void populateHomeFragment();
+        void editPost(Event event);
         void startChatPageFromEvent(String otherUserId);
         void openHostProfile(User user);
     }

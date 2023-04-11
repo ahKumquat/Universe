@@ -322,6 +322,13 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
     }
 
     @Override
+    public void editPost(Event event) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.containerMain, PostFragment.newInstance(event), POST_FRAGMENT)
+                .addToBackStack(EVENT_FRAGMENT).commit();
+    }
+
+    @Override
     public void startChatPageFromEvent(String otherUserId) {
         Bundle bundle = new Bundle();
         this.otherUserId = otherUserId;
