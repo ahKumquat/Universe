@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -124,6 +125,7 @@ public class ChatRoom extends Fragment {
         messageRecyclerView.setLayoutManager(linearLayoutManager);
         messageAdaptor = new MessageAdapter(getContext(), messageList);
         messageRecyclerView.setAdapter(messageAdaptor);
+
 
         editTextMessage.setKeyBoardInputCallbackListener((inputContentInfo, flags, opts) -> sendImage(Objects.requireNonNull(inputContentInfo.getLinkUri()).toString()));
 
