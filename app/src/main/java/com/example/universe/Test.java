@@ -270,10 +270,11 @@ public class Test extends Thread{
     @Override
     public void run() {
         //createUserWithEmailAndPassword(3);
-        loginUserWithEmailAndPassword(2, authResult -> {
-            Log.d(TAG, "on Login Success: " + util.getmAuth().getUid());
-            //util.updateProfile("/images/113", "About me!", Util.DEFAULT_VOID_S_LISTENER, Util.DEFAULT_F_LISTENER);
-        });
+//        loginUserWithEmailAndPassword(1, authResult -> {
+//            Log.d(TAG, "on Login Success: " + util.getmAuth().getUid());
+//            util.deleteEvent("Sun Apr 23 10:00:00 EDT 2023 GeoPoint { latitude=0.0, longitude=0.0 } 2 6.0", Util.DEFAULT_VOID_S_LISTENER, Util.DEFAULT_F_LISTENER);
+//            //util.updateProfile("/images/113", "About me!", Util.DEFAULT_VOID_S_LISTENER, Util.DEFAULT_F_LISTENER);
+//        });
             //getFollowingEvents();
             //getFollowing(util.getmAuth().getUid());
             //getNearbyEvents(new GeoPoint(31, 31), Util.DEFAULT_RADIUS);
