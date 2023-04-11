@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:background="@color/universe_yellow"
             app:tabGravity="fill"
-            app:tabIndicatorColor="@color/universe_grey"
+            app:tabIndicatorColor="@color/universe_orange"
             app:tabTextAppearance="@style/CustomTabText"
             app:tabTextColor="@color/black">
 

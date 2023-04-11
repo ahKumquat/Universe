@@ -234,12 +234,14 @@ public class HomeFragment extends Fragment {
             return;
         }
         Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        util.getNearByEvents(new GeoPoint(location.getLatitude(), location.getLongitude()), 5 ,events -> {
-            nearByEvent = events;
-            nearbyEventAdapter = new HomeEventAdapter(requireContext(), nearByEvent, me);
-            recyclerView.setAdapter(nearbyEventAdapter);
-            progressBar.setVisibility(View.INVISIBLE);
-        }, Util.DEFAULT_F_LISTENER);
+        if (location != null) {
+            util.getNearByEvents(new GeoPoint(location.getLatitude(), location.getLongitude()), 5, events -> {
+                nearByEvent = events;
+                nearbyEventAdapter = new HomeEventAdapter(requireContext(), nearByEvent, me);
+                recyclerView.setAdapter(nearbyEventAdapter);
+                progressBar.setVisibility(View.INVISIBLE);
+            }, Util.DEFAULT_F_LISTENER);
+        }
     }
 
 

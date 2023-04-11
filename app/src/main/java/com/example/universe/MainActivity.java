@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
         ChatRoom.IchatFragmentButtonAction, FragmentDisplayFile.IdisplayFileAction,
         HomeEventAdapter.IEventListRecyclerAction, PostFragment.IPostFragmentAction,
         FollowerAdapter.IFollowerListRecyclerAction, SearchFragment.ISearchFragmentAction,
-        EventFragment.IEventFragmentAction, Followers.IFollowerFragmentAction {
+        EventFragment.IEventFragmentAction, Followers.IFollowerFragmentAction, ParticipantAdapter.IEventListRecyclerAction {
     private String TAG = Util.TAG;
     private Util util;
     private FirebaseUser currentUser;
@@ -142,9 +142,12 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
         googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
 
         //        Asking for permissions in runtime......
-        cameraAllowed = ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
-        readAllowed = ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
-        writeAllowed = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+        cameraAllowed = ContextCompat.checkSelfPermission(this,
+                android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
+        readAllowed = ContextCompat.checkSelfPermission(this,
+                android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+        writeAllowed = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
 
         Boolean locationAllowed = ContextCompat.checkSelfPermission(this,
                 android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
@@ -160,7 +163,6 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
                     Manifest.permission.CAMERA,
                     Manifest.permission.READ_EXTERNAL_STORAGE,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.RECORD_AUDIO,
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.ACCESS_COARSE_LOCATION
 
@@ -666,12 +668,9 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
     @Override
     public void saveEvent(Event event) {
         if (event != null) {
-            util.saveDraftEvent(event, new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void unused) {
-                    Toast.makeText(MainActivity.this,"Event draft saved!",Toast.LENGTH_SHORT).show();
-                    getSupportFragmentManager().popBackStack();
-                }
+            util.saveDraftEvent(event, unused -> {
+                Toast.makeText(MainActivity.this,"Event draft saved!",Toast.LENGTH_SHORT).show();
+                getSupportFragmentManager().popBackStack();
             }, Util.DEFAULT_F_LISTENER);
         }
     }
@@ -689,31 +688,38 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
         }
     }
 
-
-    ActivityResultLauncher<Intent> addressLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if(result.getData() != null){
-                    Intent data = result.getData();
-                    Place place = Autocomplete.getPlaceFromIntent(data);
-                    Bundle args = new Bundle();
-                    args.putString("Place",place.getAddress());
-                    args.putParcelable("LatLng", place.getLatLng());
-                    Objects.requireNonNull(getSupportFragmentManager().findFragmentByTag(POST_FRAGMENT)).setArguments(args);
-                }
-            }
-    );
-
     @Override
-    public void inputAddress() {
-        if (!Places.isInitialized()) {
-            Places.initialize(getApplicationContext(), getString(R.string.google_api_key), Locale.US);
-        }
-        List<Place.Field> field = Arrays.asList(Place.Field.ID, Place.Field.ADDRESS, Place.Field.LAT_LNG);
-
-        Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, field)
-                .build(this);
-
-        addressLauncher.launch(intent);
+    public void eventClickedFromRecyclerView(User user) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.containerMain, Profile.newInstance(user),OTHER_PROFILE_FRAGMENT)
+                .addToBackStack(EVENT_FRAGMENT).commit();
     }
+
+
+//    ActivityResultLauncher<Intent> addressLauncher = registerForActivityResult(
+//            new ActivityResultContracts.StartActivityForResult(),
+//            result -> {
+//                if(result.getData() != null){
+//                    Intent data = result.getData();
+//                    Place place = Autocomplete.getPlaceFromIntent(data);
+//                    Bundle args = new Bundle();
+//                    args.putString("Place",place.getAddress());
+//                    args.putParcelable("LatLng", place.getLatLng());
+//                    Objects.requireNonNull(getSupportFragmentManager().findFragmentByTag(POST_FRAGMENT)).setArguments(args);
+//                }
+//            }
+//    );
+
+//    @Override
+//    public void inputAddress() {
+//        if (!Places.isInitialized()) {
+//            Places.initialize(getApplicationContext(), getString(R.string.google_api_key), Locale.US);
+//        }
+//        List<Place.Field> field = Arrays.asList(Place.Field.ID, Place.Field.ADDRESS, Place.Field.LAT_LNG);
+//
+//        Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, field)
+//                .build(this);
+//
+//        addressLauncher.launch(intent);
+//    }
 }

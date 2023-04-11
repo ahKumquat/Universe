@@ -251,7 +251,7 @@
             android:layout_gravity="bottom"
             android:backgroundTint="@color/universe_yellow"
             app:tabIconTint="@color/black"
-            app:tabIndicatorColor="@color/universe_yellow"
+            app:tabIndicatorColor="@color/universe_orange"
             app:tabInlineLabel="true"
             app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
             app:tabTextColor="@color/white">
