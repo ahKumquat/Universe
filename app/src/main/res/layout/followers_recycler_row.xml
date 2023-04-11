@@ -30,11 +30,11 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toStartOf="@+id/participantRecycler_button_manage"
-                app:layout_constraintStart_toEndOf="@+id/recyclerChatList_imageView_userAvatar"
-                app:layout_constraintTop_toTopOf="@+id/recyclerChatList_imageView_userAvatar" />
+                app:layout_constraintStart_toEndOf="@+id/followers_imageView_userAvatar"
+                app:layout_constraintTop_toTopOf="@+id/followers_imageView_userAvatar" />
 
             <ImageView
-                android:id="@+id/recyclerChatList_imageView_userAvatar"
+                android:id="@+id/followers_imageView_userAvatar"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_marginStart="20dp"
