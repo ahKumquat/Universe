@@ -28,7 +28,6 @@ public class FragmentDisplayFile extends Fragment {
     private Button buttonUpload;
     private IdisplayFileAction mListener;
     private ProgressBar progressBar;
-    private ImageButton imageButtonBack;
     private String filePath;
     private TextView textViewFileUri;
     private TextView textViewFilePath;
@@ -60,14 +59,7 @@ public class FragmentDisplayFile extends Fragment {
         View view = inflater.inflate(R.layout.fragment_display_file, container, false);
         progressBar = view.findViewById(R.id.progressBar);
         progressBar.setVisibility(View.GONE);
-        imageButtonBack = view.findViewById(R.id.displayImage_imageButton_back);
-        imageButtonBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().getSupportFragmentManager().popBackStack();
-                Log.d(TAG, "onClick: back from display image");
-            }
-        });
+
 
         buttonRetake = view.findViewById(R.id.buttonRetake);
         buttonUpload = view.findViewById(R.id.buttonUpload);
