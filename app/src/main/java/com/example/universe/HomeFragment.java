@@ -235,7 +235,7 @@ public class HomeFragment extends Fragment {
         }
         Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         if (location != null) {
-            util.getNearByEvents(new GeoPoint(location.getLatitude(), location.getLongitude()), 5, events -> {
+            util.getNearByEvents(new GeoPoint(location.getLatitude(), location.getLongitude()), Util.DEFAULT_RADIUS, events -> {
                 nearByEvent = events;
                 nearbyEventAdapter = new HomeEventAdapter(requireContext(), nearByEvent, me);
                 recyclerView.setAdapter(nearbyEventAdapter);

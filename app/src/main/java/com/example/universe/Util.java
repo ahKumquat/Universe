@@ -987,7 +987,7 @@ public class Util {
         if (password != null && password.length() > 0){
             mAuth.getCurrentUser().updatePassword(password).addOnFailureListener(fListener);
         }
-
+        mAuth.getCurrentUser().updateProfile(new UserProfileChangeRequest.Builder().setDisplayName(userName).build());
         DocumentReference userRef = db.collection(USERS_COLLECTION_NAME).document(mAuth.getUid());
         db.runTransaction(new Transaction.Function<Void>() {
                     @Nullable
