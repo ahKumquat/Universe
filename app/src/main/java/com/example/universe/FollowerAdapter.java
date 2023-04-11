@@ -2,6 +2,7 @@ package com.example.universe;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.universe.Models.User;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.List;
 
@@ -72,10 +74,25 @@ public class FollowerAdapter extends RecyclerView.Adapter<FollowerAdapter.ViewHo
     public void onBindViewHolder(@NonNull FollowerAdapter.ViewHolder holder, int position) {
         User follower = this.getUserList().get(position);
 
-        if (follower.getAvatarPath() != null) {
-            Glide.with(context).load(follower.getAvatarPath())
-                    .override(80,80).into(holder.getAvatar());
+        String path = follower.getAvatarPath();
+        if (path!=null) {
+            util.getDownloadUrlFromPath(path, new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Glide.with(context)
+                            .load(uri)
+                            .centerCrop()
+                            .override(500,500)
+                            .into(holder.getAvatar());
+                }
+            }, Util.DEFAULT_F_LISTENER);
         }
+
+
+//        if (follower.getAvatarPath() != null) {
+//            Glide.with(context).load(follower.getAvatarPath())
+//                    .override(80,80).into(holder.getAvatar());
+//        }
 
         holder.getName().setText(follower.getUserName());
 
@@ -141,7 +158,7 @@ public class FollowerAdapter extends RecyclerView.Adapter<FollowerAdapter.ViewHo
             super(itemView);
             cardView = itemView.findViewById(R.id.followers_cardView);
             name = itemView.findViewById(R.id.recyclerChatList_textView_userName);
-            avatar = itemView.findViewById(R.id.recyclerChatList_imageView_userAvatar);
+            avatar = itemView.findViewById(R.id.followers_imageView_userAvatar);
             button = itemView.findViewById(R.id.participantRecycler_button_manage);
         }
 

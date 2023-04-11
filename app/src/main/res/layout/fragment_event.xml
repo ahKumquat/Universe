@@ -32,7 +32,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textSize_secondTitle" />
 
             </androidx.appcompat.widget.Toolbar>
 
