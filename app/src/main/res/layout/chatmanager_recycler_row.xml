@@ -9,9 +9,11 @@
         android:id="@+id/chatroom_cardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="10dp"
         android:backgroundTint="@color/universe_blue_transparent"
         app:cardCornerRadius="@dimen/cardView_radius"
-        app:cardElevation="@dimen/cardView_elevation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">

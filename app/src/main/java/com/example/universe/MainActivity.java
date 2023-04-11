@@ -332,6 +332,11 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
     }
 
     @Override
+    public void openHostProfile(User user) {
+        openProfile(user);
+    }
+
+    @Override
     public void populateSettingFragment(User user) {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.containerMain, Setting.newInstance(user), SETTING_FRAGMENT)

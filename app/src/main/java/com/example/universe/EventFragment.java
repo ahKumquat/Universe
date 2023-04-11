@@ -59,6 +59,7 @@ public class EventFragment extends Fragment {
     private ImageButton favouriteButton;
     private ImageButton postButton;
     private static Util util;
+    private User hostUser;
 
     private User me;
 
@@ -127,6 +128,7 @@ public class EventFragment extends Fragment {
         }
 
         util.getUser(event.getHostId(), user -> {
+            this.hostUser = user;
             if (user.getAvatarPath() != null) {
                 util.getDownloadUrlFromPath(user.getAvatarPath(), uri -> Glide.with(requireContext())
                         .load(uri)
@@ -134,6 +136,8 @@ public class EventFragment extends Fragment {
                         .into(hostAvatar), Util.DEFAULT_F_LISTENER);
             }
         }, Util.DEFAULT_F_LISTENER);
+
+        hostAvatar.setOnClickListener(v -> mListener.openHostProfile(hostUser));
 
         hostName.setText(event.getHostName());
 
@@ -151,8 +155,10 @@ public class EventFragment extends Fragment {
 
         recyclerViewLayoutManager = new LinearLayoutManager(getContext());
 
-        if (me.getJoinedEventsIdList().contains(event.getUid())) {
-            signUpButton.setImageIcon(Icon.createWithResource(requireContext(), R.drawable.check));
+        if (me != null) {
+            if (me.getJoinedEventsIdList().contains(event.getUid())) {
+                signUpButton.setImageIcon(Icon.createWithResource(requireContext(), R.drawable.check));
+            }
         }
 
         signUpButton.setOnClickListener(v -> {
@@ -222,5 +228,6 @@ public class EventFragment extends Fragment {
         void backToPrevious();
         void populateHomeFragment();
         void startChatPageFromEvent(String otherUserId);
+        void openHostProfile(User user);
     }
 }
