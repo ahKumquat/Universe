@@ -604,7 +604,7 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Toast.makeText(MainActivity.this, "Upload File successfully! ", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Send File successfully! ", Toast.LENGTH_SHORT).show();
                         progressBar.setVisibility(View.GONE);
                     }
                 })
