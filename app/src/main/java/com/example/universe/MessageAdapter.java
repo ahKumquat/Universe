@@ -1,6 +1,7 @@
 package com.example.universe;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -106,6 +107,15 @@ public class MessageAdapter extends RecyclerView.Adapter {
             }else if (message.getFileURL()!=null) {
                 viewHolder.getTextViewTimeOfMessage().setVisibility(View.GONE);
                 viewHolder.getTextViewMessage().setVisibility(View.GONE);
+                viewHolder.getImageViewPhoto().setVisibility(View.VISIBLE);
+                viewHolder.getImageViewPhoto().setImageResource(R.drawable.filesmall);
+                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(message.getFileURL()));
+                        viewHolder.itemView.getContext().startActivity(intent);
+                    }
+                });
             } else {
                 viewHolder.getImageViewPhoto().setVisibility(View.GONE);
                 viewHolder.getTextViewTimeOfMessage().setVisibility(View.VISIBLE);

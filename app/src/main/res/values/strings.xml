@@ -50,4 +50,6 @@
     <string name="displayFile_button_reselect">Reselect</string>
     <string name="search_tabitem_events">Events</string>
     <string name="search_tabitem_users">Users</string>
+    <string name="sendFile_button_send">Send</string>
+    <string name="sendFile_button_cancel">Cancel</string>
 </resources>

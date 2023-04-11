@@ -6,13 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".FragmentDisplayFile" >
-    <ImageButton
-        android:id="@+id/displayImage_imageButton_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@android:drawable/ic_menu_revert"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/buttonRetake"
@@ -21,7 +14,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginBottom="24dp"
         android:backgroundTint="@color/universe_yellow"
-        android:text="@string/displayFile_button_reselect"
+        android:text="@string/sendFile_button_cancel"
         android:textColor="#3C2929"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -32,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
         android:backgroundTint="@color/universe_blue"
-        android:text="Upload"
+        android:text="@string/sendFile_button_send"
         app:layout_constraintBottom_toBottomOf="@+id/buttonRetake"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/buttonRetake" />
@@ -62,9 +55,13 @@
 
     <TextView
         android:id="@+id/displayFile_textView_fileUrl"
-        android:layout_width="wrap_content"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="40dp"
+        android:layout_marginEnd="32dp"
+        android:ellipsize="end"
+        android:maxLines="2"
         android:text=" "
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -85,9 +82,13 @@
 
     <TextView
         android:id="@+id/displayFile_textView_filePath"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="40dp"
+        android:layout_marginEnd="32dp"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:text=" "
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
