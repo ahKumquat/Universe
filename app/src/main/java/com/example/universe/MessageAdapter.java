@@ -116,16 +116,7 @@ public class MessageAdapter extends RecyclerView.Adapter {
                 viewHolder.getTextViewMessage().setVisibility(View.GONE);
                 viewHolder.getImageViewPhoto().setVisibility(View.VISIBLE);
                 viewHolder.getImageViewPhoto().setImageResource(R.drawable.filesmall);
-                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-//                        Intent intent = new Intent(Intent.ACTION_VIEW);
-//                        intent.setDataAndType (Uri.parse (message.getFileURL()), "application/pdf");
-//                        viewHolder.itemView.getContext().startActivity(intent);
-                        mListener.openFile(message.getFileURL());
-
-                    }
-                });
+                viewHolder.itemView.setOnClickListener(view -> mListener.openFile(message.getFileURL()));
             } else {
                 viewHolder.getImageViewPhoto().setVisibility(View.GONE);
                 viewHolder.getTextViewTimeOfMessage().setVisibility(View.VISIBLE);
@@ -157,18 +148,17 @@ public class MessageAdapter extends RecyclerView.Adapter {
                 viewHolder.getImageViewPhoto().setVisibility(View.VISIBLE);
                 viewHolder.getTextViewTimeOfMessage().setVisibility(View.GONE);
                 viewHolder.getTextViewMessage().setVisibility(View.GONE);
-                util.getDownloadUrlFromPath(message.getImagePath(), new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        Glide.with(context)
-                                .load(uri)
-                                .centerCrop()
-                                .override(500,500)
-                                .into(viewHolder.getImageViewPhoto());
-                    }
-                }, Util.DEFAULT_F_LISTENER);
+
+                util.getDownloadUrlFromPath(message.getImagePath(), uri -> Glide.with(context)
+                        .load(uri)
+                        .centerCrop()
+                        .override(500,500)
+                        .into(viewHolder.getImageViewPhoto()), Util.DEFAULT_F_LISTENER);
+
             } else if (message.getFileURL()!=null) {
-                //TODO
+                viewHolder.itemView.setOnClickListener(view -> mListener.openFile(message.getFileURL()));
+                viewHolder.getImageViewPhoto().setVisibility(View.VISIBLE);
+                viewHolder.getImageViewPhoto().setImageResource(R.drawable.filesmall);
                 viewHolder.getTextViewTimeOfMessage().setVisibility(View.GONE);
                 viewHolder.getTextViewMessage().setVisibility(View.GONE);
             } else {
