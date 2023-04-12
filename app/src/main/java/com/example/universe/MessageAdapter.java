@@ -111,7 +111,7 @@ public class MessageAdapter extends RecyclerView.Adapter {
                             .into(viewHolder.getImageViewPhoto());
                 }
 
-            }else if (message.getFileURL()!=null) {
+            } else if (message.getFileURL()!=null) {
                 viewHolder.getTextViewTimeOfMessage().setVisibility(View.GONE);
                 viewHolder.getTextViewMessage().setVisibility(View.GONE);
                 viewHolder.getImageViewPhoto().setVisibility(View.VISIBLE);
