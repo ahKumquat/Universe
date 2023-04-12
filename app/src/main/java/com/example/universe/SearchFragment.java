@@ -211,7 +211,6 @@ public class SearchFragment extends Fragment implements FollowerAdapter.IFollowe
     }
 
     public interface ISearchFragmentAction {
-        //void populateHomeFragment();
         void backToPrevious();
     }
 }

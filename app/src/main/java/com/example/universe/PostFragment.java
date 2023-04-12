@@ -4,11 +4,13 @@ import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentContainer;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,17 +18,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.text.style.CharacterStyle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,13 +39,10 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.example.universe.Models.Event;
 import com.example.universe.Models.GeocodingResult;
-import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
-import com.google.android.libraries.places.api.model.LocationBias;
-import com.google.android.libraries.places.api.model.RectangularBounds;
 import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
@@ -223,18 +221,25 @@ public class PostFragment extends Fragment {
                 boolean userChange = Math.abs(count - before) == 1;
                 if (userChange) {
                     handler.removeCallbacksAndMessages(null);
-                    handler.postDelayed(() -> {
-                        getPlacePredictions(s.toString());
-                    }, 300);
+                    handler.postDelayed(() -> getPlacePredictions(s.toString()), 300);
                 }
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
+            public void afterTextChanged(Editable s) {}
 
-            }
         });
 
+        textViewLocation.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+            Rect rect = new Rect();
+            view.getWindowVisibleDisplayFrame(rect);
+            int keypadHeight = view.getRootView().getHeight() - rect.bottom;
+            if (keypadHeight <= 126) {
+                recyclerView.setVisibility(View.INVISIBLE);
+                editTextCapacity.setVisibility(View.VISIBLE);
+                editTextDescription.setVisibility(View.VISIBLE);
+            }
+        });
 
         buttonSave.setOnClickListener(view1 -> save());
 
@@ -243,7 +248,6 @@ public class PostFragment extends Fragment {
         if (postPicPath != null) {
             util.getDownloadUrlFromPath(postPicPath, uri -> Glide.with(requireContext())
                     .load(uri).override(350,200).into(eventPic), Util.DEFAULT_F_LISTENER);
-
         }
 
 
