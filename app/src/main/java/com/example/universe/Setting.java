@@ -72,7 +72,7 @@ public class Setting extends Fragment {
         callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-               mListener.populateProfileFragment();
+               mListener.backToPrevious();
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
@@ -100,7 +100,7 @@ public class Setting extends Fragment {
         imageButtonLogOut = view.findViewById(R.id.setting_imageButton_logout);
         imageViewEditAvatar = view.findViewById(R.id.setting_imageView_editAvatar);
 
-        imageButtonBack.setOnClickListener(v -> mListener.populateProfileFragment());
+        imageButtonBack.setOnClickListener(v -> mListener.backToPrevious());
 
         imageButtonLogOut.setOnClickListener(v -> mListener.logOut());
         imageViewEditAvatar.setOnClickListener(v -> mListener.setAvatar());
@@ -187,7 +187,7 @@ public class Setting extends Fragment {
     }
 
     public interface ISettingFragmentAction {
-        void populateProfileFragment();
+        void backToPrevious();
         void logOut();
         void setAvatar();
     }

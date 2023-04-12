@@ -74,25 +74,11 @@ public class FollowerAdapter extends RecyclerView.Adapter<FollowerAdapter.ViewHo
     public void onBindViewHolder(@NonNull FollowerAdapter.ViewHolder holder, int position) {
         User follower = this.getUserList().get(position);
 
-        String path = follower.getAvatarPath();
-        if (path!=null) {
-            util.getDownloadUrlFromPath(path, new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    Glide.with(context)
-                            .load(uri)
-                            .centerCrop()
-                            .override(500,500)
-                            .into(holder.getAvatar());
-                }
-            }, Util.DEFAULT_F_LISTENER);
+        if (follower.getAvatarPath() != null) {
+            util.getDownloadUrlFromPath(follower.getAvatarPath(),
+                    uri -> Glide.with(context).load(uri)
+                    .override(70,70).into(holder.getAvatar()), Util.DEFAULT_F_LISTENER);
         }
-
-
-//        if (follower.getAvatarPath() != null) {
-//            Glide.with(context).load(follower.getAvatarPath())
-//                    .override(80,80).into(holder.getAvatar());
-//        }
 
         holder.getName().setText(follower.getUserName());
 

@@ -132,7 +132,7 @@ public class EventFragment extends Fragment {
         }
 
         util.getUser(event.getHostId(), user -> {
-            this.hostUser = user;
+            hostUser = user;
             if (user.getAvatarPath() != null) {
                 util.getDownloadUrlFromPath(user.getAvatarPath(), uri -> Glide.with(requireContext())
                         .load(uri)
@@ -160,7 +160,8 @@ public class EventFragment extends Fragment {
         recyclerViewLayoutManager = new LinearLayoutManager(getContext());
         recyclerViewParticipants.setLayoutManager(recyclerViewLayoutManager);
 
-        hostAvatar.setOnClickListener(v -> util.getUser(event.getHostId(), user -> mListener.openHostProfile(user), Util.DEFAULT_F_LISTENER));
+        hostAvatar.setOnClickListener(v ->
+                util.getUser(event.getHostId(), user -> mListener.openHostProfile(user), Util.DEFAULT_F_LISTENER));
 
         if (me != null) {
             if (me.getJoinedEventsIdList().contains(event.getUid())) {
@@ -257,7 +258,6 @@ public class EventFragment extends Fragment {
 
     public interface IEventFragmentAction {
         void backToPrevious();
-        void populateHomeFragment();
         void editPost(Event event);
         void startChatPageFromEvent(String otherUserId);
         void openHostProfile(User user);
