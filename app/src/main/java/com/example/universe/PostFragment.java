@@ -214,13 +214,8 @@ public class PostFragment extends Fragment {
             timePickerDialog.show();
         });
 
-        textViewLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //mListener.inputAddress();
-                sessionToken = AutocompleteSessionToken.newInstance();
-
-            }
+        textViewLocation.setOnClickListener(v -> {
+            sessionToken = AutocompleteSessionToken.newInstance();
         });
         textViewLocation.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -239,7 +234,6 @@ public class PostFragment extends Fragment {
 
             }
         });
-
 
 
         buttonSave.setOnClickListener(view1 -> save());
@@ -503,6 +497,5 @@ public class PostFragment extends Fragment {
         void backToPrevious();
         void saveEvent(Event event);
         void postEvent(Event event);
-        //void inputAddress();
     }
 }

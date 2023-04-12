@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -71,6 +70,7 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
         if (user.getUid().equals(util.getCurrentUser().getUid())) {
             holder.getApproveButton().setVisibility(View.INVISIBLE);
         } else {
+            holder.getCardView().setOnClickListener(v -> mListener.eventClickedFromRecyclerView(user));
             if (!event.getParticipants().contains(user.getUid())) {
                 holder.getApproveButton().setText("Approve");
             } else {

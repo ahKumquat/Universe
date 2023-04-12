@@ -25,6 +25,8 @@ public class MessageAdapter extends RecyclerView.Adapter {
     private ArrayList<Message> messageList;
     private static Util util;
 
+    private IMessageListRecyclerAction mListener;
+
     int ITEM_SEND = 1;
     int ITEM_RECEIVE = 2;
 
@@ -32,6 +34,11 @@ public class MessageAdapter extends RecyclerView.Adapter {
         this.context = context;
         this.messageList = messageList;
         util = Util.getInstance();
+        if(context instanceof IMessageListRecyclerAction){
+            mListener = (IMessageListRecyclerAction) context;
+        }else{
+            throw new RuntimeException(context.toString()+ "must implement IEventListRecyclerAction");
+        }
     }
 
     public MessageAdapter() {
@@ -112,8 +119,11 @@ public class MessageAdapter extends RecyclerView.Adapter {
                 viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(message.getFileURL()));
-                        viewHolder.itemView.getContext().startActivity(intent);
+//                        Intent intent = new Intent(Intent.ACTION_VIEW);
+//                        intent.setDataAndType (Uri.parse (message.getFileURL()), "application/pdf");
+//                        viewHolder.itemView.getContext().startActivity(intent);
+                        mListener.openFile(message.getFileURL());
+
                     }
                 });
             } else {
@@ -244,5 +254,9 @@ public class MessageAdapter extends RecyclerView.Adapter {
             return imageViewUserAvatar;
         }
 
+    }
+
+    public interface IMessageListRecyclerAction{
+        void openFile(String url);
     }
 }

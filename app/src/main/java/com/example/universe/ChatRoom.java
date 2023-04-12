@@ -2,6 +2,7 @@ package com.example.universe;
 
 import static com.example.universe.Util.DEFAULT_F_LISTENER;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -102,6 +103,7 @@ public class ChatRoom extends Fragment {
         }
     }
 
+    @SuppressLint("SimpleDateFormat")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -225,6 +227,5 @@ public class ChatRoom extends Fragment {
         void sendImage();
         void sendFile();
         void backToPrevious();
-        //void populateChatManagerFragment();
     }
 }

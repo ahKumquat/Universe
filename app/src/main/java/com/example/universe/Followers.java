@@ -95,7 +95,7 @@ public class Followers extends Fragment implements FollowerAdapter.IFollowerList
         }
         callback = new OnBackPressedCallback(true) {
             public void handleOnBackPressed() {
-                mListener.populateProfileFragment();
+                mListener.backToPrevious();
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
@@ -249,7 +249,6 @@ public class Followers extends Fragment implements FollowerAdapter.IFollowerList
         }
     }
     public interface IFollowerFragmentAction {
-        //void backToPrevious();
-        void populateProfileFragment();
+        void backToPrevious();
     }
 }
