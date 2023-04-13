@@ -40,6 +40,7 @@ import com.bumptech.glide.Glide;
 import com.example.universe.Models.Event;
 import com.example.universe.Models.GeocodingResult;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
@@ -207,7 +208,6 @@ public class PostFragment extends Fragment {
                         textViewTime.setText(hourOfDay + ":" + minute);
                         selectedTime = textViewTime.getText().toString();
                     }
-
                     , mHour, mMinute, true);
             timePickerDialog.show();
         });
@@ -233,8 +233,9 @@ public class PostFragment extends Fragment {
         textViewLocation.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
             Rect rect = new Rect();
             view.getWindowVisibleDisplayFrame(rect);
+            int screenHeight = view.getRootView().getHeight();
             int keypadHeight = view.getRootView().getHeight() - rect.bottom;
-            if (keypadHeight <= 126) {
+            if (keypadHeight < screenHeight * 0.15) {
                 recyclerView.setVisibility(View.INVISIBLE);
                 editTextCapacity.setVisibility(View.VISIBLE);
                 editTextDescription.setVisibility(View.VISIBLE);
@@ -247,11 +248,11 @@ public class PostFragment extends Fragment {
 
         if (postPicPath != null) {
             util.getDownloadUrlFromPath(postPicPath, uri -> Glide.with(requireContext())
-                    .load(uri).override(350,200).into(eventPic), Util.DEFAULT_F_LISTENER);
+                    .load(uri).into(eventPic), Util.DEFAULT_F_LISTENER);
         }
 
 
-        String[] units = {"Hour","Min"};
+        String[] units = {"Day","Hour","Min"};
         adapterUnit = new ArrayAdapter<>(requireActivity(),
                 androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, units);
         spinnerUnit.setAdapter(adapterUnit);
@@ -279,10 +280,10 @@ public class PostFragment extends Fragment {
             lat = (latLng != null) ? latLng.latitude:lat;
             textViewDate.setText((selectedDate != null)? selectedDate:"");
             textViewTime.setText((selectedTime != null)? selectedTime:"");
-
             if (draft != null) {
                 try {
                     restoreFromDraft(draft);
+                    event = draft;
                     draft = null;
                 } catch (ParseException e) {
                     throw new RuntimeException(e);
@@ -356,10 +357,16 @@ public class PostFragment extends Fragment {
                 geoPoint = new GeoPoint(lat, lon);
                 capacity = Integer.parseInt(editTextCapacity.getText().toString());
                 description = editTextDescription.getText().toString();
-                uid = time.toDate() + " " + geoPoint + " " + capacity + " " + duration;
-                event = new Event(uid, util.getCurrentUser(), title, time,
-                        duration, durationUnit, address, geoPoint, capacity, description, postPicPath);
-                mListener.postEvent(event);
+                if (event == null) {
+                    uid = time.toDate() + " " + geoPoint + " " + capacity + " " + duration;
+                    event = new Event(uid, util.getCurrentUser(), title, time,
+                            duration, durationUnit, address, geoPoint, capacity, description, postPicPath);
+                    mListener.postEvent(event);
+                } else {
+                    event = new Event(event.getUid(), util.getCurrentUser(), title, time,
+                            duration, durationUnit, address, geoPoint, capacity, description, postPicPath);
+                    mListener.postEvent(event);
+                }
             } catch (ParseException e) {
                 throw new RuntimeException(e);
             }
@@ -418,7 +425,6 @@ public class PostFragment extends Fragment {
                     uri -> {
                         Glide.with(requireContext())
                             .load(uri)
-                            .override(300,200)
                             .into(eventPic);
                         postPicPath = event.getImagePath();
                     }, Util.DEFAULT_F_LISTENER);

@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -67,6 +68,7 @@ public class HomeFragment extends Fragment {
 
     private LocationManager lm;
     private int tabNum;
+    private ImageView redDot;
 
 
     public HomeFragment() {
@@ -108,6 +110,7 @@ public class HomeFragment extends Fragment {
         recyclerViewLayoutManager = new GridLayoutManager(requireContext(), 2);
         recyclerView.setLayoutManager(recyclerViewLayoutManager);
         progressBar = view.findViewById(R.id.home_progressBar);
+        redDot = view.findViewById(R.id.home_imageView_dotForNewMessage);
 
 
         swipeRefreshLayout.setOnRefreshListener(() -> {
@@ -211,6 +214,9 @@ public class HomeFragment extends Fragment {
                 imageButtonHome.setOnClickListener(v -> Refresh());
             }
             me = user;
+            if (me.getUnreadCount() > 0) {
+                redDot.setVisibility(View.VISIBLE);
+            }
             followedEventAdapter = new HomeEventAdapter(requireContext(), followedEvent, me);
             recyclerView.setAdapter(followedEventAdapter);
             progressBar.setVisibility(View.INVISIBLE);
