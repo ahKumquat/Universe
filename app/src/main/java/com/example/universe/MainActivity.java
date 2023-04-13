@@ -446,6 +446,7 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
                         progressBar.setVisibility(View.GONE);
                         int count = getSupportFragmentManager().getBackStackEntryCount();
                         String name = getSupportFragmentManager().getBackStackEntryAt(count - 2).getName();
+                        System.out.println(name);
                         if (name != null) {
                             switch (name) {
                                 case POST_FRAGMENT:

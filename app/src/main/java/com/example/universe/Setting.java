@@ -86,11 +86,6 @@ public class Setting extends Fragment {
         View view = inflater.inflate(R.layout.fragment_setting, container, false);
         imageButtonBack = view.findViewById(R.id.setting_imagebutton_backbutton);
         imageViewAvatar = view.findViewById(R.id.setting_imageview_avatar);
-        if (user.getAvatarPath()!=null && !user.getAvatarPath().equals("")) {
-            util.getDownloadUrlFromPath(user.getAvatarPath(), uri -> Glide.with(requireContext())
-                    .load(uri)
-                    .into(imageViewAvatar), Util.DEFAULT_F_LISTENER);
-        }
 
         editTextName = view.findViewById(R.id.setting_editText_name);
         editTextAbout = view.findViewById(R.id.setting_editText_about);
@@ -169,6 +164,12 @@ public class Setting extends Fragment {
             util.getDownloadUrlFromPath(newAvatarPath, uri -> Glide.with(requireContext())
                     .load(uri)
                     .into(imageViewAvatar), Util.DEFAULT_F_LISTENER);
+        } else {
+            if (user.getAvatarPath()!=null && !user.getAvatarPath().equals("")) {
+                util.getDownloadUrlFromPath(user.getAvatarPath(), uri -> Glide.with(requireContext())
+                        .load(uri)
+                        .into(imageViewAvatar), Util.DEFAULT_F_LISTENER);
+            }
         }
     }
 
