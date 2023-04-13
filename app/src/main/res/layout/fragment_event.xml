@@ -47,7 +47,7 @@
                     android:id="@+id/event_imageView_event"
                     android:layout_width="match_parent"
                     android:layout_height="240dp"
-                    android:scaleType="fitStart"
+                    android:scaleType="fitXY"
                     android:src="@drawable/image_not_found"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

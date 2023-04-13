@@ -420,9 +420,7 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
 
     @Override
     public void onRetakePressed() {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.containerMain, FragmentCameraController.newInstance(), CAMERA_FRAGMENT)
-                .addToBackStack(null).commit();
+       backToPrevious();
     }
 
     @Override
@@ -451,7 +449,6 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
                         if (name != null) {
                             switch (name) {
                                 case POST_FRAGMENT:
-                                    //TODO: implement upload the event pic and save path in Post Fragment
                                     PostFragment p = (PostFragment) getSupportFragmentManager().findFragmentByTag(POST_FRAGMENT);
                                     p.setPostPicPath(storageReference.getPath());
                                     break;
