@@ -138,6 +138,7 @@ public class EventFragment extends Fragment {
         totalCount = view.findViewById(R.id.event_textView_totalCount);
         totalCount.setText(event.getCapacity() + "");
         currentCount.setText(event.getParticipants().size() + "");
+        participantAdapter = new ParticipantAdapter(requireContext(), null, event);
 
         title.setText(event.getTitle());
 
@@ -246,9 +247,11 @@ public class EventFragment extends Fragment {
                             util.getEvent(event.getUid(), new OnSuccessListener<Event>() {
                                 @Override
                                 public void onSuccess(Event event) {
-                                    participantAdapter.setParticipants(event.getParticipants());
-                                    currentCount.setText(event.getParticipants().size() + "");
-                                    participantAdapter.notifyDataSetChanged();
+                                    if (event.getParticipants() != null) {
+                                        participantAdapter.setParticipants(event.getParticipants());
+                                        currentCount.setText(event.getParticipants().size() + "");
+                                        participantAdapter.notifyDataSetChanged();
+                                    }
                                 }
                             }, DEFAULT_F_LISTENER);
 
