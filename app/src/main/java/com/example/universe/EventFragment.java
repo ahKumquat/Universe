@@ -138,7 +138,7 @@ public class EventFragment extends Fragment {
         totalCount = view.findViewById(R.id.event_textView_totalCount);
         totalCount.setText(event.getCapacity() + "");
         currentCount.setText(event.getParticipants().size() + "");
-        participantAdapter = new ParticipantAdapter(requireContext(), null, event);
+        participantAdapter = new ParticipantAdapter(requireContext(), new ArrayList<User>(), event);
 
         title.setText(event.getTitle());
 

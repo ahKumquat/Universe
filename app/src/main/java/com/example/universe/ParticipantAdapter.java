@@ -19,6 +19,7 @@ import com.example.universe.Models.Event;
 import com.example.universe.Models.User;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
