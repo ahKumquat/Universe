@@ -2,6 +2,7 @@ package com.example.universe;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +46,16 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
     public List<User> getUserList() {
         return userList;
     }
+    public void setParticipants(List<String> participants) {
+        for (String s: participants) {
+            util.getUser(s, new OnSuccessListener<User>() {
+                @Override
+                public void onSuccess(User user) {
+                    userList.add(user);
+                }
+            }, Util.DEFAULT_F_LISTENER);
+        }
+    }
 
     @NonNull
     @Override
@@ -84,6 +95,7 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
                             holder.getApproveButton().setText("Approve");
                             event.getParticipants().remove(user.getUid());
                             user.getJoinedEventsIdList().remove(event.getUid());
+                            notifyDataSetChanged();
                         }
                     }, Util.DEFAULT_F_LISTENER);
                 } else {
@@ -93,12 +105,12 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
                             holder.getApproveButton().setText("Remove");
                             event.getParticipants().add(user.getUid());
                             user.getJoinedEventsIdList().add(event.getUid());
+                            notifyDataSetChanged();
                         }
                     }, Util.DEFAULT_F_LISTENER);
                 }
             });
         }
-
 
 
     }
