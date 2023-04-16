@@ -1,5 +1,7 @@
 package com.example.universe;
 
+import static com.example.universe.Util.DEFAULT_F_LISTENER;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -10,6 +12,7 @@ import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,6 +27,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.universe.Models.Event;
+import com.example.universe.Models.Message;
 import com.example.universe.Models.User;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -31,8 +35,12 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 //TODO Have to implement the four buttons
@@ -54,6 +62,8 @@ public class EventFragment extends Fragment {
     private TextView duration;
     private TextView location;
     private TextView description;
+    private TextView currentCount;
+    private TextView totalCount;
     private MapView mapView;
     private RecyclerView recyclerViewParticipants;
     private ImageButton shareButton;
@@ -98,6 +108,7 @@ public class EventFragment extends Fragment {
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
+        loadUsers();
     }
 
     @SuppressLint({"SimpleDateFormat", "SetTextI18n"})
@@ -121,6 +132,10 @@ public class EventFragment extends Fragment {
         signUpButton = view.findViewById(R.id.event_imageButton_signUp);
         favouriteButton = view.findViewById(R.id.event_imageButton_favourite);
         postButton = view.findViewById(R.id.event_imageButton_post);
+        currentCount = view.findViewById(R.id.event_textView_currentCount);
+        totalCount = view.findViewById(R.id.event_textView_totalCount);
+        totalCount.setText(event.getCapacity() + "");
+        currentCount.setText(event.getParticipants().size() + "");
 
         title.setText(event.getTitle());
 
@@ -159,6 +174,7 @@ public class EventFragment extends Fragment {
 
         recyclerViewLayoutManager = new LinearLayoutManager(getContext());
         recyclerViewParticipants.setLayoutManager(recyclerViewLayoutManager);
+
 
         hostAvatar.setOnClickListener(v ->
                 util.getUser(event.getHostId(), user -> mListener.openHostProfile(user), Util.DEFAULT_F_LISTENER));
@@ -215,6 +231,27 @@ public class EventFragment extends Fragment {
                 mListener.backToPrevious();
             }, Util.DEFAULT_F_LISTENER));
         }
+
+        //Create a listener for Firebase data change...
+        util.getDB().collection("events")
+                .document(event.getUid())
+                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                        if(error!=null){
+                            Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                        }else{
+                            util.getEvent(event.getUid(), new OnSuccessListener<Event>() {
+                                @Override
+                                public void onSuccess(Event event) {
+                                    participantAdapter.setParticipants(event.getParticipants());
+                                    participantAdapter.notifyDataSetChanged();
+                                }
+                            }, DEFAULT_F_LISTENER);
+
+                        }
+                    }
+                });
 
 
 

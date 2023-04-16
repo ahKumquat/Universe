@@ -158,6 +158,39 @@
                     app:layout_constraintStart_toStartOf="@+id/event_mapView_map"
                     app:layout_constraintTop_toBottomOf="@+id/event_mapView_map" />
 
+                <TextView
+                    android:id="@+id/event_textView_currentCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text=" "
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textSize_thirdTitle"
+                    app:layout_constraintBottom_toBottomOf="@+id/event_textView_going"
+                    app:layout_constraintStart_toEndOf="@+id/event_textView_going" />
+
+                <TextView
+                    android:id="@+id/textView16"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="/"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textSize_thirdTitle"
+                    app:layout_constraintBottom_toBottomOf="@+id/event_textView_going"
+                    app:layout_constraintStart_toEndOf="@+id/event_textView_currentCount" />
+
+                <TextView
+                    android:id="@+id/event_textView_totalCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text=" "
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/textSize_thirdTitle"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView16"
+                    app:layout_constraintStart_toEndOf="@+id/textView16" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
