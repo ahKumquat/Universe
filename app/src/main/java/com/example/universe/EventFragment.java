@@ -1,6 +1,7 @@
 package com.example.universe;
 
 import static com.example.universe.Util.DEFAULT_F_LISTENER;
+import static com.example.universe.Util.TAG;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -17,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -232,7 +234,7 @@ public class EventFragment extends Fragment {
             }, Util.DEFAULT_F_LISTENER));
         }
 
-        //Create a listener for Firebase data change...
+        //Create a listener for Firebase data change
         util.getDB().collection("events")
                 .document(event.getUid())
                 .addSnapshotListener(new EventListener<DocumentSnapshot>() {
@@ -245,6 +247,7 @@ public class EventFragment extends Fragment {
                                 @Override
                                 public void onSuccess(Event event) {
                                     participantAdapter.setParticipants(event.getParticipants());
+                                    currentCount.setText(event.getParticipants().size() + "");
                                     participantAdapter.notifyDataSetChanged();
                                 }
                             }, DEFAULT_F_LISTENER);
