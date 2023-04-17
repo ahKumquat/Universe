@@ -2,7 +2,6 @@ package com.example.universe;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +11,12 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.universe.Models.Event;
 import com.example.universe.Models.User;
-import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,10 +28,10 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
     private List<User> userList;
     private Event event;
     private static Util util;
-    private boolean isClicked;
     private IEventListRecyclerAction mListener;
+    private IEventRecyclerActionToFragment mListenerFrg;
 
-    public ParticipantAdapter (Context context, List<User> userList, Event event) {
+    public ParticipantAdapter (Context context, List<User> userList, Event event, Fragment fragment) {
         this.userList = userList;
         this.context = context;
         this.event = event;
@@ -42,20 +41,16 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
         }else{
             throw new RuntimeException(context.toString()+ "must implement IEventListRecyclerAction");
         }
+
+        if(fragment instanceof IEventRecyclerActionToFragment){
+            mListenerFrg = (IEventRecyclerActionToFragment) fragment;
+        }else{
+            throw new RuntimeException(context + "must implement IEventRecyclerActionToFragment");
+        }
     }
 
     public List<User> getUserList() {
         return userList;
-    }
-    public void setParticipants(List<String> participants) {
-        for (String s: participants) {
-            util.getUser(s, new OnSuccessListener<User>() {
-                @Override
-                public void onSuccess(User user) {
-                    userList.add(user);
-                }
-            }, Util.DEFAULT_F_LISTENER);
-        }
     }
 
     @NonNull
@@ -72,45 +67,55 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
     @Override
     public void onBindViewHolder(@NonNull ParticipantAdapter.ViewHolder holder, int position) {
         User user = this.getUserList().get(position);
+
         if (user.getAvatarPath() != null) {
-            Glide.with(context).load(user.getAvatarPath())
-                    .override(80,80).into(holder.getAvatar());
+            util.getDownloadUrlFromPath(user.getAvatarPath(),
+                    uri -> Glide.with(context).load(uri)
+                            .override(70,70).into(holder.getAvatar()), Util.DEFAULT_F_LISTENER);
+        }
+
+        if (!user.getUid().equals(util.getCurrentUser().getUid())) {
+            holder.getCardView().setOnClickListener(v -> mListener.eventClickedFromRecyclerView(user));
         }
 
         holder.getName().setText(user.getUserName());
 
-        if (user.getUid().equals(util.getCurrentUser().getUid())) {
+        if (event.getHostId().equals(user.getUid())) {
             holder.getApproveButton().setVisibility(View.INVISIBLE);
         } else {
-            holder.getCardView().setOnClickListener(v -> mListener.eventClickedFromRecyclerView(user));
-            if (!event.getParticipants().contains(user.getUid())) {
-                holder.getApproveButton().setText("Approve");
-            } else {
-                holder.getApproveButton().setText("Remove");
-            }
-            holder.getApproveButton().setOnClickListener(v -> {
-                if (event.getParticipants().contains(user.getUid())) {
-                    util.rejectJoinEvent(user.getUid(), event.getUid(), new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void unused) {
+            if (event.getHostId().equals(util.getCurrentUser().getUid())) {
+                if (!event.getParticipants().contains(user.getUid())) {
+                    holder.getApproveButton().setText("Approve");
+                } else {
+                    holder.getApproveButton().setText("Remove");
+                }
+                holder.getApproveButton().setOnClickListener(v -> {
+                    mListenerFrg.Loading();
+                    if (event.getParticipants().contains(user.getUid())) {
+                        util.rejectJoinEvent(user.getUid(), event.getUid(), unused -> {
                             holder.getApproveButton().setText("Approve");
                             event.getParticipants().remove(user.getUid());
                             user.getJoinedEventsIdList().remove(event.getUid());
-                            notifyDataSetChanged();
-                        }
-                    }, Util.DEFAULT_F_LISTENER);
-                } else {
-                    util.approveJoinEvent(user.getUid(), event.getUid(), new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void unused) {
+                            mListenerFrg.updateParticipantList(event.getParticipants());
+                            mListenerFrg.finished();
+                        }, Util.DEFAULT_F_LISTENER);
+                    } else {
+                        util.approveJoinEvent(user.getUid(), event.getUid(), unused -> {
                             holder.getApproveButton().setText("Remove");
                             event.getParticipants().add(user.getUid());
                             user.getJoinedEventsIdList().add(event.getUid());
-                            notifyDataSetChanged();
-                        }
-                    }, Util.DEFAULT_F_LISTENER);
+                            mListenerFrg.updateParticipantList(event.getParticipants());
+                            mListenerFrg.finished();
+                        }, Util.DEFAULT_F_LISTENER);
+                    }
+                });
+            } else {
+                if (!event.getParticipants().contains(user.getUid())) {
+                    holder.getApproveButton().setText("WaitList");
+                } else {
+                    holder.getApproveButton().setText("Going");
                 }
-            });
+            }
         }
 
 
@@ -152,5 +157,11 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
     }
     public interface IEventListRecyclerAction{
         void eventClickedFromRecyclerView(User user);
+    }
+
+    public interface IEventRecyclerActionToFragment{
+        void updateParticipantList(List<String> newParticipantList);
+        void Loading();
+        void finished();
     }
 }

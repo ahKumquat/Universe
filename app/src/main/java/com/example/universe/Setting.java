@@ -1,5 +1,6 @@
 package com.example.universe;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -20,6 +21,12 @@ import com.bumptech.glide.Glide;
 import com.example.universe.Models.User;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.UserInfo;
+
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class Setting extends Fragment {
@@ -47,7 +54,7 @@ public class Setting extends Fragment {
     private ImageView imageViewEditAvatar;
     private String newAvatarPath;
     private OnBackPressedCallback callback;
-
+    private List<UserInfo> signIn;
 
 
     public Setting() {
@@ -77,8 +84,11 @@ public class Setting extends Fragment {
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
         util = Util.getInstance();
+        signIn = util.getCurrentUser().getProviderData().stream()
+                .filter(userInfo -> userInfo.getProviderId().equals("google.com")).collect(Collectors.toList());
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -105,6 +115,19 @@ public class Setting extends Fragment {
         editTextEmail.setText(user.getEmail());
         editTextAbout.setText(user.getAbout());
 
+        if (signIn.size() > 0) {
+            editTextPassword.setText("Cannot update your password");
+            editTextPassword.setFocusable(false);
+            editTextEmail.setFocusable(false);
+            editTextEmail.setOnClickListener(v ->
+                    Toast.makeText(requireContext(), "Cannot update your password here, " +
+                                    "as you using Google sign-in!",
+                            Toast.LENGTH_SHORT).show());
+            editTextPassword.setOnClickListener(v ->  Toast.makeText(requireContext(),
+                    "Cannot update your password here, as you using Google sign-in!",
+                    Toast.LENGTH_SHORT).show());
+        }
+
         buttonSave.setOnClickListener(v -> {
            if (editTextName.getText().toString().equals("")) {
                Toast.makeText(requireContext(),"Name cannot be empty", Toast.LENGTH_SHORT).show();
@@ -114,7 +137,7 @@ public class Setting extends Fragment {
                if (newAvatarPath == null) {
                    newAvatarPath = user.getAvatarPath();
                }
-               if (editTextPassword.getText().toString().equals("")) {
+               if (editTextPassword.getText().toString().equals("") || signIn.size() > 0) {
                    util.updateProfile(
                            editTextName.getText().toString(),
                            newAvatarPath,
@@ -130,7 +153,7 @@ public class Setting extends Fragment {
                                        "Update successful!",
                                    Toast.LENGTH_SHORT).show();
                        }, Util.DEFAULT_F_LISTENER);
-               } else {
+               } else if (!editTextPassword.getText().toString().equals("") && signIn.size() == 0){
                    util.updateProfile(
                            editTextName.getText().toString(),
                            newAvatarPath,

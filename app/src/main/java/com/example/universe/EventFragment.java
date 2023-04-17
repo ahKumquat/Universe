@@ -1,53 +1,42 @@
 package com.example.universe;
 
 import static com.example.universe.Util.DEFAULT_F_LISTENER;
-import static com.example.universe.Util.TAG;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.Icon;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.universe.Models.Event;
-import com.example.universe.Models.Message;
 import com.example.universe.Models.User;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 
-//TODO Have to implement the four buttons
 
-public class EventFragment extends Fragment {
+public class EventFragment extends Fragment implements ParticipantAdapter.IEventRecyclerActionToFragment {
 
     private static final String ARG_EVENT = "event";
     private static final String ARG_USER = "user";
@@ -83,9 +72,11 @@ public class EventFragment extends Fragment {
 
     private ParticipantAdapter participantAdapter;
 
-    public EventFragment() {
-        // Required empty public constructor
-    }
+    private ProgressBar progressBar;
+
+    private SharePopUp popUp;
+
+    public EventFragment() {}
 
     public static EventFragment newInstance(Event event, User user) {
         EventFragment fragment = new EventFragment();
@@ -110,15 +101,14 @@ public class EventFragment extends Fragment {
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
-        loadUsers();
     }
 
     @SuppressLint({"SimpleDateFormat", "SetTextI18n"})
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_event, container, false);
+
         title = view.findViewById(R.id.event_textView_toolbar_title);
         eventPic = view.findViewById(R.id.event_imageView_event);
         hostAvatar = view.findViewById(R.id.event_imageView_hostAvatar);
@@ -136,9 +126,9 @@ public class EventFragment extends Fragment {
         postButton = view.findViewById(R.id.event_imageButton_post);
         currentCount = view.findViewById(R.id.event_textView_currentCount);
         totalCount = view.findViewById(R.id.event_textView_totalCount);
+        progressBar = view.findViewById(R.id.event_progressBar);
         totalCount.setText(event.getCapacity() + "");
         currentCount.setText(event.getParticipants().size() + "");
-        participantAdapter = new ParticipantAdapter(requireContext(), new ArrayList<User>(), event);
 
         title.setText(event.getTitle());
 
@@ -185,36 +175,48 @@ public class EventFragment extends Fragment {
         if (me != null) {
             if (me.getJoinedEventsIdList().contains(event.getUid())) {
                 signUpButton.setImageIcon(Icon.createWithResource(requireContext(), R.drawable.check));
+            } else if (me.getFavouritesIdList().contains(event.getUid())) {
+                favouriteButton.setImageTintList(ColorStateList.valueOf(Color.parseColor("#FF934D")));
             }
         }
 
         signUpButton.setOnClickListener(v -> {
+            progressBar.setVisibility(View.VISIBLE);
             if (!me.getJoinedEventsIdList().contains(event.getUid())) {
                 util.joinEvent(event.getUid(), unused -> {
                         signUpButton.setImageIcon(Icon.createWithResource(requireContext(), R.drawable.check));
                         me.getJoinedEventsIdList().add(event.getUid());
+                    progressBar.setVisibility(View.INVISIBLE);
                 }, Util.DEFAULT_F_LISTENER);
             } else {
                 util.quitEvent(event.getUid(), unused -> {
                     signUpButton.setImageIcon(Icon.createWithResource(requireContext(), R.drawable.baseline_check_24));
                     me.getJoinedEventsIdList().remove(event.getUid());
+                    progressBar.setVisibility(View.INVISIBLE);
                 }, Util.DEFAULT_F_LISTENER);
             }
         });
 
-        if (me.getFavouritesIdList().contains(event.getUid())) {
-            favouriteButton.setImageTintList(ColorStateList.valueOf(Color.parseColor("#FF934D")));
-        }
+        shareButton.setOnClickListener(v -> {
+            v.getRootView().findViewById(R.id.event_cover).setVisibility(View.VISIBLE);
+            popUp = new SharePopUp();
+            popUp.showPopupWindow(v,me,event);
+        });
+
+
         favouriteButton.setOnClickListener(v -> {
+            progressBar.setVisibility(View.VISIBLE);
             if (!me.getFavouritesIdList().contains(event.getUid())) {
                 util.addFavouriteEvent(event.getUid(), unused -> {
                     favouriteButton.setImageTintList(ColorStateList.valueOf(Color.parseColor("#FF934D")));
                     me.getFavouritesIdList().add(event.getUid());
+                    progressBar.setVisibility(View.INVISIBLE);
                     }, Util.DEFAULT_F_LISTENER);
             } else {
                 util.removeFavouriteEvent(event.getUid(), unused -> {
                     favouriteButton.setImageTintList(null);
                     me.getFavouritesIdList().remove(event.getUid());
+                    progressBar.setVisibility(View.INVISIBLE);
                 }, Util.DEFAULT_F_LISTENER);
             }
         });
@@ -234,33 +236,6 @@ public class EventFragment extends Fragment {
                 mListener.backToPrevious();
             }, Util.DEFAULT_F_LISTENER));
         }
-
-        //Create a listener for Firebase data change
-        util.getDB().collection("events")
-                .document(event.getUid())
-                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                        if(error!=null){
-                            Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                        }else{
-                            util.getEvent(event.getUid(), new OnSuccessListener<Event>() {
-                                @Override
-                                public void onSuccess(Event event) {
-                                    if (event.getParticipants() != null) {
-                                        participantAdapter.setParticipants(event.getParticipants());
-                                        currentCount.setText(event.getParticipants().size() + "");
-                                        participantAdapter.notifyDataSetChanged();
-                                    }
-                                }
-                            }, DEFAULT_F_LISTENER);
-
-                        }
-                    }
-                });
-
-
-
         return view;
     }
 
@@ -282,9 +257,11 @@ public class EventFragment extends Fragment {
     }
 
     private void loadUsers() {
+        progressBar.setVisibility(View.VISIBLE);
         util.getUsersByIdList(event.getParticipantsAndCandidates(), users -> {
-            participantAdapter = new ParticipantAdapter(requireContext(), users, event);
+            participantAdapter = new ParticipantAdapter(requireContext(), users, event, this);
             recyclerViewParticipants.setAdapter(participantAdapter);
+            progressBar.setVisibility(View.INVISIBLE);
         },Util.DEFAULT_F_LISTENER);
     }
 
@@ -297,6 +274,22 @@ public class EventFragment extends Fragment {
         }else{
             throw new RuntimeException(context + "must implement IEventFragmentAction");
         }
+    }
+
+    @Override
+    public void updateParticipantList(List<String> newParticipantList) {
+        this.event.setParticipants(newParticipantList);
+        currentCount.setText(String.valueOf(event.getParticipants().size()));
+    }
+
+    @Override
+    public void Loading() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void finished() {
+        progressBar.setVisibility(View.INVISIBLE);
     }
 
     public interface IEventFragmentAction {

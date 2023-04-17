@@ -2,7 +2,6 @@ package com.example.universe;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.universe.Models.User;
-import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.List;
 
@@ -57,8 +55,6 @@ public class FollowerAdapter extends RecyclerView.Adapter<FollowerAdapter.ViewHo
     public List<User> getUserList() {
         return userList;
     }
-
-
 
     @NonNull
     @Override

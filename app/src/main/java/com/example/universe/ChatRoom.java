@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class ChatRoom extends Fragment {
     private static Util util;
@@ -58,6 +59,8 @@ public class ChatRoom extends Fragment {
     private TextView textViewTitle;
     private OnBackPressedCallback callback;
 
+    private User me;
+
     public ChatRoom() {
         // Required empty public constructor
     }
@@ -75,15 +78,18 @@ public class ChatRoom extends Fragment {
         util = Util.getInstance();
         if (getArguments() != null) {
             otherUserId = getArguments().getString("otherUserId");
-            util.getUser(otherUserId, new OnSuccessListener<User>() {
-                @Override
-                public void onSuccess(User user) {
-                    otherUser = user;
-                    otherUserName = user.getUserName();
-                    textViewTitle.setText(otherUserName);
-                    Log.d(TAG, "onCreate: otherUserId " + otherUserId + "otherUserName " + otherUserName);
-                }
+            List<String> users = new ArrayList<>();
+            users.add(otherUserId);
+            users.add(util.getCurrentUser().getUid());
+            util.getUsersByIdList(users, users1 -> {
+                otherUser = users1.stream().filter(user -> !user.getUid()
+                        .equals(util.getCurrentUser().getUid())).collect(Collectors.toList()).get(0);
+                otherUserName = otherUser.getUserName();
+                textViewTitle.setText(otherUserName);
+                me = users1.stream().filter(user -> user.getUid()
+                        .equals(util.getCurrentUser().getUid())).collect(Collectors.toList()).get(0);
             }, DEFAULT_F_LISTENER);
+
         }
         callback = new OnBackPressedCallback(true) {
             public void handleOnBackPressed() {
@@ -125,11 +131,11 @@ public class ChatRoom extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setStackFromEnd(true);
         messageRecyclerView.setLayoutManager(linearLayoutManager);
-        messageAdaptor = new MessageAdapter(getContext(), messageList);
-        messageRecyclerView.setAdapter(messageAdaptor);
 
 
-        editTextMessage.setKeyBoardInputCallbackListener((inputContentInfo, flags, opts) -> sendImage(Objects.requireNonNull(inputContentInfo.getLinkUri()).toString()));
+
+        editTextMessage.setKeyBoardInputCallbackListener((inputContentInfo, flags, opts) ->
+                sendImage(Objects.requireNonNull(inputContentInfo.getLinkUri()).toString()));
 
         buttonSendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -190,7 +196,7 @@ public class ChatRoom extends Fragment {
         util.getMessages(otherUserId, new OnSuccessListener<List<Message>>() {
             @Override
             public void onSuccess(List<Message> newMessages) {
-                updateRecyclerView(new ArrayList<Message>(newMessages));
+                updateRecyclerView(new ArrayList<>(newMessages));
             }
         }, DEFAULT_F_LISTENER);
     }
@@ -198,6 +204,8 @@ public class ChatRoom extends Fragment {
 
     public void updateRecyclerView(ArrayList<Message> messages) {
         this.messageList = messages;
+        messageAdaptor = new MessageAdapter(getContext(), messageList, me);
+        messageRecyclerView.setAdapter(messageAdaptor);
         messageAdaptor.setMessages(messages);
         Log.d(TAG, "updateRecyclerView: " + messages.toString());
         messageAdaptor.notifyDataSetChanged();

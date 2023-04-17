@@ -1,5 +1,6 @@
 package com.example.universe;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -13,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.universe.Models.Event;
 import com.example.universe.Models.Message;
 import com.example.universe.Models.User;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -25,14 +27,17 @@ public class MessageAdapter extends RecyclerView.Adapter {
     private ArrayList<Message> messageList;
     private static Util util;
 
+    private User me;
+
     private IMessageListRecyclerAction mListener;
 
     int ITEM_SEND = 1;
     int ITEM_RECEIVE = 2;
 
-    public MessageAdapter(Context context, ArrayList<Message> messageList) {
+    public MessageAdapter(Context context, ArrayList<Message> messageList, User me) {
         this.context = context;
         this.messageList = messageList;
+        this.me = me;
         util = Util.getInstance();
         if(context instanceof IMessageListRecyclerAction){
             mListener = (IMessageListRecyclerAction) context;
@@ -65,6 +70,7 @@ public class MessageAdapter extends RecyclerView.Adapter {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Message message = this.getMessages().get(position);
@@ -121,7 +127,16 @@ public class MessageAdapter extends RecyclerView.Adapter {
                 viewHolder.getImageViewPhoto().setVisibility(View.GONE);
                 viewHolder.getTextViewTimeOfMessage().setVisibility(View.VISIBLE);
                 viewHolder.getTextViewMessage().setVisibility(View.VISIBLE);
-                viewHolder.getTextViewMessage().setText(message.getText());
+                if (!message.getText().contains("Your friend share an event " +
+                        "with you.Click Here to view the event!")) {
+                    viewHolder.getTextViewMessage().setText(message.getText());
+                } else {
+                    String eventId = message.getText().split("!")[1];
+                    viewHolder.getTextViewMessage().setText(message.getText().split("!")[0] + "!");
+                    viewHolder.getTextViewMessage().setOnClickListener(v -> util.getEvent(eventId,
+                            event -> mListener.eventClickedFromRecyclerView(event,me),
+                            Util.DEFAULT_F_LISTENER));
+                }
                 viewHolder.getTextViewTimeOfMessage().setText(message.getSimpleTime());
             }
         } else {
@@ -165,7 +180,16 @@ public class MessageAdapter extends RecyclerView.Adapter {
                 viewHolder.getImageViewPhoto().setVisibility(View.GONE);
                 viewHolder.getTextViewTimeOfMessage().setVisibility(View.VISIBLE);
                 viewHolder.getTextViewMessage().setVisibility(View.VISIBLE);
-                viewHolder.getTextViewMessage().setText(message.getText());
+                if (!message.getText().contains("Your friend share an event " +
+                        "with you.Click Here to view the event!")) {
+                    viewHolder.getTextViewMessage().setText(message.getText());
+                } else {
+                    String eventId = message.getText().split("!")[1];
+                    viewHolder.getTextViewMessage().setText(message.getText().split("!")[0] + "!");
+                    viewHolder.getTextViewMessage().setOnClickListener(v -> util.getEvent(eventId,
+                            event -> mListener.eventClickedFromRecyclerView(event,me),
+                            Util.DEFAULT_F_LISTENER));
+                }
                 viewHolder.getTextViewTimeOfMessage().setText(message.getSimpleTime());
             }
         }
@@ -248,5 +272,6 @@ public class MessageAdapter extends RecyclerView.Adapter {
 
     public interface IMessageListRecyclerAction{
         void openFile(String url);
+        void eventClickedFromRecyclerView(Event event, User user);
     }
 }

@@ -257,6 +257,7 @@ public class Profile extends Fragment {
                 loadFavEvent();
             break;
         }
+        Objects.requireNonNull(tabLayout.getTabAt(tabNum)).select();
     }
 
     private void loadPostEvent(){
