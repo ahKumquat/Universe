@@ -70,7 +70,7 @@ public class ShareUserAdapter extends RecyclerView.Adapter<ShareUserAdapter.View
         holder.getName().setText(friend.getUserName());
         holder.getButton().setVisibility(View.INVISIBLE);
         holder.getCardView().setCardBackgroundColor((selected_position == position && isClicked) ?
-                Color.parseColor(view.getContext().getResources().getString(R.color.universe_yellow)) : Color.TRANSPARENT);
+                Color.parseColor(view.getContext().getResources().getString(R.color.universe_yellow)) : Color.WHITE);
     }
 
     public User getSelectedUser() {
