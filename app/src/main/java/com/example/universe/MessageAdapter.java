@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.example.universe.Models.Event;
 import com.example.universe.Models.Message;
 import com.example.universe.Models.User;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
@@ -134,10 +136,10 @@ public class MessageAdapter extends RecyclerView.Adapter {
                     viewHolder.getTextViewMessage().setText(message.getText().split("!")[0] + "!");
                     if (message.getText().split("!").length > 1) {
                         String eventId = message.getText().split("!")[1];
-                        if (!eventId.equals("")) {
+                        if (!eventId.isEmpty()) {
                             viewHolder.getTextViewMessage().setOnClickListener(v -> util.getEvent(eventId,
                                     event -> mListener.eventClickedFromRecyclerView(event, me),
-                                    Util.DEFAULT_F_LISTENER));
+                                    e -> Toast.makeText(context,"No Such Event!", Toast.LENGTH_SHORT).show()));
                         }
                     }
                 }
@@ -191,10 +193,10 @@ public class MessageAdapter extends RecyclerView.Adapter {
                     viewHolder.getTextViewMessage().setText(message.getText().split("!")[0] + "!");
                     if (message.getText().split("!").length > 1) {
                         String eventId = message.getText().split("!")[1];
-                        if (!eventId.equals("")) {
+                        if (!eventId.isEmpty()) {
                             viewHolder.getTextViewMessage().setOnClickListener(v -> util.getEvent(eventId,
                                     event -> mListener.eventClickedFromRecyclerView(event, me),
-                                    Util.DEFAULT_F_LISTENER));
+                                    e -> Toast.makeText(context,"No Such Event!", Toast.LENGTH_SHORT).show()));
                         }
                     }
                 }
