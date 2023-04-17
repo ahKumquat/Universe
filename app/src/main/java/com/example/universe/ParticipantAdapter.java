@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.universe.Models.Event;
 import com.example.universe.Models.User;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,8 +50,20 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
         }
     }
 
+    public void setUserList(List<User> userList) {
+        this.userList = userList;
+    }
+
     public List<User> getUserList() {
         return userList;
+    }
+
+    public Event getEvent() {
+        return event;
+    }
+
+    public void setEvent(Event event) {
+        this.event = event;
     }
 
     @NonNull
@@ -100,6 +113,10 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
                             mListenerFrg.finished();
                         }, Util.DEFAULT_F_LISTENER);
                     } else {
+                        if (event.getParticipants().size() + 1 >= event.getCapacity()){
+                            mListenerFrg.finished();
+                            return;
+                        }
                         util.approveJoinEvent(user.getUid(), event.getUid(), unused -> {
                             holder.getApproveButton().setText("Remove");
                             event.getParticipants().add(user.getUid());

@@ -14,4 +14,6 @@
     <color name="universe_blue_transparent">#8C7CBCE4</color>
     <color name="universe_transparent">#00000000</color>
     <color name="universe_grey">#FFDEDFDE</color>
+    <color name="mild_black">#D8000000</color>
+    <color name="ultra_light_grey" />
 </resources>

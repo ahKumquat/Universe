@@ -323,8 +323,9 @@ public class PostFragment extends Fragment {
                     duration, durationUnit, address, geoPoint, capacity, description, postPicPath);
             mListener.saveEvent(event);
 
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
+        } catch (ParseException | NumberFormatException e) {
+            Toast.makeText(getContext(), "Bad input:" + e.getMessage(), Toast.LENGTH_SHORT).show();
+            //throw new RuntimeException(e);
         }
     }
 
@@ -367,8 +368,8 @@ public class PostFragment extends Fragment {
                             duration, durationUnit, address, geoPoint, capacity, description, postPicPath);
                     mListener.postEvent(event);
                 }
-            } catch (ParseException e) {
-                throw new RuntimeException(e);
+            } catch (ParseException | NumberFormatException e) {
+                Toast.makeText(getContext(), "Bad input:" + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }
     }
