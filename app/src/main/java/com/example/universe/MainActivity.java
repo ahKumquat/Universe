@@ -572,7 +572,7 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
         UploadTask uploadFile = storageReference.putFile(fileUri);
         uploadFile.addOnFailureListener(e -> Toast.makeText(MainActivity.this, "Upload Failed! Try again!", Toast.LENGTH_SHORT).show())
                 .addOnSuccessListener(taskSnapshot -> {
-                    Toast.makeText(MainActivity.this, "Upload successful! Check Firestore", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "File sent successful!", Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.GONE);
                 })
                 .addOnProgressListener(snapshot -> {
