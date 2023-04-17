@@ -52,4 +52,7 @@
     <string name="search_tabitem_users">Users</string>
     <string name="sendFile_button_send">Send</string>
     <string name="sendFile_button_cancel">Cancel</string>
+    <string name="sharePopUp_textview_title">Select a user to share this event</string>
+    <string name="sharePopUp_button_share">Share</string>
+
 </resources>

@@ -121,7 +121,7 @@ public class PostFragment extends Fragment {
     private PlacePredictionAdapter adapter = new PlacePredictionAdapter();
 
     private RequestQueue queue;
-    private Gson gson = new GsonBuilder().registerTypeAdapter(LatLng.class, new LatLngAdapter())
+    private final Gson gson = new GsonBuilder().registerTypeAdapter(LatLng.class, new LatLngAdapter())
             .create();
 
 

@@ -56,10 +56,9 @@ public class ProfileEventAdapter extends RecyclerView.Adapter<ProfileEventAdapte
         holder.getTextViewTitle().setText(event.getTitle());
         if (!"".equals(event.getImagePath())) {
             util.getDownloadUrlFromPath(event.getImagePath(),
-                    uri -> {Glide.with(context).load(uri)
+                    uri -> Glide.with(context).load(uri)
                             .error(R.drawable.image_not_found)
-                            .into(holder.getImageViewEventPic());
-                    },
+                            .into(holder.getImageViewEventPic()),
                     Util.DEFAULT_F_LISTENER);
 
         }

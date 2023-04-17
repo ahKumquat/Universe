@@ -26,22 +26,15 @@ public class Register extends Fragment {
 
 
     public Register() {
-        // Required empty public constructor
     }
 
     public static Register newInstance() {
-        Register fragment = new Register();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
+        return new Register();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        util = Util.getInstance();
-        if (getArguments() != null) {
-        }
     }
 
     @Override
@@ -78,7 +71,7 @@ public class Register extends Fragment {
             }
         });
 
-        textViewLogin.setOnClickListener(v -> mListener.populateLoginFragment());
+        textViewLogin.setOnClickListener(v -> mListener.backToPrevious());
 
 
         return view;
@@ -96,6 +89,6 @@ public class Register extends Fragment {
 
     public interface IRegisterFragmentAction {
         void populateMainFragment(FirebaseUser mUser);
-        void populateLoginFragment();
+        void backToPrevious();
     }
 }

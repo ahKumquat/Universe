@@ -8,9 +8,10 @@
         android:id="@+id/participants_cardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="@color/universe_blue_transparent"
-        app:cardCornerRadius="@dimen/cardView_radius"
-        app:cardElevation="@dimen/cardView_elevation"
+        android:layout_marginTop="5dp"
+        android:backgroundTint="@color/universe_blue_transparent"
+        app:cardElevation="1dp"
+        app:cardMaxElevation="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
