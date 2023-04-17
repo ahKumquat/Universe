@@ -171,7 +171,7 @@
             android:layout_marginStart="16dp"
             android:text="Going"
             android:textColor="@color/black"
-            android:textSize="@dimen/textSize_thirdTitle"
+            android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -183,7 +183,7 @@
             android:layout_marginStart="10dp"
             android:text=" "
             android:textColor="@color/black"
-            android:textSize="@dimen/textSize_thirdTitle"
+            android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/event_textView_going"
             app:layout_constraintTop_toTopOf="parent"
@@ -196,7 +196,7 @@
             android:layout_marginStart="10dp"
             android:text="/"
             android:textColor="@color/black"
-            android:textSize="@dimen/textSize_thirdTitle"
+            android:textSize="18sp"
             app:layout_constraintStart_toEndOf="@+id/event_textView_currentCount"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -207,7 +207,7 @@
             android:layout_marginStart="10dp"
             android:text=" "
             android:textColor="@color/black"
-            android:textSize="@dimen/textSize_thirdTitle"
+            android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/textView16"
             app:layout_constraintTop_toTopOf="parent"
@@ -226,10 +226,9 @@
                 android:id="@+id/event_recyclerView_participants"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="3dp"
-                android:layout_marginEnd="3dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="3dp"
+                android:layout_marginEnd="3dp">
 
             </androidx.recyclerview.widget.RecyclerView>
         </androidx.core.widget.NestedScrollView>
