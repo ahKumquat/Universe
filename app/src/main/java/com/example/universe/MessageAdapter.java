@@ -131,11 +131,15 @@ public class MessageAdapter extends RecyclerView.Adapter {
                         "with you.Click Here to view the event!")) {
                     viewHolder.getTextViewMessage().setText(message.getText());
                 } else {
-                    String eventId = message.getText().split("!")[1];
                     viewHolder.getTextViewMessage().setText(message.getText().split("!")[0] + "!");
-                    viewHolder.getTextViewMessage().setOnClickListener(v -> util.getEvent(eventId,
-                            event -> mListener.eventClickedFromRecyclerView(event,me),
-                            Util.DEFAULT_F_LISTENER));
+                    if (message.getText().split("!").length > 1) {
+                        String eventId = message.getText().split("!")[1];
+                        if (!eventId.equals("")) {
+                            viewHolder.getTextViewMessage().setOnClickListener(v -> util.getEvent(eventId,
+                                    event -> mListener.eventClickedFromRecyclerView(event, me),
+                                    Util.DEFAULT_F_LISTENER));
+                        }
+                    }
                 }
                 viewHolder.getTextViewTimeOfMessage().setText(message.getSimpleTime());
             }
@@ -184,11 +188,15 @@ public class MessageAdapter extends RecyclerView.Adapter {
                         "with you.Click Here to view the event!")) {
                     viewHolder.getTextViewMessage().setText(message.getText());
                 } else {
-                    String eventId = message.getText().split("!")[1];
                     viewHolder.getTextViewMessage().setText(message.getText().split("!")[0] + "!");
-                    viewHolder.getTextViewMessage().setOnClickListener(v -> util.getEvent(eventId,
-                            event -> mListener.eventClickedFromRecyclerView(event,me),
-                            Util.DEFAULT_F_LISTENER));
+                    if (message.getText().split("!").length > 1) {
+                        String eventId = message.getText().split("!")[1];
+                        if (!eventId.equals("")) {
+                            viewHolder.getTextViewMessage().setOnClickListener(v -> util.getEvent(eventId,
+                                    event -> mListener.eventClickedFromRecyclerView(event, me),
+                                    Util.DEFAULT_F_LISTENER));
+                        }
+                    }
                 }
                 viewHolder.getTextViewTimeOfMessage().setText(message.getSimpleTime());
             }
