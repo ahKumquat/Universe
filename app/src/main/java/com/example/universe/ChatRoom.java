@@ -131,7 +131,8 @@ public class ChatRoom extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setStackFromEnd(true);
         messageRecyclerView.setLayoutManager(linearLayoutManager);
-
+        messageAdaptor = new MessageAdapter(getContext(), messageList, me);
+        messageRecyclerView.setAdapter(messageAdaptor);
 
 
         editTextMessage.setKeyBoardInputCallbackListener((inputContentInfo, flags, opts) ->
@@ -204,8 +205,6 @@ public class ChatRoom extends Fragment {
 
     public void updateRecyclerView(ArrayList<Message> messages) {
         this.messageList = messages;
-        messageAdaptor = new MessageAdapter(getContext(), messageList, me);
-        messageRecyclerView.setAdapter(messageAdaptor);
         messageAdaptor.setMessages(messages);
         Log.d(TAG, "updateRecyclerView: " + messages.toString());
         messageAdaptor.notifyDataSetChanged();
