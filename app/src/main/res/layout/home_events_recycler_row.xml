@@ -7,7 +7,14 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_margin="4dp"
+        android:clipToPadding="false"
+        app:cardCornerRadius="@dimen/cardView_radius"
+        app:cardElevation="4dp"
+        app:cardMaxElevation="4dp"
+        app:cardUseCompatPadding="false"
+        app:contentPadding="0dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -27,10 +34,6 @@
                 android:id="@+id/eventPage_imageButton_event"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="4dp"
-                android:layout_marginBottom="4dp"
                 android:background="@color/universe_transparent"
                 android:scaleType="centerCrop"
                 app:layout_constraintBottom_toBottomOf="parent"

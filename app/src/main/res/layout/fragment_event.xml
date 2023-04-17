@@ -47,46 +47,36 @@
                     android:id="@+id/event_imageView_event"
                     android:layout_width="match_parent"
                     android:layout_height="240dp"
-                    android:scaleType="fitXY"
+                    android:scaleType="centerCrop"
                     android:src="@drawable/image_not_found"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <ImageView
-                    android:id="@+id/event_imageView_hostAvatar"
-                    android:layout_width="@dimen/avatar_size_large"
-                    android:layout_height="@dimen/avatar_size_large"
-                    android:layout_marginStart="@dimen/horizontal_padding"
-                    android:layout_marginTop="30dp"
-                    android:cropToPadding="false"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/event_imageView_event"
-                    tools:srcCompat="@drawable/circle_user_avatar" />
-
                 <TextView
                     android:id="@+id/event_textView_hostName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
+                    android:layout_marginStart="44dp"
                     android:text="HostName"
                     android:textColor="@color/black"
                     android:textSize="@dimen/textSize_secondTitle"
                     android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="@+id/event_imageView_hostAvatar"
-                    app:layout_constraintStart_toEndOf="@+id/event_imageView_hostAvatar"
-                    app:layout_constraintTop_toTopOf="@+id/event_imageView_hostAvatar" />
+                    app:layout_constraintBottom_toBottomOf="@+id/cardView3"
+                    app:layout_constraintStart_toEndOf="@+id/cardView3"
+                    app:layout_constraintTop_toTopOf="@+id/cardView3"
+                    app:layout_constraintVertical_bias="0.584" />
 
                 <TextView
                     android:id="@+id/event_textView_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/horizontal_padding"
+                    android:layout_marginTop="@dimen/vertical_padding"
                     android:text="Date"
                     android:textColor="@color/black"
                     android:textSize="@dimen/textSize_thirdTitle"
-                    app:layout_constraintStart_toStartOf="@+id/event_imageView_hostAvatar"
-                    app:layout_constraintTop_toBottomOf="@+id/event_imageView_hostAvatar" />
+                    app:layout_constraintStart_toStartOf="@+id/cardView3"
+                    app:layout_constraintTop_toBottomOf="@+id/cardView3" />
 
                 <TextView
                     android:id="@+id/event_textView_location"
@@ -146,6 +136,26 @@
                     app:layout_constraintTop_toBottomOf="@+id/event_textView_description"
                     app:liteMode="true"
                     tools:ignore="SpeakableTextPresentCheck" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardView3"
+                    android:layout_width="@dimen/avatar_size_large"
+                    android:layout_height="@dimen/avatar_size_large"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="24dp"
+                    app:cardBackgroundColor="@color/universe_transparent"
+                    app:cardCornerRadius="@dimen/cardView_radius"
+                    app:cardElevation="1dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/event_imageView_event">
+
+                    <ImageView
+                        android:id="@+id/event_imageView_hostAvatar"
+                        android:layout_width="@dimen/avatar_size_large"
+                        android:layout_height="@dimen/avatar_size_large"
+                        android:cropToPadding="false"
+                        tools:srcCompat="@drawable/circle_user_avatar" />
+                </androidx.cardview.widget.CardView>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -318,7 +328,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#6F000000"
-        android:visibility="invisible">
+        android:visibility="invisible"
+        app:layout_anchor="@+id/event_progressBar"
+        app:layout_anchorGravity="center">
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

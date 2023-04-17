@@ -128,7 +128,7 @@ public class EventFragment extends Fragment implements ParticipantAdapter.IEvent
         totalCount = view.findViewById(R.id.event_textView_totalCount);
         progressBar = view.findViewById(R.id.event_progressBar);
         totalCount.setText(event.getCapacity() + "");
-        currentCount.setText(event.getParticipants().size() + "");
+        currentCount.setText((event.getParticipants().size() +1)+ "");
 
         title.setText(event.getTitle());
 
@@ -175,7 +175,8 @@ public class EventFragment extends Fragment implements ParticipantAdapter.IEvent
         if (me != null) {
             if (me.getJoinedEventsIdList().contains(event.getUid())) {
                 signUpButton.setImageIcon(Icon.createWithResource(requireContext(), R.drawable.check));
-            } else if (me.getFavouritesIdList().contains(event.getUid())) {
+            }
+            if (me.getFavouritesIdList().contains(event.getUid())) {
                 favouriteButton.setImageTintList(ColorStateList.valueOf(Color.parseColor("#FF934D")));
             }
         }
@@ -184,15 +185,31 @@ public class EventFragment extends Fragment implements ParticipantAdapter.IEvent
             progressBar.setVisibility(View.VISIBLE);
             if (!me.getJoinedEventsIdList().contains(event.getUid())) {
                 util.joinEvent(event.getUid(), unused -> {
-                        signUpButton.setImageIcon(Icon.createWithResource(requireContext(), R.drawable.check));
-                        me.getJoinedEventsIdList().add(event.getUid());
+                    signUpButton.setImageIcon(Icon.createWithResource(requireContext(), R.drawable.check));
+                    me.getJoinedEventsIdList().add(event.getUid());
+                    event.getCandidates().add(me.getUid());
                     progressBar.setVisibility(View.INVISIBLE);
+                    for (User user: participantAdapter.getUserList()){
+                        if (user.getUid().equals(me.getUid())){
+                            participantAdapter.getUserList().remove(user);
+                        }
+                    }
+                    participantAdapter.getUserList().add(me);
+                    participantAdapter.notifyDataSetChanged();
                 }, Util.DEFAULT_F_LISTENER);
             } else {
                 util.quitEvent(event.getUid(), unused -> {
                     signUpButton.setImageIcon(Icon.createWithResource(requireContext(), R.drawable.baseline_check_24));
                     me.getJoinedEventsIdList().remove(event.getUid());
+                    event.getParticipants().remove(me.getUid());
+                    event.getCandidates().remove(me.getUid());
                     progressBar.setVisibility(View.INVISIBLE);
+                    for (User user: participantAdapter.getUserList()){
+                        if (user.getUid().equals(me.getUid())){
+                            participantAdapter.getUserList().remove(user);
+                        }
+                    }
+                    participantAdapter.notifyDataSetChanged();
                 }, Util.DEFAULT_F_LISTENER);
             }
         });
@@ -279,7 +296,7 @@ public class EventFragment extends Fragment implements ParticipantAdapter.IEvent
     @Override
     public void updateParticipantList(List<String> newParticipantList) {
         this.event.setParticipants(newParticipantList);
-        currentCount.setText(String.valueOf(event.getParticipants().size()));
+        currentCount.setText(String.valueOf(event.getParticipants().size() + 1));
     }
 
     @Override
