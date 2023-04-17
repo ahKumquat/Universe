@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.universe.Models.Event;
 import com.example.universe.Models.User;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
@@ -113,17 +114,13 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
                             mListenerFrg.finished();
                         }, Util.DEFAULT_F_LISTENER);
                     } else {
-                        if (event.getParticipants().size() + 1 >= event.getCapacity()){
-                            mListenerFrg.finished();
-                            return;
-                        }
                         util.approveJoinEvent(user.getUid(), event.getUid(), unused -> {
                             holder.getApproveButton().setText("Remove");
                             event.getParticipants().add(user.getUid());
                             user.getJoinedEventsIdList().add(event.getUid());
                             mListenerFrg.updateParticipantList(event.getParticipants());
                             mListenerFrg.finished();
-                        }, Util.DEFAULT_F_LISTENER);
+                        }, e -> mListenerFrg.finished());
                     }
                 });
             } else {

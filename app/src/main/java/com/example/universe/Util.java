@@ -451,7 +451,7 @@ public class Util {
                     @Override
                     public Void apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
                         Event event = transaction.get(eventRef).toObject(Event.class);
-                        if (event.getParticipants().size() >= event.getCapacity()) {
+                        if (event.getParticipants().size() + 1 >= event.getCapacity()) {
                             throw new RuntimeException("Approve participant failed! Reach maximum event Capacity!");
                         }
                         //send notification to users that are affected by approval.
