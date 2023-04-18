@@ -25,9 +25,7 @@ import com.example.universe.Models.Message;
 import com.example.universe.Models.User;
 
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -43,8 +41,6 @@ public class ChatRoom extends Fragment {
     private ArrayList<Message> messageList;
     private ImageButton imageButtonCamera;
     private ImageButton imageButtonFile;
-    private Calendar calendar;
-    private SimpleDateFormat simpleDateFormat;
     private String otherUserId;
     private User otherUser;
     private IchatFragmentButtonAction mListener;
@@ -63,6 +59,7 @@ public class ChatRoom extends Fragment {
         return fragment;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,8 +76,24 @@ public class ChatRoom extends Fragment {
                 textViewTitle.setText(otherUserName);
                 me = users1.stream().filter(user -> user.getUid()
                         .equals(util.getCurrentUser().getUid())).collect(Collectors.toList()).get(0);
+
                 messageAdaptor = new MessageAdapter(getContext(), messageList, me);
                 messageRecyclerView.setAdapter(messageAdaptor);
+                util.getDB().collection("users")
+                        .document(util.getCurrentUser().getUid())
+                        .collection("chats")
+                        .document(otherUserId)
+                        .addSnapshotListener((value, error) -> {
+                            if (error != null) {
+                                Toast.makeText(getContext(),
+                                        error.getMessage(), Toast.LENGTH_SHORT).show();
+                            } else {
+                                util.getMessages(otherUserId, messages -> {
+                                    messageAdaptor.setMessages(new ArrayList<>(messages));
+                                    messageAdaptor.notifyDataSetChanged();
+                                }, DEFAULT_F_LISTENER);
+                            }
+                        });
             }, DEFAULT_F_LISTENER);
 
         }
@@ -98,7 +111,7 @@ public class ChatRoom extends Fragment {
         if(context instanceof IchatFragmentButtonAction){
             mListener = (IchatFragmentButtonAction) context;
         }else{
-            throw new RuntimeException(context.toString()+ "must implement IchatFragmentAction");
+            throw new RuntimeException(context + "must implement IchatFragmentAction");
         }
     }
 
@@ -115,9 +128,6 @@ public class ChatRoom extends Fragment {
         buttonSendMessage = view.findViewById(R.id.chatRoom_button_send);
         imageButtonCamera = view.findViewById(R.id.chatRoom_imageButton_camera);
         imageButtonFile = view.findViewById(R.id.chatRoom_imageButton_file);
-
-        simpleDateFormat = new SimpleDateFormat("hh:mm a");
-        calendar = Calendar.getInstance();
 
         messageList = new ArrayList<>();
         messageRecyclerView = view.findViewById(R.id.chatRoom_recyclerView);
@@ -143,21 +153,6 @@ public class ChatRoom extends Fragment {
         imageButtonCamera.setOnClickListener(v -> mListener.sendImage());
         imageButtonFile.setOnClickListener(v -> mListener.sendFile());
 
-        util.getDB().collection("users")
-                .document(util.getCurrentUser().getUid())
-                .collection("chats")
-                .document(otherUserId)
-                .addSnapshotListener((value, error) -> {
-                    if(error!=null){
-                        Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }else{
-                        util.getMessages(otherUserId, messages -> {
-                            messageAdaptor.setMessages(new ArrayList<>(messages));
-                            messageAdaptor.notifyDataSetChanged();
-                        }, DEFAULT_F_LISTENER);
-
-                    }
-                });
 
         return view;
     }

@@ -2,7 +2,6 @@ package com.example.universe;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,6 @@ import com.bumptech.glide.Glide;
 import com.example.universe.Models.Event;
 import com.example.universe.Models.Message;
 import com.example.universe.Models.User;
-import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
 
@@ -73,20 +71,12 @@ public class MessageAdapter extends RecyclerView.Adapter {
         if (holder.getClass() == SenderViewHolder.class) {
             SenderViewHolder viewHolder = (SenderViewHolder) holder;
             //load user avatar
-            util.getUser(message.getUserId(), new OnSuccessListener<User>() {
-                @Override
-                public void onSuccess(User user) {
-                    if (user.getAvatarPath() != null) {
-                        util.getDownloadUrlFromPath(user.getAvatarPath(), new OnSuccessListener<Uri>() {
-                            @Override
-                            public void onSuccess(Uri uri) {
-                                Glide.with(context)
-                                        .load(uri)
-                                        .centerCrop()
-                                        .into(viewHolder.getImageViewUserAvatar());
-                            }
-                        }, Util.DEFAULT_F_LISTENER);
-                    }
+            util.getUser(message.getUserId(), user -> {
+                if (user.getAvatarPath() != null) {
+                    util.getDownloadUrlFromPath(user.getAvatarPath(), uri -> Glide.with(context)
+                            .load(uri)
+                            .centerCrop()
+                            .into(viewHolder.getImageViewUserAvatar()), Util.DEFAULT_F_LISTENER);
                 }
             }, Util.DEFAULT_F_LISTENER);
 
@@ -96,15 +86,10 @@ public class MessageAdapter extends RecyclerView.Adapter {
                 viewHolder.getTextViewMessage().setVisibility(View.GONE);
 
                 if (!message.getImagePath().startsWith("https")) {
-                    util.getDownloadUrlFromPath(message.getImagePath(), new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            Glide.with(context)
-                                    .load(uri)
-                                    .override(500, 500)
-                                    .into(viewHolder.getImageViewPhoto());
-                        }
-                    }, Util.DEFAULT_F_LISTENER);
+                    util.getDownloadUrlFromPath(message.getImagePath(), uri -> Glide.with(context)
+                            .load(uri)
+                            .override(500, 500)
+                            .into(viewHolder.getImageViewPhoto()), Util.DEFAULT_F_LISTENER);
                 } else {
                     Glide.with(context)
                             .load(message.getImagePath())
@@ -141,20 +126,12 @@ public class MessageAdapter extends RecyclerView.Adapter {
         } else {
             ReceiverViewHolder viewHolder = (ReceiverViewHolder) holder;
             //load user avatar
-            util.getUser(message.getUserId(), new OnSuccessListener<User>() {
-                @Override
-                public void onSuccess(User user) {
-                    if (user.getAvatarPath() != null) {
-                        util.getDownloadUrlFromPath(user.getAvatarPath(), new OnSuccessListener<Uri>() {
-                            @Override
-                            public void onSuccess(Uri uri) {
-                                Glide.with(context)
-                                        .load(uri)
-                                        .centerCrop()
-                                        .into(viewHolder.getImageViewUserAvatar());
-                            }
-                        }, Util.DEFAULT_F_LISTENER);
-                    }
+            util.getUser(message.getUserId(), user -> {
+                if (user.getAvatarPath() != null) {
+                    util.getDownloadUrlFromPath(user.getAvatarPath(), uri -> Glide.with(context)
+                            .load(uri)
+                            .centerCrop()
+                            .into(viewHolder.getImageViewUserAvatar()), Util.DEFAULT_F_LISTENER);
                 }
             }, Util.DEFAULT_F_LISTENER);
 
