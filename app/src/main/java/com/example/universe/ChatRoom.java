@@ -76,26 +76,9 @@ public class ChatRoom extends Fragment {
                 textViewTitle.setText(otherUserName);
                 me = users1.stream().filter(user -> user.getUid()
                         .equals(util.getCurrentUser().getUid())).collect(Collectors.toList()).get(0);
-
                 messageAdaptor = new MessageAdapter(getContext(), messageList, me);
-                messageRecyclerView.setAdapter(messageAdaptor);
-                util.getDB().collection("users")
-                        .document(util.getCurrentUser().getUid())
-                        .collection("chats")
-                        .document(otherUserId)
-                        .addSnapshotListener((value, error) -> {
-                            if (error != null) {
-                                Toast.makeText(getContext(),
-                                        error.getMessage(), Toast.LENGTH_SHORT).show();
-                            } else {
-                                util.getMessages(otherUserId, messages -> {
-                                    messageAdaptor.setMessages(new ArrayList<>(messages));
-                                    messageAdaptor.notifyDataSetChanged();
-                                }, DEFAULT_F_LISTENER);
-                            }
-                        });
+                loadData();
             }, DEFAULT_F_LISTENER);
-
         }
         callback = new OnBackPressedCallback(true) {
             public void handleOnBackPressed() {
@@ -145,7 +128,10 @@ public class ChatRoom extends Fragment {
                         Toast.LENGTH_LONG).show();
             } else {
                 Message message = new Message(util.getCurrentUser(), enteredMessage, null, null);
-                util.sendMessage(otherUserId, message, unused -> {}, DEFAULT_F_LISTENER);
+                util.sendMessage(otherUserId, message, unused -> {
+                    messageAdaptor.getMessages().add(message);
+                    messageAdaptor.notifyDataSetChanged();
+                }, DEFAULT_F_LISTENER);
                 editTextMessage.setText(null);
             }
         });
@@ -160,9 +146,8 @@ public class ChatRoom extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (messageAdaptor != null) {
+        if (me != null) {
             loadData();
-            messageRecyclerView.setAdapter(messageAdaptor);
         }
     }
 
@@ -175,17 +160,25 @@ public class ChatRoom extends Fragment {
     public void updateRecyclerView(ArrayList<Message> messages) {
         this.messageList = messages;
         messageAdaptor.setMessages(messages);
-        messageAdaptor.notifyDataSetChanged();
+        messageRecyclerView.setAdapter(messageAdaptor);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void sendImage(String path) {
         Message message = new Message(util.getCurrentUser(), null, path, null);
-        util.sendMessage(otherUserId, message, unused -> {}, DEFAULT_F_LISTENER);
+        util.sendMessage(otherUserId, message, unused -> {
+            messageAdaptor.getMessages().add(message);
+            messageAdaptor.notifyDataSetChanged();
+            }, DEFAULT_F_LISTENER);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void sendFile(Uri fileUri) {
         Message message = new Message(util.getCurrentUser(), null, null, fileUri.toString());
-        util.sendMessage(otherUserId, message, unused -> {}, DEFAULT_F_LISTENER);
+        util.sendMessage(otherUserId, message, unused -> {
+            messageAdaptor.getMessages().add(message);
+            messageAdaptor.notifyDataSetChanged();
+        }, DEFAULT_F_LISTENER);
     }
 
     public interface IchatFragmentButtonAction {
