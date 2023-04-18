@@ -9,10 +9,12 @@ import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +25,10 @@ import android.widget.Toast;
 
 import com.example.universe.Models.Message;
 import com.example.universe.Models.User;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.MetadataChanges;
 
 
 import java.util.ArrayList;
@@ -48,6 +54,7 @@ public class ChatRoom extends Fragment {
     private OnBackPressedCallback callback;
 
     private User me;
+    private Parcelable parcelable;
 
     public ChatRoom() {
     }
@@ -76,7 +83,6 @@ public class ChatRoom extends Fragment {
                 textViewTitle.setText(otherUserName);
                 me = users1.stream().filter(user -> user.getUid()
                         .equals(util.getCurrentUser().getUid())).collect(Collectors.toList()).get(0);
-                messageAdaptor = new MessageAdapter(getContext(), messageList, me);
                 loadData();
             }, DEFAULT_F_LISTENER);
         }
@@ -128,10 +134,7 @@ public class ChatRoom extends Fragment {
                         Toast.LENGTH_LONG).show();
             } else {
                 Message message = new Message(util.getCurrentUser(), enteredMessage, null, null);
-                util.sendMessage(otherUserId, message, unused -> {
-                    messageAdaptor.getMessages().add(message);
-                    messageAdaptor.notifyDataSetChanged();
-                }, DEFAULT_F_LISTENER);
+                util.sendMessage(otherUserId, message, unused -> {}, DEFAULT_F_LISTENER);
                 editTextMessage.setText(null);
             }
         });
@@ -139,6 +142,14 @@ public class ChatRoom extends Fragment {
         imageButtonCamera.setOnClickListener(v -> mListener.sendImage());
         imageButtonFile.setOnClickListener(v -> mListener.sendFile());
 
+        util.getDB().collection("users")
+                .document(util.getCurrentUser().getUid())
+                .collection("chats")
+                .document(otherUserId)
+                .addSnapshotListener(MetadataChanges.INCLUDE, (value, error) -> {
+                    parcelable = Objects.requireNonNull(messageRecyclerView.getLayoutManager()).onSaveInstanceState();
+                    loadData();
+                });
 
         return view;
     }
@@ -159,26 +170,26 @@ public class ChatRoom extends Fragment {
     @SuppressLint("NotifyDataSetChanged")
     public void updateRecyclerView(ArrayList<Message> messages) {
         this.messageList = messages;
+        if (messageAdaptor == null){
+            messageAdaptor = new MessageAdapter(getContext(), messageList, me);
+        }
         messageAdaptor.setMessages(messages);
         messageRecyclerView.setAdapter(messageAdaptor);
+        if (parcelable != null) {
+            Objects.requireNonNull(messageRecyclerView.getLayoutManager()).onRestoreInstanceState(parcelable);
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")
     public void sendImage(String path) {
         Message message = new Message(util.getCurrentUser(), null, path, null);
-        util.sendMessage(otherUserId, message, unused -> {
-            messageAdaptor.getMessages().add(message);
-            messageAdaptor.notifyDataSetChanged();
-            }, DEFAULT_F_LISTENER);
+        util.sendMessage(otherUserId, message, unused -> {}, DEFAULT_F_LISTENER);
     }
 
     @SuppressLint("NotifyDataSetChanged")
     public void sendFile(Uri fileUri) {
         Message message = new Message(util.getCurrentUser(), null, null, fileUri.toString());
-        util.sendMessage(otherUserId, message, unused -> {
-            messageAdaptor.getMessages().add(message);
-            messageAdaptor.notifyDataSetChanged();
-        }, DEFAULT_F_LISTENER);
+        util.sendMessage(otherUserId, message, unused -> {}, DEFAULT_F_LISTENER);
     }
 
     public interface IchatFragmentButtonAction {
