@@ -10,7 +10,6 @@ import android.os.Bundle;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentContainer;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,12 +17,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,7 +36,6 @@ import com.bumptech.glide.Glide;
 import com.example.universe.Models.Event;
 import com.example.universe.Models.GeocodingResult;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
@@ -118,7 +113,7 @@ public class PostFragment extends Fragment {
 
     private LinearLayoutManager layoutManager;
 
-    private PlacePredictionAdapter adapter = new PlacePredictionAdapter();
+    private final PlacePredictionAdapter adapter = new PlacePredictionAdapter();
 
     private RequestQueue queue;
     private final Gson gson = new GsonBuilder().registerTypeAdapter(LatLng.class, new LatLngAdapter())
@@ -127,7 +122,6 @@ public class PostFragment extends Fragment {
 
 
     public PostFragment() {
-        // Required empty public constructor
     }
 
 

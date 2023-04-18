@@ -1,7 +1,9 @@
 package com.example.universe;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,18 +24,19 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.common.util.concurrent.ListenableFuture;
 
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 public class FragmentCameraController extends Fragment implements View.OnClickListener{
 
     private static Util util;
-    private String TAG = Util.TAG;
     private ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
     private PreviewView previewView;
     private CameraSelector cameraSelector;
@@ -53,7 +56,6 @@ public class FragmentCameraController extends Fragment implements View.OnClickLi
 
 
     public FragmentCameraController() {
-        // Required empty public constructor
     }
 
     public static FragmentCameraController newInstance() {
@@ -71,10 +73,24 @@ public class FragmentCameraController extends Fragment implements View.OnClickLi
         callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                getActivity().getSupportFragmentManager().popBackStack();
+                requireActivity().getSupportFragmentManager().popBackStack();
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        requireActivity().getWindow().setStatusBarColor(Color.BLACK);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        requireActivity().getWindow()
+                .setStatusBarColor(requireActivity().getResources().getColor(R.color.universe_yellow,
+                        requireActivity().getTheme()));
     }
 
     @Override
@@ -92,7 +108,6 @@ public class FragmentCameraController extends Fragment implements View.OnClickLi
         buttonSwitchCamera.setOnClickListener(this);
         buttonOpenGallery.setOnClickListener(this);
 
-//        default lense facing....
         lenseFacing = lenseFacingBack;
 
         setUpCamera(lenseFacing);
@@ -101,7 +116,7 @@ public class FragmentCameraController extends Fragment implements View.OnClickLi
 
     private void setUpCamera(int lenseFacing) {
         //            binding hardware camera with preview, and imageCapture.......
-        cameraProviderFuture = ProcessCameraProvider.getInstance(getContext());
+        cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext());
         cameraProviderFuture.addListener(()->{
             preview = new Preview.Builder()
                     .build();
@@ -115,11 +130,11 @@ public class FragmentCameraController extends Fragment implements View.OnClickLi
                         .requireLensFacing(lenseFacing)
                         .build();
                 cameraProvider.unbindAll();
-                cameraProvider.bindToLifecycle((LifecycleOwner) getContext(),cameraSelector, preview, imageCapture);
+                cameraProvider.bindToLifecycle((LifecycleOwner) requireContext(),cameraSelector, preview, imageCapture);
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }
-        }, ContextCompat.getMainExecutor(getContext()));
+        }, ContextCompat.getMainExecutor(requireContext()));
 
     }
 
@@ -132,16 +147,15 @@ public class FragmentCameraController extends Fragment implements View.OnClickLi
         contentValues.put(MediaStore.Images.Media.RELATIVE_PATH,"Pictures/CameraX-Image");
 
         ImageCapture.OutputFileOptions outputFileOptions = new ImageCapture.OutputFileOptions
-                .Builder(getContext().getContentResolver(),
+                .Builder(requireContext().getContentResolver(),
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 contentValues).build();
 
         imageCapture.takePicture(outputFileOptions,
-                ContextCompat.getMainExecutor(getContext()),
+                ContextCompat.getMainExecutor(requireContext()),
                 new ImageCapture.OnImageSavedCallback() {
                     @Override
                     public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
-//                        Log.d("demo", "onImageSaved: "+ outputFileResults.getSavedUri());
                         mListener.onTakePhoto(outputFileResults.getSavedUri());
                     }
 
@@ -152,6 +166,7 @@ public class FragmentCameraController extends Fragment implements View.OnClickLi
                 });
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View view) {
         switch (view.getId()){

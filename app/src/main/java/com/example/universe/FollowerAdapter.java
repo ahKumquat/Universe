@@ -21,15 +21,15 @@ import java.util.List;
 
 public class FollowerAdapter extends RecyclerView.Adapter<FollowerAdapter.ViewHolder> {
 
-    private List<User> userList;
-    private IFollowerListRecyclerAction mListener;
+    private final List<User> userList;
+    private final IFollowerListRecyclerAction mListener;
 
-    private IFollowerListRecyclerActionToFragment mListenerFrg;
+    private final IFollowerListRecyclerActionToFragment mListenerFrg;
     private static Util util;
 
-    private Context context;
+    private final Context context;
 
-    private User user;
+    private final User user;
 
     private boolean isClicked;
 

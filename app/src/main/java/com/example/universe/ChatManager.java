@@ -1,6 +1,5 @@
 package com.example.universe;
 
-import static com.example.universe.Util.TAG;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -8,23 +7,18 @@ import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.universe.Models.Chat;
-import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 public class ChatManager extends Fragment {
     private static Util util;
@@ -38,9 +32,7 @@ public class ChatManager extends Fragment {
     private IchatManagerFragmentAction mListener;
 
 
-    public ChatManager() {
-        // Required empty public constructor
-    }
+    public ChatManager() {}
 
     public static ChatManager newInstance() {
         ChatManager fragment = new ChatManager();
@@ -65,15 +57,12 @@ public class ChatManager extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_chatmanager, container, false);
         recyclerView = view.findViewById(R.id.chatManager_recyclerView);
         title = view.findViewById(R.id.chatManager_title_TextView);
 
         recyclerViewLayoutManager = new LinearLayoutManager(getContext());
 
-
-        // Set toolbar title
         title.setText(CHATMANAGERTITLE);
 
         chatAdapter = new ChatAdapter(getContext(), chatList);

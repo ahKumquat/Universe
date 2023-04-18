@@ -55,7 +55,6 @@ public class SearchFragment extends Fragment implements FollowerAdapter.IFollowe
     private int tabNum;
 
     public SearchFragment() {
-        // Required empty public constructor
     }
 
 
@@ -153,7 +152,6 @@ public class SearchFragment extends Fragment implements FollowerAdapter.IFollowe
     }
 
     public void loadResultForEvents() {
-        Log.d(Util.TAG, "loadResultForEvents: ");
         progressBar.setVisibility(View.VISIBLE);
         util.getDB()
                 .collection("events")
@@ -167,14 +165,11 @@ public class SearchFragment extends Fragment implements FollowerAdapter.IFollowe
                         recyclerView.setAdapter(homeEventAdapter);
                         recyclerView.setLayoutManager(recyclerViewLayoutManagerEvents);
                         progressBar.setVisibility(View.INVISIBLE);
-                    } else {
-                        Log.d("test", "loadResultForEvents: " + task.getException());
                     }
                 });
     }
 
     public void loadResultForUsers() {
-        Log.d(Util.TAG, "loadResultForUsers: ");
         progressBar.setVisibility(View.VISIBLE);
         util.getDB()
                 .collection(Util.USERS_COLLECTION_NAME)
@@ -190,8 +185,6 @@ public class SearchFragment extends Fragment implements FollowerAdapter.IFollowe
                         recyclerView.setAdapter(followerAdapter);
                         recyclerView.setLayoutManager(recyclerViewLayoutManagerUsers);
                         progressBar.setVisibility(View.INVISIBLE);
-                    } else{
-                        Log.d(Util.TAG, "loadResultForUsers: " + task.getException());
                     }
                 });
     }

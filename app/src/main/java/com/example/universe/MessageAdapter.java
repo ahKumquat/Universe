@@ -2,7 +2,6 @@ package com.example.universe;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,20 +17,18 @@ import com.bumptech.glide.Glide;
 import com.example.universe.Models.Event;
 import com.example.universe.Models.Message;
 import com.example.universe.Models.User;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
 
 public class MessageAdapter extends RecyclerView.Adapter {
-    private Context context;
-    private String TAG = Util.TAG;
+    private final Context context;
     private ArrayList<Message> messageList;
     private static Util util;
 
-    private User me;
+    private final User me;
 
-    private IMessageListRecyclerAction mListener;
+    private final IMessageListRecyclerAction mListener;
 
     int ITEM_SEND = 1;
     int ITEM_RECEIVE = 2;
@@ -46,10 +43,6 @@ public class MessageAdapter extends RecyclerView.Adapter {
         }else{
             throw new RuntimeException(context.toString()+ "must implement IEventListRecyclerAction");
         }
-    }
-
-    public MessageAdapter() {
-        util = Util.getInstance();
     }
 
     public ArrayList<Message> getMessages() {
@@ -218,11 +211,11 @@ public class MessageAdapter extends RecyclerView.Adapter {
         return this.getMessages().size();
     }
 
-    class SenderViewHolder extends RecyclerView.ViewHolder {
-        private TextView textViewMessage;
-        private TextView timeOfMessage;
-        private ImageView imageViewPhoto;
-        private ImageView imageViewUserAvatar;
+    public static class SenderViewHolder extends RecyclerView.ViewHolder {
+        private final TextView textViewMessage;
+        private final TextView timeOfMessage;
+        private final ImageView imageViewPhoto;
+        private final ImageView imageViewUserAvatar;
 
         public SenderViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -248,11 +241,11 @@ public class MessageAdapter extends RecyclerView.Adapter {
     }
 
 
-    class ReceiverViewHolder extends RecyclerView.ViewHolder {
-        private TextView textViewMessage;
-        private TextView timeOfMessage;
-        private ImageView imageViewPhoto;
-        private ImageView imageViewUserAvatar;
+    public static class ReceiverViewHolder extends RecyclerView.ViewHolder {
+        private final TextView textViewMessage;
+        private final TextView timeOfMessage;
+        private final ImageView imageViewPhoto;
+        private final ImageView imageViewUserAvatar;
 
         public ReceiverViewHolder(@NonNull View itemView) {
             super(itemView);

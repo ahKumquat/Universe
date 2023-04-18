@@ -1,7 +1,6 @@
 package com.example.universe;
 
 import android.content.Context;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,17 +13,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.universe.Models.Event;
 import com.example.universe.Models.User;
-import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.List;
 
 public class HomeEventAdapter extends RecyclerView.Adapter<HomeEventAdapter.ViewHolder> {
 
-    private List<Event> eventList;
-    private IEventListRecyclerAction mListener;
+    private final List<Event> eventList;
+    private final IEventListRecyclerAction mListener;
     private static Util util;
-    private Context context;
-    private User user;
+    private final Context context;
+    private final User user;
 
     public HomeEventAdapter(Context context, List<Event> eventList, User user){
         this.eventList = eventList;

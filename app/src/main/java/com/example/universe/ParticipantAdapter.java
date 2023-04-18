@@ -17,21 +17,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.universe.Models.Event;
 import com.example.universe.Models.User;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
 public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.ViewHolder>{
 
-    private Context context;
-    private List<User> userList;
+    private final Context context;
+    private final List<User> userList;
     private Event event;
     private static Util util;
-    private IEventListRecyclerAction mListener;
-    private IEventRecyclerActionToFragment mListenerFrg;
+    private final IEventListRecyclerAction mListener;
+    private final IEventRecyclerActionToFragment mListenerFrg;
 
     public ParticipantAdapter (Context context, List<User> userList, Event event, Fragment fragment) {
         this.userList = userList;
@@ -49,10 +46,6 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
         }else{
             throw new RuntimeException(context + "must implement IEventRecyclerActionToFragment");
         }
-    }
-
-    public void setUserList(List<User> userList) {
-        this.userList = userList;
     }
 
     public List<User> getUserList() {
@@ -141,10 +134,10 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private CardView cardView;
-        private TextView name;
-        private ImageView avatar;
-        private Button approveButton;
+        private final CardView cardView;
+        private final TextView name;
+        private final ImageView avatar;
+        private final Button approveButton;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             cardView = itemView.findViewById(R.id.participants_cardView);
