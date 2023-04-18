@@ -79,7 +79,14 @@ public class ChatRoom extends Fragment {
                 textViewTitle.setText(otherUserName);
                 me = users1.stream().filter(user -> user.getUid()
                         .equals(util.getCurrentUser().getUid())).collect(Collectors.toList()).get(0);
-                loadData();
+                util.getDB().collection("users")
+                        .document(util.getCurrentUser().getUid())
+                        .collection("chats")
+                        .document(otherUserId)
+                        .addSnapshotListener(MetadataChanges.INCLUDE, (value, error) -> {
+                            parcelable = Objects.requireNonNull(messageRecyclerView.getLayoutManager()).onSaveInstanceState();
+                            loadData();
+                        });
             }, DEFAULT_F_LISTENER);
         }
         callback = new OnBackPressedCallback(true) {
@@ -137,15 +144,6 @@ public class ChatRoom extends Fragment {
 
         imageButtonCamera.setOnClickListener(v -> mListener.sendImage());
         imageButtonFile.setOnClickListener(v -> mListener.sendFile());
-
-        util.getDB().collection("users")
-                .document(util.getCurrentUser().getUid())
-                .collection("chats")
-                .document(otherUserId)
-                .addSnapshotListener(MetadataChanges.INCLUDE, (value, error) -> {
-                    parcelable = Objects.requireNonNull(messageRecyclerView.getLayoutManager()).onSaveInstanceState();
-                    loadData();
-                });
 
         return view;
     }
