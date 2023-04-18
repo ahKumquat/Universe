@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,14 +18,9 @@ import android.widget.ProgressBar;
 
 import com.example.universe.Models.Event;
 import com.example.universe.Models.User;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 
 public class SearchFragment extends Fragment implements FollowerAdapter.IFollowerListRecyclerActionToFragment {
@@ -90,7 +84,7 @@ public class SearchFragment extends Fragment implements FollowerAdapter.IFollowe
         recyclerViewLayoutManagerUsers = new LinearLayoutManager(requireContext());
         recyclerViewLayoutManagerEvents = new GridLayoutManager(requireContext(), 2);
 
-        searchView.setQueryHint(query);
+        searchView.setQueryHint("Search " + "\" " + query + "\"");
 
         backButton.setOnClickListener(v -> mListener.backToPrevious());
 
