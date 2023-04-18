@@ -175,7 +175,7 @@ public class SearchFragment extends Fragment implements FollowerAdapter.IFollowe
                     if (task.isSuccessful()) {
                         List<User> userList = task.getResult().toObjects(User.class);
                         userList.remove(me);
-                        followerAdapter = new FollowerAdapter(requireContext(), userList, me, this);
+                        followerAdapter = new FollowerAdapter(requireContext(), userList, me, me, this);
                         recyclerView.setAdapter(followerAdapter);
                         recyclerView.setLayoutManager(recyclerViewLayoutManagerUsers);
                         progressBar.setVisibility(View.INVISIBLE);

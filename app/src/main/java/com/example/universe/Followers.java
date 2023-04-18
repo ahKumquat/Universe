@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.universe.Models.User;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.List;
@@ -45,7 +47,7 @@ public class Followers extends Fragment implements FollowerAdapter.IFollowerList
 
     private RecyclerView.LayoutManager recyclerViewLayoutManager;
 
-    private User me;
+    private User user;
 
     private Util util;
 
@@ -83,10 +85,10 @@ public class Followers extends Fragment implements FollowerAdapter.IFollowerList
         super.onCreate(savedInstanceState);
         util = Util.getInstance();
         if (getArguments() != null) {
-             me = (User) getArguments().getSerializable(ARG_USER);
-             tabNum = getArguments().getInt(ARG_TAB);
-             followerUIDs = me.getFollowersIdList();
-             followingUIDs = me.getFollowingIdList();
+            user = (User) getArguments().getSerializable(ARG_USER);
+            tabNum = getArguments().getInt(ARG_TAB);
+            followerUIDs = user.getFollowersIdList();
+            followingUIDs = user.getFollowingIdList();
         }
         callback = new OnBackPressedCallback(true) {
             public void handleOnBackPressed() {
@@ -112,18 +114,18 @@ public class Followers extends Fragment implements FollowerAdapter.IFollowerList
         textViewFollower = new TextView(requireContext());
         textViewFollowing = new TextView(requireContext());
 
-        textViewFollowing.setText(me.getFollowingIdList().size()
+        textViewFollowing.setText(user.getFollowingIdList().size()
                 + "  "
                 + "Following");
 
-        textViewFollower.setText(me.getFollowersIdList().size()
+        textViewFollower.setText(user.getFollowersIdList().size()
                 + "  "
                 + "Follower");
 
         textViewFollowing.setGravity(Gravity.CENTER);
         textViewFollower.setGravity(Gravity.CENTER);
 
-        textViewTitle.setText(me.getUserName());
+        textViewTitle.setText(user.getUserName());
 
         Objects.requireNonNull(tabLayout.getTabAt(0)).setCustomView(textViewFollower);
 
@@ -136,15 +138,16 @@ public class Followers extends Fragment implements FollowerAdapter.IFollowerList
                     case 0:
                         getAllFollowers(followerUIDs);
                         tabNum = 0;
-                    break;
+                        break;
 
                     case 1:
                         getAllFollowings(followingUIDs);
                         tabNum = 1;
-                   break;
+                        break;
                 }
 
             }
+
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
 
@@ -163,37 +166,35 @@ public class Followers extends Fragment implements FollowerAdapter.IFollowerList
     @Override
     public void onResume() {
         super.onResume();
-        if (followerAdapter == null) {
+        Log.d("test", "onResume: " + followerAdapter + user);
+        if (followerAdapter == null && followingAdapter == null) {
             Objects.requireNonNull(tabLayout.getTabAt(tabNum)).select();
             switch (tabNum) {
                 case 0:
                     getAllFollowers(followerUIDs);
-                break;
-
+                    break;
                 case 1:
-
                     getAllFollowings(followingUIDs);
-                break;
+                    break;
             }
-
         } else {
             updateMyList();
         }
     }
 
     @SuppressLint("SetTextI18n")
-    private void updateMyList(){
+    private void updateMyList() {
         recyclerView.setAdapter(null);
         progressBar.setVisibility(View.VISIBLE);
-        util.getUser(util.getCurrentUser().getUid(), user -> {
-            me = user;
-            followerUIDs = me.getFollowersIdList();
-            followingUIDs = me.getFollowingIdList();
-            textViewFollowing.setText(me.getFollowingIdList().size()
+        util.getUser(user.getUid(), user -> {
+            this.user = user;
+            followerUIDs = this.user.getFollowersIdList();
+            followingUIDs = this.user.getFollowingIdList();
+            textViewFollowing.setText(this.user.getFollowingIdList().size()
                     + "  "
                     + "Following");
 
-            textViewFollower.setText(me.getFollowersIdList().size()
+            textViewFollower.setText(this.user.getFollowersIdList().size()
                     + "  "
                     + "Follower");
             if (tabNum == 0) {
@@ -208,20 +209,24 @@ public class Followers extends Fragment implements FollowerAdapter.IFollowerList
     private void getAllFollowers(List<String> followerUIDs) {
         progressBar.setVisibility(View.VISIBLE);
         util.getUsersByIdList(followerUIDs, users -> {
-            followerList = users;
-            progressBar.setVisibility(View.INVISIBLE);
-            followerAdapter = new FollowerAdapter(requireContext(), followerList, me,this);
-            recyclerView.setAdapter(followerAdapter);
+            util.getUser(util.getmAuth().getUid(), me -> {
+                followerList = users;
+                progressBar.setVisibility(View.INVISIBLE);
+                followerAdapter = new FollowerAdapter(requireContext(), followerList, user, me, this);
+                recyclerView.setAdapter(followerAdapter);
+            }, Util.DEFAULT_F_LISTENER);
         }, Util.DEFAULT_F_LISTENER);
     }
 
     private void getAllFollowings(List<String> followingUIDs) {
         progressBar.setVisibility(View.VISIBLE);
         util.getUsersByIdList(followingUIDs, users -> {
-            followingList = users;
-            progressBar.setVisibility(View.INVISIBLE);
-            followingAdapter = new FollowerAdapter(requireContext(), followingList, me, this);
-            recyclerView.setAdapter(followingAdapter);
+            util.getUser(util.getmAuth().getUid(), me -> {
+                followingList = users;
+                progressBar.setVisibility(View.INVISIBLE);
+                followingAdapter = new FollowerAdapter(requireContext(), followingList, user, me, this);
+                recyclerView.setAdapter(followingAdapter);
+            }, Util.DEFAULT_F_LISTENER);
         }, Util.DEFAULT_F_LISTENER);
     }
 
@@ -229,20 +234,21 @@ public class Followers extends Fragment implements FollowerAdapter.IFollowerList
     @SuppressLint("SetTextI18n")
     @Override
     public void updateFollowingList(List<String> newFollowingList) {
-        this.me.setFollowingIdList(newFollowingList);
-        textViewFollowing.setText(me.getFollowingIdList().size()
+        this.user.setFollowingIdList(newFollowingList);
+        textViewFollowing.setText(user.getFollowingIdList().size()
                 + "  "
                 + "Following");
     }
 
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof IFollowerFragmentAction){
+        if (context instanceof IFollowerFragmentAction) {
             this.mListener = (IFollowerFragmentAction) context;
-        }else{
+        } else {
             throw new RuntimeException(context + "must implement IFollowerFragmentAction");
         }
     }
+
     public interface IFollowerFragmentAction {
         void backToPrevious();
     }

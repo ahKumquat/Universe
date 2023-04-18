@@ -31,13 +31,20 @@ public class FollowerAdapter extends RecyclerView.Adapter<FollowerAdapter.ViewHo
 
     private final User user;
 
+    private final User me;
+
     private boolean isClicked;
 
 
-    public FollowerAdapter(Context context, List<User> userList, User user, Fragment fragment){
+    public FollowerAdapter(Context context, List<User> userList, User user, User me, Fragment fragment){
         this.userList = userList;
         this.context = context;
         this.user = user;
+        if (user.getUid().equals(me.getUid())){
+            this.me = user;
+        } else {
+            this.me = me;
+        }
         util = Util.getInstance();
         if(context instanceof IFollowerListRecyclerAction){
             mListener = (IFollowerListRecyclerAction) context;
@@ -73,7 +80,7 @@ public class FollowerAdapter extends RecyclerView.Adapter<FollowerAdapter.ViewHo
         if (follower.getAvatarPath() != null) {
             util.getDownloadUrlFromPath(follower.getAvatarPath(),
                     uri -> Glide.with(context).load(uri)
-                    .override(70,70).into(holder.getAvatar()), Util.DEFAULT_F_LISTENER);
+                    .override(140,140).into(holder.getAvatar()), Util.DEFAULT_F_LISTENER);
         }
 
         holder.getName().setText(follower.getUserName());
@@ -81,47 +88,27 @@ public class FollowerAdapter extends RecyclerView.Adapter<FollowerAdapter.ViewHo
         if (follower.getUid().equals(util.getCurrentUser().getUid())) {
             holder.getButton().setVisibility(View.INVISIBLE);
         } else {
-            if (!user.getFollowingIdList().contains(follower.getUid())) {
+            if (!me.getFollowingIdList().contains(follower.getUid())) {
                 holder.getButton().setText("Follow");
-                holder.getButton().setOnClickListener(v -> {
-                    if (!isClicked) {
-                        util.followUser(follower.getUid(), unused -> {
-                            holder.getButton().setText("Following");
-                            user.getFollowingIdList().add(follower.getUid());
-                            follower.getFollowersIdList().add(user.getUid());
-                            mListenerFrg.updateFollowingList(user.getFollowingIdList());
-                        }, Util.DEFAULT_F_LISTENER);
-                    } else {
-                        util.unfollowUser(follower.getUid(), unused -> {
-                            holder.getButton().setText("Follow");
-                            user.getFollowingIdList().remove(follower.getUid());
-                            follower.getFollowersIdList().remove(follower.getUid());
-                            mListenerFrg.updateFollowingList(user.getFollowingIdList());
-                        }, Util.DEFAULT_F_LISTENER);
-                    }
-                    isClicked = !isClicked;
-                });
             } else {
                 holder.getButton().setText("Following");
-                holder.getButton().setOnClickListener(v -> {
-                    if (!isClicked) {
-                        util.unfollowUser(follower.getUid(), unused -> {
-                            holder.getButton().setText("Follow");
-                            user.getFollowingIdList().remove(follower.getUid());
-                            follower.getFollowersIdList().remove(user.getUid());
-                            mListenerFrg.updateFollowingList(user.getFollowingIdList());
-                        }, Util.DEFAULT_F_LISTENER);
-                    } else {
-                        util.followUser(follower.getUid(), unused -> {
-                            holder.getButton().setText("Following");
-                            user.getFollowingIdList().add(follower.getUid());
-                            follower.getFollowersIdList().add(user.getUid());
-                            mListenerFrg.updateFollowingList(user.getFollowingIdList());
-                        }, Util.DEFAULT_F_LISTENER);
-                    }
-                    isClicked = !isClicked;
-                });
             }
+            holder.getButton().setOnClickListener(v -> {
+                if (!me.getFollowingIdList().contains(follower.getUid())) {
+                    util.followUser(follower.getUid(), unused -> {
+                        holder.getButton().setText("Following");
+                        me.getFollowingIdList().add(follower.getUid());
+                        mListenerFrg.updateFollowingList(user.getFollowingIdList());
+                    }, Util.DEFAULT_F_LISTENER);
+                } else {
+                    util.unfollowUser(follower.getUid(), unused -> {
+                        holder.getButton().setText("Follow");
+                        me.getFollowingIdList().remove(follower.getUid());
+                        mListenerFrg.updateFollowingList(user.getFollowingIdList());
+                    }, Util.DEFAULT_F_LISTENER);
+                }
+                isClicked = !isClicked;
+            });
         }
 
         holder.getCardView().setOnClickListener(v -> mListener.followerClickedFromRecyclerView(follower));

@@ -61,7 +61,7 @@ public class ShareUserAdapter extends RecyclerView.Adapter<ShareUserAdapter.View
         if (friend.getAvatarPath() != null) {
             util.getDownloadUrlFromPath(friend.getAvatarPath(),
                     uri -> Glide.with(view.getContext()).load(uri)
-                            .override(70,70).into(holder.getAvatar()), Util.DEFAULT_F_LISTENER);
+                            .override(140,140).into(holder.getAvatar()), Util.DEFAULT_F_LISTENER);
         }
         holder.getName().setText(friend.getUserName());
         holder.getButton().setVisibility(View.INVISIBLE);

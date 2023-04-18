@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.universe.Models.Event;
 import com.example.universe.Models.User;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.List;
@@ -230,6 +231,11 @@ public class Profile extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        util.getUser(user.getUid(), user -> {
+            this.user = user;
+            followerNum.setText(String.valueOf(user.getFollowersIdList().size()));
+            followingNum.setText(String.valueOf(user.getFollowingIdList().size()));
+        }, Util.DEFAULT_F_LISTENER);
         if (postEventAdapter == null) {
             loadPostEvent();
         } else {
