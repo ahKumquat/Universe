@@ -7,13 +7,10 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -21,8 +18,6 @@ public class FragmentDisplayFile extends Fragment {
 
     protected static final String ARG_FILEURI = "fileUri";
     protected static final String ARG_FILEPATH = "filePath";
-    private static Util util;
-    private String TAG = Util.TAG;
     private Uri fileUri;
     private Button buttonRetake;
     private Button buttonUpload;
@@ -64,7 +59,6 @@ public class FragmentDisplayFile extends Fragment {
         buttonRetake = view.findViewById(R.id.buttonRetake);
         buttonUpload = view.findViewById(R.id.buttonUpload);
 
-        //TODO: preview the selected file
         textViewFileUri = view.findViewById(R.id.displayFile_textView_fileUrl);
         textViewFileUri.setText(fileUri.toString());
         textViewFilePath = view.findViewById(R.id.displayFile_textView_filePath);

@@ -18,13 +18,13 @@ import java.util.List;
 
 public class ProfileEventAdapter extends RecyclerView.Adapter<ProfileEventAdapter.ViewHolder> {
 
-    private List<Event> eventList;
+    private final List<Event> eventList;
 
-    private HomeEventAdapter.IEventListRecyclerAction mListener;
+    private final HomeEventAdapter.IEventListRecyclerAction mListener;
     private static Util util;
-    private Context context;
+    private final Context context;
 
-    private User me;
+    private final User me;
 
     public ProfileEventAdapter(Context context, List<Event> eventList, User user){
         this.eventList = eventList;
@@ -71,8 +71,8 @@ public class ProfileEventAdapter extends RecyclerView.Adapter<ProfileEventAdapte
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView textViewTitle;
-        private ImageView imageViewEventPic;
+        private final TextView textViewTitle;
+        private final ImageView imageViewEventPic;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

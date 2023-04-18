@@ -1,10 +1,7 @@
 package com.example.universe;
 
 import android.annotation.SuppressLint;
-import android.app.DownloadManager;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -12,17 +9,14 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.DownloadListener;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Objects;
 
 public class FileViewer extends Fragment {
     private static final String ARG_URL = "Url";

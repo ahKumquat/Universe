@@ -9,27 +9,20 @@ import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.universe.Models.Message;
 import com.example.universe.Models.User;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 
 
 import java.text.SimpleDateFormat;
@@ -41,7 +34,6 @@ import java.util.stream.Collectors;
 
 public class ChatRoom extends Fragment {
     private static Util util;
-    private String TAG = Util.TAG;
     private RichEditText editTextMessage;
     private Button buttonSendMessage;
     private String otherUserName;
@@ -62,7 +54,6 @@ public class ChatRoom extends Fragment {
     private User me;
 
     public ChatRoom() {
-        // Required empty public constructor
     }
 
     public static ChatRoom newInstance() {
@@ -88,6 +79,8 @@ public class ChatRoom extends Fragment {
                 textViewTitle.setText(otherUserName);
                 me = users1.stream().filter(user -> user.getUid()
                         .equals(util.getCurrentUser().getUid())).collect(Collectors.toList()).get(0);
+                messageAdaptor = new MessageAdapter(getContext(), messageList, me);
+                messageRecyclerView.setAdapter(messageAdaptor);
             }, DEFAULT_F_LISTENER);
 
         }
@@ -109,7 +102,7 @@ public class ChatRoom extends Fragment {
         }
     }
 
-    @SuppressLint("SimpleDateFormat")
+    @SuppressLint({"SimpleDateFormat", "NotifyDataSetChanged"})
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -131,56 +124,38 @@ public class ChatRoom extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setStackFromEnd(true);
         messageRecyclerView.setLayoutManager(linearLayoutManager);
-        messageAdaptor = new MessageAdapter(getContext(), messageList, me);
-        messageRecyclerView.setAdapter(messageAdaptor);
-
 
         editTextMessage.setKeyBoardInputCallbackListener((inputContentInfo, flags, opts) ->
                 sendImage(Objects.requireNonNull(inputContentInfo.getLinkUri()).toString()));
 
-        buttonSendMessage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                enteredMessage = editTextMessage.getText().toString();
-                if (enteredMessage.isEmpty()) {
-                    Toast.makeText(getContext(),"Enter message first",
-                            Toast.LENGTH_LONG).show();
-                } else {
-                    Message message = new Message(util.getCurrentUser(), enteredMessage, null, null);
-                    util.sendMessage(otherUserId, message, new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void unused) {
-
-                        }
-                    }, DEFAULT_F_LISTENER);
-                    editTextMessage.setText(null);
-                }
+        buttonSendMessage.setOnClickListener(view1 -> {
+            enteredMessage = Objects.requireNonNull(editTextMessage.getText()).toString();
+            if (enteredMessage.isEmpty()) {
+                Toast.makeText(getContext(),"Enter message first",
+                        Toast.LENGTH_LONG).show();
+            } else {
+                Message message = new Message(util.getCurrentUser(), enteredMessage, null, null);
+                util.sendMessage(otherUserId, message, unused -> {}, DEFAULT_F_LISTENER);
+                editTextMessage.setText(null);
             }
         });
 
         imageButtonCamera.setOnClickListener(v -> mListener.sendImage());
         imageButtonFile.setOnClickListener(v -> mListener.sendFile());
 
-        //Create a listener for Firebase data change...
         util.getDB().collection("users")
                 .document(util.getCurrentUser().getUid())
                 .collection("chats")
                 .document(otherUserId)
-                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                        if(error!=null){
-                            Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                        }else{
-                            util.getMessages(otherUserId, new OnSuccessListener<List<Message>>() {
-                                @Override
-                                public void onSuccess(List<Message> messages) {
-                                    messageAdaptor.setMessages(new ArrayList<>(messages));
-                                    messageAdaptor.notifyDataSetChanged();
-                                }
-                            }, DEFAULT_F_LISTENER);
+                .addSnapshotListener((value, error) -> {
+                    if(error!=null){
+                        Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }else{
+                        util.getMessages(otherUserId, messages -> {
+                            messageAdaptor.setMessages(new ArrayList<>(messages));
+                            messageAdaptor.notifyDataSetChanged();
+                        }, DEFAULT_F_LISTENER);
 
-                        }
                     }
                 });
 
@@ -190,44 +165,32 @@ public class ChatRoom extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        loadData();
+        if (messageAdaptor != null) {
+            loadData();
+            messageRecyclerView.setAdapter(messageAdaptor);
+        }
     }
 
     private void loadData() {
-        util.getMessages(otherUserId, new OnSuccessListener<List<Message>>() {
-            @Override
-            public void onSuccess(List<Message> newMessages) {
-                updateRecyclerView(new ArrayList<>(newMessages));
-            }
-        }, DEFAULT_F_LISTENER);
+        util.getMessages(otherUserId, newMessages -> updateRecyclerView(new ArrayList<>(newMessages)), DEFAULT_F_LISTENER);
     }
 
 
+    @SuppressLint("NotifyDataSetChanged")
     public void updateRecyclerView(ArrayList<Message> messages) {
         this.messageList = messages;
         messageAdaptor.setMessages(messages);
-        Log.d(TAG, "updateRecyclerView: " + messages.toString());
         messageAdaptor.notifyDataSetChanged();
     }
 
     public void sendImage(String path) {
         Message message = new Message(util.getCurrentUser(), null, path, null);
-        util.sendMessage(otherUserId, message, new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-
-            }
-        }, DEFAULT_F_LISTENER);
+        util.sendMessage(otherUserId, message, unused -> {}, DEFAULT_F_LISTENER);
     }
 
     public void sendFile(Uri fileUri) {
         Message message = new Message(util.getCurrentUser(), null, null, fileUri.toString());
-        util.sendMessage(otherUserId, message, new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-
-            }
-        }, DEFAULT_F_LISTENER);
+        util.sendMessage(otherUserId, message, unused -> {}, DEFAULT_F_LISTENER);
     }
 
     public interface IchatFragmentButtonAction {

@@ -14,7 +14,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -27,8 +26,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,12 +37,11 @@ import com.google.firebase.storage.UploadTask;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class MainActivity extends AppCompatActivity implements Login.IloginFragmentAction,
-        HomeFragment.IhomeFragmentAction, ChatAdapter.IchatListRecyclerAction,
+        HomeFragment.IhomeFragmentAction, ChatAdapter.IChatListRecyclerAction,
         ChatManager.IchatManagerFragmentAction, Register.IRegisterFragmentAction,
         Profile.IProfileFragmentAction, Setting.ISettingFragmentAction,
         FragmentCameraController.DisplayTakenPhoto, FragmentDisplayImage.IdisplayImageAction,
@@ -54,9 +50,8 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
         FollowerAdapter.IFollowerListRecyclerAction, SearchFragment.ISearchFragmentAction,
         EventFragment.IEventFragmentAction, Followers.IFollowerFragmentAction,
         ParticipantAdapter.IEventListRecyclerAction, MessageAdapter.IMessageListRecyclerAction {
-    private final String TAG = Util.TAG;
+
     private Util util;
-    private FirebaseUser currentUser;
     private FirebaseAuth mAuth;
     private String otherUserId;
     private Boolean cameraAllowed;
@@ -149,7 +144,6 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
                 .build();
         googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
 
-        //        Asking for permissions in runtime......
         cameraAllowed = ContextCompat.checkSelfPermission(this,
                 android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
         readAllowed = ContextCompat.checkSelfPermission(this,
@@ -190,7 +184,6 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
     @Override
     protected void onStart() {
         super.onStart();
-        currentUser = mAuth.getCurrentUser();
         int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
         if (backStackCount < 2) {
             populateScreen();
@@ -213,7 +206,6 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
 
     @Override
     public void populateMainFragment(FirebaseUser mUser) {
-        this.currentUser = mUser;
         populateScreen();
     }
 
@@ -262,7 +254,6 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
     @Override
     public void setAvatar() {
         if (cameraAllowed && readAllowed && writeAllowed) {
-            //Log.d(TAG, "setAvatar: all permissions granted");
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.containerMain, FragmentCameraController.newInstance(), CAMERA_FRAGMENT)
                     .addToBackStack(SETTING_FRAGMENT).commit();
@@ -272,18 +263,12 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
                     Manifest.permission.READ_EXTERNAL_STORAGE,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE
             }, PERMISSIONS_CODE_SETTING);
-            //Log.d(TAG, "set avatar: asking for permission");
         }
     }
 
     @Override
     public void chatClickedFromRecyclerView(Chat chat) {
-        util.readChat(chat.getOtherUserId(), new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                startChatPage(chat.getOtherUserId());
-            }
-        }, Util.DEFAULT_F_LISTENER);
+        util.readChat(chat.getOtherUserId(), unused -> startChatPage(chat.getOtherUserId()), Util.DEFAULT_F_LISTENER);
     }
 
     @Override
@@ -389,8 +374,6 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
         } else if (requestCode == PERMISSIONS_CODE_FILE && grantResults.length > 0 && grantResults[0]
                 == PackageManager.PERMISSION_GRANTED) {
             selectFile();
-        } else {
-            ///Toast.makeText(this, "You must allow Camera and Storage permissions!", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -434,59 +417,63 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
         StorageReference storageReference = util.getStorage().getReference().child("images/"
                 + arrayList.get(arrayList.size() - 1));
         UploadTask uploadImage = storageReference.putFile(imageUri);
-        uploadImage.addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(MainActivity.this, "Upload Failed! Try again!", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Toast.makeText(MainActivity.this, "Upload successful!", Toast.LENGTH_SHORT).show();
-                        progressBar.setVisibility(View.GONE);
-                        int count = getSupportFragmentManager().getBackStackEntryCount();
-                        String name = getSupportFragmentManager().getBackStackEntryAt(count - 2).getName();
-                        System.out.println(name);
-                        if (name != null) {
-                            switch (name) {
-                                case POST_FRAGMENT:
-                                    PostFragment p = (PostFragment) getSupportFragmentManager().findFragmentByTag(POST_FRAGMENT);
+        uploadImage.addOnFailureListener(
+                e -> Toast.makeText(MainActivity.this, "Upload Failed! Try again!", Toast.LENGTH_SHORT).show())
+                .addOnSuccessListener(taskSnapshot -> {
+                    Toast.makeText(MainActivity.this, "Upload successful!", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                    int count = getSupportFragmentManager().getBackStackEntryCount();
+                    String name = getSupportFragmentManager().getBackStackEntryAt(count - 2).getName();
+                    System.out.println(name);
+                    if (name != null) {
+                        switch (name) {
+                            case POST_FRAGMENT:
+                                PostFragment p = (PostFragment) getSupportFragmentManager().findFragmentByTag(POST_FRAGMENT);
+                                if (p != null) {
                                     p.setPostPicPath(storageReference.getPath());
-                                    break;
-                                case SETTING_FRAGMENT:
-                                    Setting s = (Setting) getSupportFragmentManager().findFragmentByTag(SETTING_FRAGMENT);
+                                }
+                                break;
+                            case SETTING_FRAGMENT:
+                                Setting s = (Setting) getSupportFragmentManager().findFragmentByTag(SETTING_FRAGMENT);
+                                if (s != null) {
                                     s.setNewAvatarPath(storageReference.getPath());
-                                    break;
-                                case CHAT_FRAGMENT:
-                                    ChatRoom fragment = (ChatRoom) getSupportFragmentManager().findFragmentByTag(CHAT_FRAGMENT);
+                                }
+                                break;
+                            case CHAT_FRAGMENT:
+                                ChatRoom fragment = (ChatRoom) getSupportFragmentManager().findFragmentByTag(CHAT_FRAGMENT);
+                                if (fragment != null) {
                                     fragment.sendImage(storageReference.getPath());
-                                    break;
-                            }
-                            getSupportFragmentManager().popBackStack(getSupportFragmentManager().getBackStackEntryAt(count - 3).getName(), 0);
-                        } else {
-                            String otherName = getSupportFragmentManager().getBackStackEntryAt(count - 3).getName();
-                            switch (otherName) {
-                                case POST_FRAGMENT:
-                                    PostFragment p = (PostFragment) getSupportFragmentManager().findFragmentByTag(POST_FRAGMENT);
-                                    p.setPostPicPath(storageReference.getPath());
-                                    break;
-                                case SETTING_FRAGMENT:
-                                    Setting s = (Setting) getSupportFragmentManager().findFragmentByTag(SETTING_FRAGMENT);
-                                    s.setNewAvatarPath(storageReference.getPath());
-                                    break;
-                                case CHAT_FRAGMENT:
-                                    ChatRoom fragment = (ChatRoom) getSupportFragmentManager().findFragmentByTag(CHAT_FRAGMENT);
-                                    fragment.sendImage(storageReference.getPath());
-                                    break;
-                            }
-                            getSupportFragmentManager().popBackStack(otherName, 0);
+                                }
+                                break;
                         }
+                        getSupportFragmentManager().popBackStack(getSupportFragmentManager().getBackStackEntryAt(count - 3).getName(), 0);
+                    } else {
+                        String otherName = getSupportFragmentManager().getBackStackEntryAt(count - 3).getName();
+                        switch (Objects.requireNonNull(otherName)) {
+                            case POST_FRAGMENT:
+                                PostFragment p = (PostFragment) getSupportFragmentManager().findFragmentByTag(POST_FRAGMENT);
+                                if (p != null) {
+                                    p.setPostPicPath(storageReference.getPath());
+                                }
+                                break;
+                            case SETTING_FRAGMENT:
+                                Setting s = (Setting) getSupportFragmentManager().findFragmentByTag(SETTING_FRAGMENT);
+                                if (s != null) {
+                                    s.setNewAvatarPath(storageReference.getPath());
+                                }
+                                break;
+                            case CHAT_FRAGMENT:
+                                ChatRoom fragment = (ChatRoom) getSupportFragmentManager().findFragmentByTag(CHAT_FRAGMENT);
+                                if (fragment != null) {
+                                    fragment.sendImage(storageReference.getPath());
+                                }
+                                break;
+                        }
+                        getSupportFragmentManager().popBackStack(otherName, 0);
                     }
                 })
                 .addOnProgressListener(snapshot -> {
                     double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
-                    Log.d(TAG, "onProgress: " + progress);
                     progressBar.setProgress((int) progress);
                 });
     }
@@ -563,7 +550,6 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
     public void onUploadFileButtonPressed(Uri fileUri, ProgressBar progressBar) {
         progressBar.setVisibility(View.VISIBLE);
 
-        //old method may get a name with "/"
         List<String> arrayList = Arrays.stream(fileUri.getPath().split("/")).collect(Collectors.toList());
 
         StorageReference storageReference = util.getStorage().getReference()
@@ -584,13 +570,14 @@ public class MainActivity extends AppCompatActivity implements Login.IloginFragm
             if (!task.isSuccessful()) {
                 throw Objects.requireNonNull(task.getException());
             }
-            // Continue with the task to get the download URL
             return storageReference.getDownloadUrl();
         }).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Uri downloadUri = task.getResult();
                 ChatRoom fragment = (ChatRoom) getSupportFragmentManager().findFragmentByTag(CHAT_FRAGMENT);
-                fragment.sendFile(downloadUri);
+                if (fragment != null) {
+                    fragment.sendFile(downloadUri);
+                }
                 backToPrevious();
             } else {
                 Toast.makeText(MainActivity.this, "Sending file failed!", Toast.LENGTH_SHORT).show();

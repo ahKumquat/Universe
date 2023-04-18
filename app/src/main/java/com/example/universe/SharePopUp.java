@@ -2,18 +2,14 @@ package com.example.universe;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
-import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.PopupWindow;
@@ -22,11 +18,8 @@ import android.widget.Toast;
 import com.example.universe.Models.Event;
 import com.example.universe.Models.Message;
 import com.example.universe.Models.User;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -41,8 +34,6 @@ public class SharePopUp extends Fragment implements ShareUserAdapter.IShareListR
     private RecyclerView.LayoutManager recyclerViewLayoutManager;
 
     private ShareUserAdapter shareUserAdapter;
-
-    private User selectedUser;
 
     private List<User> friendList;
 
@@ -82,7 +73,7 @@ public class SharePopUp extends Fragment implements ShareUserAdapter.IShareListR
 
         util.getUsersByIdList(friendIDList, users -> {
             friendList = users;
-            shareUserAdapter = new ShareUserAdapter(view,friendList,user, this);
+            shareUserAdapter = new ShareUserAdapter(view,friendList, this);
             recyclerView.setAdapter(shareUserAdapter);
         }, Util.DEFAULT_F_LISTENER);
 

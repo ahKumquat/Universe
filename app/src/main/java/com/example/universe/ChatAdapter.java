@@ -1,7 +1,6 @@
 package com.example.universe;
 
 import android.content.Context;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,30 +13,24 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.universe.Models.Chat;
-import com.example.universe.Models.User;
-import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>{
     private ArrayList<Chat> chatList;
-    private Context context;
-    private IchatListRecyclerAction mListener;
+    private final Context context;
+    private final IChatListRecyclerAction mListener;
     private static Util util;
 
     public ChatAdapter(Context context, ArrayList<Chat> chatList) {
         this.chatList = chatList;
         this.context = context;
         util = Util.getInstance();
-        if(context instanceof IchatListRecyclerAction){
-            mListener = (IchatListRecyclerAction) context;
+        if(context instanceof IChatListRecyclerAction){
+            mListener = (IChatListRecyclerAction) context;
         }else{
-            throw new RuntimeException(context.toString()+ "must implement IchatListRecyclerAction");
+            throw new RuntimeException(context.toString()+ "must implement IChatListRecyclerAction");
         }
-    }
-
-    public ChatAdapter() {
-        util = Util.getInstance();
     }
 
     public ArrayList<Chat> getChats() {
@@ -69,23 +62,15 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>{
             holder.getImageViewDotForUnreadMessage().setVisibility(View.INVISIBLE);
         }
 
-        util.getUser(otherUserId, new OnSuccessListener<User>() {
-            @Override
-            public void onSuccess(User user) {
-                String name = user.getUserName();
-                holder.getTextViewUserName().setText(name);
-                String path = user.getAvatarPath();
-                util.getDownloadUrlFromPath(path, new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                            Glide.with(context)
-                                    .load(uri)
-                                    .centerCrop()
-                                    .override(500,500)
-                                    .into(holder.getImageViewUserAvatar());
-                    }
-                }, Util.DEFAULT_F_LISTENER);
-            }
+        util.getUser(otherUserId, user -> {
+            String name = user.getUserName();
+            holder.getTextViewUserName().setText(name);
+            String path = user.getAvatarPath();
+            util.getDownloadUrlFromPath(path, uri -> Glide.with(context)
+                    .load(uri)
+                    .centerCrop()
+                    .override(500,500)
+                    .into(holder.getImageViewUserAvatar()), Util.DEFAULT_F_LISTENER);
         }, Util.DEFAULT_F_LISTENER);
         if (chat.getLastMessage()!= null) {
             holder.getTextViewLastMessage().setText(chat.getLastMessage().getText());
@@ -93,12 +78,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>{
             holder.getTextViewLastMessage().setText("");
         }
 
-        holder.getCardView().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mListener.chatClickedFromRecyclerView(chat);
-            }
-        });
+        holder.getCardView().setOnClickListener(view -> mListener.chatClickedFromRecyclerView(chat));
     }
 
     @Override
@@ -107,11 +87,11 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>{
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private ImageView imageViewUserAvatar;
-        private TextView textViewUserName;
-        private TextView textViewLastMessage;
-        private ImageView imageViewDotForUnreadMessage;
-        private CardView cardView;
+        private final ImageView imageViewUserAvatar;
+        private final TextView textViewUserName;
+        private final TextView textViewLastMessage;
+        private final ImageView imageViewDotForUnreadMessage;
+        private final CardView cardView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -142,7 +122,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>{
         }
     }
 
-    public interface IchatListRecyclerAction {
+    public interface IChatListRecyclerAction {
         void chatClickedFromRecyclerView(Chat chat);
     }
 }

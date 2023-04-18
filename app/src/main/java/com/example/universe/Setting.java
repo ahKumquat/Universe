@@ -19,12 +19,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.universe.Models.User;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserInfo;
 
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,7 +54,6 @@ public class Setting extends Fragment {
 
 
     public Setting() {
-        // Required empty public constructor
     }
 
     public static Setting newInstance(User user) {

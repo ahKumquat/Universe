@@ -1,6 +1,5 @@
 package com.example.universe;
 
-import static com.example.universe.Util.DEFAULT_F_LISTENER;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -103,7 +102,7 @@ public class EventFragment extends Fragment implements ParticipantAdapter.IEvent
         requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
-    @SuppressLint({"SimpleDateFormat", "SetTextI18n"})
+    @SuppressLint({"SimpleDateFormat", "SetTextI18n", "NotifyDataSetChanged"})
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -189,11 +188,7 @@ public class EventFragment extends Fragment implements ParticipantAdapter.IEvent
                     me.getJoinedEventsIdList().add(event.getUid());
                     event.getCandidates().add(me.getUid());
                     progressBar.setVisibility(View.INVISIBLE);
-                    for (User user: participantAdapter.getUserList()){
-                        if (user.getUid().equals(me.getUid())){
-                            participantAdapter.getUserList().remove(user);
-                        }
-                    }
+                    participantAdapter.getUserList().removeIf(user -> user.getUid().equals(me.getUid()));
                     participantAdapter.getUserList().add(me);
                     participantAdapter.notifyDataSetChanged();
                 }, Util.DEFAULT_F_LISTENER);
@@ -204,11 +199,7 @@ public class EventFragment extends Fragment implements ParticipantAdapter.IEvent
                     event.getParticipants().remove(me.getUid());
                     event.getCandidates().remove(me.getUid());
                     progressBar.setVisibility(View.INVISIBLE);
-                    for (User user: participantAdapter.getUserList()){
-                        if (user.getUid().equals(me.getUid())){
-                            participantAdapter.getUserList().remove(user);
-                        }
-                    }
+                    participantAdapter.getUserList().removeIf(user -> user.getUid().equals(me.getUid()));
                     participantAdapter.notifyDataSetChanged();
                 }, Util.DEFAULT_F_LISTENER);
             }

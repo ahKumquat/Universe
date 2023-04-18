@@ -7,7 +7,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +17,10 @@ import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
 
+
 public class FragmentDisplayImage extends Fragment {
 
     protected static final String ARG_URI = "imageUri";
-    private static Util util;
-    private String TAG = Util.TAG;
     private Uri imageUri;
     private ImageView imageViewPhoto;
     private Button buttonRetake;
@@ -33,7 +31,6 @@ public class FragmentDisplayImage extends Fragment {
 
 
     public FragmentDisplayImage() {
-        // Required empty public constructor
     }
 
     public static FragmentDisplayImage newInstance(Uri imageUri) {
@@ -60,13 +57,7 @@ public class FragmentDisplayImage extends Fragment {
         progressBar = view.findViewById(R.id.progressBar);
         progressBar.setVisibility(View.GONE);
         imageButtonBack = view.findViewById(R.id.displayImage_imageButton_back);
-        imageButtonBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().getSupportFragmentManager().popBackStack();
-                Log.d(TAG, "onClick: back from display image");
-            }
-        });
+        imageButtonBack.setOnClickListener(view1 -> requireActivity().getSupportFragmentManager().popBackStack());
 
         imageViewPhoto = view.findViewById(R.id.imageViewPhoto);
         buttonRetake = view.findViewById(R.id.buttonRetake);
@@ -76,19 +67,9 @@ public class FragmentDisplayImage extends Fragment {
                 .load(imageUri)
                 .into(imageViewPhoto);
 
-        buttonRetake.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mListener.onRetakePressed();
-            }
-        });
+        buttonRetake.setOnClickListener(view12 -> mListener.onRetakePressed());
 
-        buttonUpload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mListener.onUploadButtonPressed(imageUri, progressBar);
-            }
-        });
+        buttonUpload.setOnClickListener(view13 -> mListener.onUploadButtonPressed(imageUri, progressBar));
         return view;
     }
 

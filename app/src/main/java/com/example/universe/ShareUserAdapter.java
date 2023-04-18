@@ -1,7 +1,6 @@
 package com.example.universe;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,29 +15,26 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.universe.Models.Event;
 import com.example.universe.Models.User;
 
 import java.util.List;
 
 public class ShareUserAdapter extends RecyclerView.Adapter<ShareUserAdapter.ViewHolder>{
-    private List<User> userList;
+    private final List<User> userList;
     private static Util util;
 
-    private User user;
-    private View view;
+    private final View view;
     private boolean isClicked;
     private User selectedUser;
     private int selected_position;
-    private IShareListRecyclerAction mListener;
+    private final IShareListRecyclerAction mListener;
 
     public List<User> getUserList() {
         return userList;
     }
 
-    public ShareUserAdapter(View view, List<User> userList, User user, Fragment fragment) {
+    public ShareUserAdapter(View view, List<User> userList, Fragment fragment) {
        this.userList = userList;
-       this.user = user;
        this.view = view;
        util = Util.getInstance();
        if (fragment instanceof IShareListRecyclerAction) {
